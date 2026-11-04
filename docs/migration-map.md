@@ -10,9 +10,12 @@ Every item in RN_Arch, with what happens to it in RN_Foundation.
   **Replace** (a library does it) · **Drop** (not carried over).
 - **Status** is updated after each Phase 4 batch: `pending` → `done` (with the commit), or `n/a` for Drops and
   for items handled by Phase 3 scaffolding.
-- **Removable unit:** the last Phase 4 batch (socket, upload + media picker, date picker, phone input). Each of
-  these lives in its own folder and can be deleted together with its dependencies; the removal steps go in the
-  README.
+- **Optional units** (`unit: <name>` in the destination column) can be removed without touching the rest of the
+  app. Each is listed in [`units.json`](../units.json) with its folders, packages, native settings and every
+  touchpoint outside its folder (an export line, a provider, a settings row). The project-creation script deletes
+  a unit from that manifest, and CI builds the app with every optional unit removed to prove it.
+- **Component isolation:** every shared UI component has its own folder. No shared component imports another
+  optional component unless the table below records it under *Imports*. Lint enforces this.
 
 Layer rule reminder: `app → screens → features → entities → shared`, imports only downward and only through a
 slice's `index.ts`. There are no `helpers/`, `utils/` or `common/` folders.
@@ -24,7 +27,7 @@ slice's `index.ts`. There are no `helpers/`, `utils/` or `common/` folders.
 | `App.tsx` | Rewrite | `src/app/App.tsx`, `src/app/providers/` | Provider stack is reduced to what the kept libraries need. The popup-menu, bottom-sheet and PersistGate providers go away with those dependencies. | pending |
 | `index.js` | Keep | `index.js` | Registers the app; it now imports `@app/App`. | pending |
 | `app.json` | Rewrite | `app.json` | New name `RN_Foundation`; set by the project-creation script. | pending |
-| `babel.config.js` | Rewrite | `babel.config.js` | `module-resolver` aliases replace `react-native-dotenv`. The worklets plugin goes with Reanimated (see §3). | pending |
+| `babel.config.js` | Rewrite | `babel.config.js` | `module-resolver` aliases replace `react-native-dotenv`; the `react-native-worklets/plugin` stays last. | pending |
 | `metro.config.js` | Keep | `metro.config.js` | Template default is enough. | pending |
 | `jest.config.js` | Rewrite | `jest.config.js`, `jest.setup.ts` | Ported from the case study: native mocks, path aliases, 70% coverage gate. | pending |
 | `.eslintrc.js` | Rewrite | `eslint.config.js` | ESLint 9 flat config with `eslint-plugin-boundaries` and per-layer import restrictions. | pending |
@@ -72,23 +75,23 @@ slice's `index.ts`. There are no `helpers/`, `utils/` or `common/` folders.
 | `@react-native-community/netinfo` | Keep | `src/shared/lib/network/` | Only importable there (lint rule). | pending |
 | `react-native-keychain` | Keep | `src/shared/storage/secure/` | Tokens and secrets; only importable there. | pending |
 | `react-native-keyboard-controller` | Keep | `src/shared/ui/Screen` | Keyboard-aware screens for the login form. New Arch status gets confirmed by the Phase 3 build. | pending |
-| `react-native-image-crop-picker` | Keep | `src/shared/lib/media-picker/` (removable) | Rewritten media picker (Q6). | pending |
-| `react-native-blob-util` | Keep | `src/features/upload-file/` (removable) | Streams the file for the presigned PUT, so it isn't loaded into JS memory. | pending |
-| `socket.io-client` | Keep | `src/shared/api/socket/` (removable) | Rewritten socket manager (Q6). | pending |
+| `react-native-reanimated`, `react-native-worklets`, `react-native-gesture-handler` | Keep | foundation | Approved: toast swipe-to-dismiss, range slider, image viewer. Verified by native builds on both platforms in Phase 3; if they fail on 0.88, work stops for a decision before any fallback. | pending |
+| `react-native-image-crop-picker` | Keep | `src/shared/lib/media-picker/` (unit: `media`) | Rewritten media picker (Q6). | pending |
+| `react-native-blob-util` | Keep | `src/features/file-transfer/` (unit: `media`) | Streams the presigned PUT so the file isn't loaded into JS memory. Also covers download, so download adds no native dependency. | pending |
+| `socket.io-client` | Keep | `src/shared/api/socket/` (unit: `socket`) | Rewritten socket manager (Q6). | pending |
 | `@react-native-async-storage/async-storage` | Replace | `react-native-mmkv` v4 in `src/shared/storage/kv/` | Synchronous reads let the first frame hydrate. CI fails if the lockfile contains async-storage. | pending |
 | `redux-persist` | Replace | listener-middleware persistence + `defineKey` | Sync hydration through `preloadedState`, schema-validated. redux-persist is built around AsyncStorage and has had no release since 2019. | pending |
 | `react-native-dotenv` | Replace | `react-native-config` | Native-level env, so flavours can also set bundle IDs. | pending |
 | 16 × `@react-native-vector-icons/*` | Replace | `@react-native-vector-icons/lucide` only | One font family (Q12); 15 icon fonts fewer in the binary. | pending |
-| `google-libphonenumber` | Replace | `libphonenumber-js` (removable, with the phone input) | Same metadata at a fraction of the bundle size, typed API. | pending |
+| `google-libphonenumber` | Replace | `libphonenumber-js` (unit: `phone-input`) | Same metadata at a fraction of the bundle size, typed API. | pending |
 | `react-native-country-picker-modal` | Replace | own country list in the phone input, built from `libphonenumber-js` metadata | One less native-ish dependency. Country names via `Intl.DisplayNames`, if Hermes supports it; this gets checked in that batch. | pending |
-| `react-native-date-picker` | Replace | chosen in the last batch: `@react-native-community/datetimepicker` or `react-native-date-picker` | Last push on the current one was 2025-06; the choice depends on which builds on the New Architecture. | pending |
+| `react-native-date-picker` | Replace | chosen in the last batch: `@react-native-community/datetimepicker` or `react-native-date-picker` (unit: `date-time`) | Last push on the current one was 2025-06; the choice depends on which builds on the New Architecture. | pending |
 | `moment` | Replace | `Intl.DateTimeFormat` in `src/shared/lib/date/` | Approved: no moment. Hermes ships `Intl`. | pending |
 | `react-native-error-boundary` | Replace | own `src/shared/ui/ErrorBoundary` | A small class component; it adds monitoring and reset hooks. | pending |
-| `react-native-reanimated`, `react-native-worklets`, `react-native-gesture-handler` | Drop | — | The kept animations (toast, banner, skeleton) are opacity/translate, which RN `Animated` with the native driver handles. Dropping them removes three native modules and a Babel plugin. Re-add them when a real gesture or animation needs them. | n/a |
 | `@gorhom/bottom-sheet` | Drop | — | Only used for `BottomSheetTextInput` inside the input fields. | n/a |
 | `react-native-popup-menu` | Drop | — | Provider mounted, never used. | n/a |
-| `react-native-linear-gradient` | Drop | — | Only used by the shimmer; the skeleton becomes an opacity pulse. | n/a |
-| `react-native-image-zoom-viewer` | Drop | — | Only used by the dropped image preview modal; last release years ago. | n/a |
+| `react-native-linear-gradient` | Drop | — | Only used by the shimmer; the skeleton becomes a Reanimated opacity pulse. | n/a |
+| `react-native-image-zoom-viewer` | Drop | — | Unmaintained; `ImageViewer` is rewritten on Gesture Handler + Reanimated. | n/a |
 | `react-native-size-matters` | Drop | — | Scaling oversizes tablets; theme tokens + breakpoints instead. | n/a |
 | `react-native-navigation-mode` | Drop | — | Bottom-margin hack; safe-area insets handle it on edge-to-edge Android. | n/a |
 | `react-native-restart` | Drop | — | ErrorBoundary reset remounts the tree; a full restart isn't needed. | n/a |
@@ -104,6 +107,30 @@ New dependencies that are not migrations of an RN_Arch item: `zod`, `i18next`, `
 peer), `eslint-plugin-boundaries`, `husky`, `lint-staged`, `@commitlint/*`, `babel-plugin-module-resolver`.
 Each one is pinned to a release at least two weeks old, apart from RN 0.88.x (Q19), and is justified in the ADR
 that introduces it.
+
+The Phase 2 changes (keeping Reanimated, the kept components, the JS splash, Remember Me, biometric unlock and
+download) add **no new packages**. Reanimated, Worklets and Gesture Handler move from Drop to Keep, and biometric
+unlock and download reuse `react-native-keychain` and `react-native-blob-util`. The native settings they add are
+`NSFaceIDUsageDescription` on iOS, plus Android's `USE_BIOMETRIC` permission if `react-native-keychain` doesn't
+already merge it (checked in that batch).
+
+## Optional units
+
+Defined in `units.json` (created in Phase 3). The creation script removes them, and CI builds with all of them
+removed.
+
+| Unit | Folders | Packages | Native settings | Touchpoints outside the folder |
+|---|---|---|---|---|
+| `products` (reference feature) | `entities/product`, `features/toggle-favorite`, `screens/product-list`, `screens/favorites` | — | — | navigator routes, store reducers/listeners, i18n merge |
+| `biometric-unlock` | `features/biometric-unlock` | — | `NSFaceIDUsageDescription`, `USE_BIOMETRIC` if needed | settings row, session restore hook |
+| `splash-animation` | `app/splash` | — | — | `App.tsx` render, `AppServices` hide call |
+| `media` | `shared/lib/media-picker`, `features/file-transfer` | `react-native-image-crop-picker`, `react-native-blob-util` | camera/photo usage strings | — |
+| `socket` | `shared/api/socket` | `socket.io-client` | — | `AppServices` connect effect |
+| `date-time` | `shared/ui/date-time` | date picker library (chosen in that batch) | — | `shared/ui` index export |
+| `phone-input` | `shared/ui/PhoneInput` | `libphonenumber-js` | — | `shared/ui` index export |
+| `carousel` | `shared/ui/Carousel` | — | — | `shared/ui` index export |
+| `range-slider` | `shared/ui/RangeSlider` | — | — | `shared/ui` index export |
+| `image-viewer` | `shared/ui/ImageViewer` | — | — | `shared/ui` index export |
 
 ## 4. `src/assets`
 
@@ -144,7 +171,8 @@ that introduces it.
 | `secureStorage.ts`: Keychain get/set/reset | Rewrite | `src/shared/storage/secure/` | Generic wrapper with `*_THIS_DEVICE_ONLY` on every entry. Read/decrypt errors return "absent", never throw. | pending |
 | `secureStorage.ts`: token store + memory cache | Rewrite | `src/shared/api/tokens/` | Access/refresh tokens are a transport concern read by the base query; the session entity drives them. | pending |
 | `secureStorage.ts`: user profile in Keychain | Drop | — | A profile is not a secret, and Keychain is slow. `entities/user` holds it in user-scoped storage. | n/a |
-| `secureStorage.ts`: Remember-Me credentials | Drop | — (`68bb5d3:src/helpers/secureStorage.ts`) | Storing the user's password is an anti-pattern; a refresh token replaces it. | n/a |
+| `secureStorage.ts`: Remember-Me credentials | Rewrite | `src/features/auth-by-credentials/` + `src/shared/api/tokens/` | Redesigned, and the password is never stored. Checked (the default): refresh token in Keychain, email in a device-scoped key for prefill. Unchecked: tokens kept in memory only, so the session ends with the process, and the saved email is cleared. Logout clears tokens and keeps the email unless Remember Me was unchecked. | pending |
+| — (new, extends Remember-Me) | Rewrite | `src/features/biometric-unlock/` (unit: `biometric-unlock`) | Optional, off by default. Protects a persisted refresh token with Keychain biometric access control (`BIOMETRY_CURRENT_SET`). Never restores a session after explicit logout. A biometric change, cancel or failure falls back to the login screen, never a crash. No new package (uses `react-native-keychain`); adds `NSFaceIDUsageDescription`. | pending |
 | `format.ts`: `categorizeFile` | Rewrite | `src/shared/lib/file/` | With the extension and MIME tables. | pending |
 | `format.ts`: `moderateWidth`, `moderateHeight` | Drop | — | Scaling library removed. | n/a |
 | `format.ts`: `formatToFixedNumber`, `toValidNumber`, `toSafeNumberString` | Rewrite | `src/shared/lib/number/` | Typed `unknown` input instead of `any`. | pending |
@@ -163,9 +191,9 @@ that introduces it.
 |---|---|---|---|---|
 | `useDebounce.ts` | Keep | `src/shared/lib/debounce/` | Generic, small, correct. | pending |
 | `useTranslation.ts` | Replace | `react-i18next` set up in `src/shared/lib/i18n/` | English only (Q7). Each slice owns its strings (`i18n/en.ts`) and `app` merges them, so deleting a slice deletes its strings. | pending |
-| `useMediaPicker.ts` | Rewrite | `src/shared/lib/media-picker/` (removable) | Cancel is not an error; typed result; iOS usage strings added with it. | pending |
-| `useFileUpload.ts` | Rewrite | `src/features/upload-file/` (removable) | Presign endpoint, streamed PUT, partial-failure result. The document-picker path imported an uninstalled package and is not carried over. | pending |
-| `useFileDownload.ts` | Drop | — (`68bb5d3:src/hooks/useFileDownload.ts`) | Not in the approved rewrite list. Its MIME table moves to `shared/lib/file`; how a file gets saved (MediaStore, share sheet) differs per app. | n/a |
+| `useMediaPicker.ts` | Rewrite | `src/shared/lib/media-picker/` (unit: `media`) | Cancel is not an error; typed result; iOS camera/photo usage strings are part of the unit. | pending |
+| `useFileUpload.ts` | Rewrite | `src/features/file-transfer/` (unit: `media`) | Presign endpoint, streamed PUT, partial-failure result. The document-picker path imported an uninstalled package and is not carried over. | pending |
+| `useFileDownload.ts` | Rewrite | `src/features/file-transfer/` (unit: `media`) | Kept: it only needs `react-native-blob-util`, which the unit already has. Progress, Android MediaStore `Download`, iOS open-in menu. The MIME table moves to `shared/lib/file`. | pending |
 | `useInfiniteQueryList.ts` | Drop | — | Never used. RTK Query's `builder.infiniteQuery` covers pagination; the reference feature shows it. | n/a |
 | `useLocationChangeTracker.ts` | Drop | — (`68bb5d3:src/hooks/useLocationChangeTracker.ts`) | Imports an uninstalled package; location is out of scope. | n/a |
 
@@ -177,35 +205,35 @@ that introduces it.
 | `ActionButton.tsx` | Rewrite | `src/shared/ui/Button` | Variants, loading, disabled, optional icon, accessibility role. The shake animation and `cusStyles`/`insideCusStyles` go. | pending |
 | `Icon.tsx` | Rewrite | `src/shared/ui/Icon` | Lucide only, with typed names. | pending |
 | `InputField.tsx` | Rewrite | `src/shared/ui/TextInput` | Label, error, start/end adornments, secure toggle, `multiline`; plain RN `TextInput` (no bottom-sheet). | pending |
-| `MessageField.tsx` | Drop | — (`68bb5d3:src/components/MessageField.tsx`) | Merged into `TextInput` with `multiline`. | n/a |
+| `MessageField.tsx` | Drop | — (`68bb5d3:src/components/MessageField.tsx`) | Folded into `TextInput` without losing anything: its props are a subset of `InputField`'s. What it adds (`multiline`, 4 visible lines, trim outer whitespace on blur) becomes `multiline`, `numberOfLines` and `trimOnBlur`, with a test for each. | n/a |
 | `Checkbox.tsx` | Rewrite | `src/shared/ui/Checkbox` | `accessibilityRole="checkbox"` with checked state. | pending |
 | `RadioButton.tsx` | Rewrite | `src/shared/ui/RadioGroup` | A group owns the selection, so single choice is guaranteed. | pending |
 | `DropdownInput.tsx` | Rewrite | `src/shared/ui/Select` | Single/multi select, searchable, modal list. The 593 lines and `any` values get typed generics. | pending |
 | `Loader.tsx` | Rewrite | `src/shared/ui/Spinner`, `src/shared/ui/LoadingOverlay` | Themed `ActivityIndicator` plus a blocking overlay; the five decorative variants go. | pending |
 | `Loaders/DiagonalBoxLoader.tsx`, `DotAnimation.tsx`, `JumpingBoxLoader.tsx`, `SequentialBlocksLoader.tsx`, `WaveBarsLoader.tsx` | Drop | — (`68bb5d3:src/components/Loaders/`) | Decorative; one spinner and a skeleton cover loading states. | n/a |
-| `ShimmerPlaceholder.tsx` | Rewrite | `src/shared/ui/Skeleton` | Opacity pulse with `Animated`, theme colours, no linear-gradient. | pending |
+| `ShimmerPlaceholder.tsx` | Rewrite | `src/shared/ui/Skeleton` | Reanimated opacity pulse, theme colours, no linear-gradient. | pending |
 | `SkeletonComponent/Index.tsx` | Drop | — (`68bb5d3:src/components/SkeletonComponent/Index.tsx`) | Card presets are layout-specific; screens compose `Skeleton`. | n/a |
 | `ListEmptyComponent.tsx` | Rewrite | `src/shared/ui/EmptyState` | Title, message, optional action. | pending |
-| `ListFooterComponent.tsx` | Drop | — | It's a padded spinner; lists use `Spinner`. | n/a |
+| `ListFooterComponent.tsx` | Drop | — (`68bb5d3:src/components/ListFooterComponent.tsx`) | Folded into `Spinner` as `ListFooterSpinner`, keeping both behaviours: render only while `loading`, and forward spinner props. | n/a |
 | `CustomImage.tsx` | Rewrite | `src/shared/ui/Image` | One place to swap in an image-cache library later. The `isBtn` mode goes; wrap in `Pressable` instead. | pending |
-| `Header.tsx` | Replace | native-stack header, themed in `src/app/navigation/` | The native header handles back, title and safe area. | pending |
+| `Header.tsx` | Replace | native-stack header, themed in `src/app/navigation/` | The native header handles back, title and safe area. A screen can still set a custom one via the `header` option; a test covers that path. | pending |
 | `MyStatusBar.tsx` | Rewrite | inside `src/shared/ui/Screen` | Status bar style follows the theme. Hiding the status bar while offline goes. | pending |
-| `CustomToast.tsx` | Rewrite | `src/shared/ui/Toast` | Provider + imperative `showToast`. RN `Animated`, tap to dismiss instead of the swipe gesture, safe-area aware. | pending |
+| `CustomToast.tsx` | Rewrite | `src/shared/ui/Toast` | Provider + imperative `showToast`; Reanimated, swipe-to-dismiss kept, tap to dismiss, safe-area aware. | pending |
 | `NetworkStatusBanner.tsx` | Rewrite | `src/shared/ui/NetworkBanner` + `src/shared/lib/network/` | The `useIsOnline` hook (treating a captive portal as offline, from the case study) plus a small banner. | pending |
 | `FallbackComponent.tsx` | Rewrite | `src/shared/ui/ErrorBoundary` (fallback) | Reset remounts the tree and the error goes to monitoring; no restart library. | pending |
 | `Modals/ConfirmationModal.tsx` | Rewrite | `src/shared/ui/ConfirmDialog` | Title, message, confirm/cancel, destructive variant. | pending |
-| `TimeDatePicker.tsx` | Rewrite | `src/shared/ui/DateTimeField` (removable, last batch) | Formatting via `Intl`, no moment (Q6). | pending |
-| `PhoneNumberInput.tsx` | Rewrite | `src/shared/ui/PhoneInput` (removable, last batch) | `libphonenumber-js` and its own country list (Q6). | pending |
-| `Calendar.tsx` | Drop | — (`68bb5d3:src/components/Calendar.tsx`) | A custom month grid on moment; `DateTimeField` covers date entry. | n/a |
-| `AutoSlider.tsx` | Drop | — (`68bb5d3:src/components/AutoSlider.tsx`) | A carousel is product-specific. | n/a |
-| `CustomRangeSlider.tsx` | Drop | — (`68bb5d3:src/components/CustomRangeSlider.tsx`) | Product-specific, and the only gesture-handler consumer besides the toast swipe. | n/a |
+| `TimeDatePicker.tsx` | Rewrite | `src/shared/ui/date-time/DateTimeField` (unit: `date-time`, last batch) | Formatting via `Intl`, no moment (Q6). | pending |
+| `Calendar.tsx` | Rewrite | `src/shared/ui/date-time/Calendar` (unit: `date-time`, last batch) | Kept. It overlaps with date entry, so it joins that unit. Month grid with `Intl` names and locale week start, no moment. Marked dates were coupled to event shapes and become a `markedDates` prop. Imports: none outside the unit. | pending |
+| `PhoneNumberInput.tsx` | Rewrite | `src/shared/ui/PhoneInput` (unit: `phone-input`, last batch) | `libphonenumber-js` and its own country list (Q6). Imports: `TextInput`. | pending |
+| `AutoSlider.tsx` | Rewrite | `src/shared/ui/Carousel` (unit: `carousel`) | Kept: generic auto-advancing carousel. Pauses while dragging and when off-screen, dot indicator clamped. No dependency beyond the foundation. | pending |
+| `CustomRangeSlider.tsx` | Rewrite | `src/shared/ui/RangeSlider` (unit: `range-slider`) | Kept: two-thumb slider on Gesture Handler + Reanimated. Values cross to JS only on gesture end, which fixes the per-frame `runOnJS` from CODE_REVIEW P2-2. No dependency beyond the foundation. | pending |
 | `GooglePlaceComponent.tsx` | Drop | — (`68bb5d3:src/components/GooglePlaceComponent.tsx`) | Q6: dropped. | n/a |
 | `CustomVideoPlayer.tsx` | Drop | — (`68bb5d3:src/components/CustomVideoPlayer.tsx`) | Q6: dropped. It also imported an uninstalled package (`react-native-video`). | n/a |
 | `ColorPickerInput.tsx` | Drop | — (`68bb5d3:src/components/ColorPickerInput.tsx`) | Q6: dropped. | n/a |
 | `Modals/ColorPickerModal.tsx` | Drop | — (`68bb5d3:src/components/Modals/ColorPickerModal.tsx`) | Q6: dropped. It also imported an uninstalled package (`reanimated-color-picker`). | n/a |
 | `CustomDrawer.tsx` | Drop | — (`68bb5d3:src/components/CustomDrawer.tsx`) | Q6: dropped. It also imported an uninstalled package (`@react-navigation/drawer`). | n/a |
 | `FileRenderItem.tsx`, `FileGroupRenderItem.tsx` | Drop | — (`68bb5d3:src/components/FileRenderItem.tsx`, `…/FileGroupRenderItem.tsx`) | Chat media bubbles; they depend on the dropped video player and download hook. | n/a |
-| `Modals/ImagePreviewModal.tsx` | Drop | — (`68bb5d3:src/components/Modals/ImagePreviewModal.tsx`) | Depends on an unmaintained zoom library. | n/a |
+| `Modals/ImagePreviewModal.tsx` | Rewrite | `src/shared/ui/ImageViewer` (unit: `image-viewer`) | Kept without the unmaintained zoom library. Gesture Handler + Reanimated for pinch, double-tap zoom, pan, paging between images from a start index, and swipe-down to close (all present in the original). Imports: `Modal`, `Icon`, `Spinner`. | pending |
 | `Modals/ViewMediaModal.tsx` | Drop | — (`68bb5d3:src/components/Modals/ViewMediaModal.tsx`) | Chat media viewer. | n/a |
 
 ## 9. Layout, wrappers, navigation, screens
@@ -214,7 +242,7 @@ that introduces it.
 |---|---|---|---|---|
 | `layout/ScreenBoiler.tsx` | Rewrite | `src/shared/ui/Screen` | Safe-area edges, a keyboard-aware option and the themed background. `boilerType` 1/2 becomes props. | pending |
 | `wrapper/MainWrapper.tsx`: providers (toast, network) | Rewrite | `src/app/providers/` | Provider composition belongs to `app`. | pending |
-| `wrapper/MainWrapper.tsx`: socket connect on login | Rewrite | `src/app/services/` | App-lifetime effect, keyed on session status (removable with the socket). | pending |
+| `wrapper/MainWrapper.tsx`: socket connect on login | Rewrite | `src/app/services/` (unit: `socket` touchpoint) | App-lifetime effect, keyed on session status. | pending |
 | `wrapper/MainWrapper.tsx`: jailbreak check | Drop | — | Q17. | n/a |
 | `wrapper/MainWrapper.tsx`: navigation-mode bottom margin | Drop | — | Safe-area insets handle it. | n/a |
 | `wrapper/MainWrapper.tsx`: commented FCM / notifee block | Drop | — (`68bb5d3:src/wrapper/MainWrapper.tsx`) | Push is out of scope; dead code. | n/a |
@@ -222,7 +250,7 @@ that introduces it.
 | `navigation/RootNavigator.tsx` | Rewrite | `src/app/navigation/RootNavigator.tsx` | Static API, auth-gated groups (no phantom `Login` route), linking generated from the config. | pending |
 | `navigation/AppStack.tsx` | Rewrite | `src/app/navigation/` | Default bottom tabs, themed, Lucide icons, `tabBarHideOnKeyboard`; the custom tab bar goes. | pending |
 | `navigationRef/index.ts` | Rewrite | `src/app/navigation/navigationRef.ts` | Typed by the global `RootParamList`. The manual `appStackScreens` list and the console logging go. | pending |
-| `screens/AuthScreens/Splash.tsx` | Replace | `react-native-bootsplash` + session bootstrap in `src/app/services/` | The native splash stays up until the Keychain read resolves, so no JS splash or fake 1.2 s delay. | pending |
+| `screens/AuthScreens/Splash.tsx` | Rewrite | `react-native-bootsplash` native hold + `src/app/splash/` (unit: `splash-animation`) | The fake 1.2 s delay is removed. The native splash holds until session restore finishes. Then a JS handoff (`useHideAnimation` if it fits) animates into the first screen, adding at most 500 ms, with a test on the timing budget. Removing the unit leaves a plain `BootSplash.hide()`. | pending |
 | `screens/AuthScreens/BlockedScreen.tsx` | Drop | — | Q17. | n/a |
 | `screens/AppScreens/Home.tsx` | Rewrite | `src/screens/home/` | Authenticated landing screen; minimal by design. | pending |
 | `screens/AppScreens/ChatRoom.tsx` | Drop | — (`68bb5d3:src/screens/AppScreens/ChatRoom.tsx`) | Demo screen over dummy data. | n/a |
@@ -232,7 +260,7 @@ that introduces it.
 
 | Source | Action | Destination | Reason | Status |
 |---|---|---|---|---|
-| `Socket/SocketManager.ts` | Rewrite | `src/shared/api/socket/` (removable, last batch) | Keeps the backoff, queued emits and listener re-attach. The pending queue becomes bounded, the `any` types go, and the token comes from `shared/api/tokens`. | pending |
+| `Socket/SocketManager.ts` | Rewrite | `src/shared/api/socket/` (unit: `socket`, last batch) | Keeps the backoff, queued emits and listener re-attach. The pending queue becomes bounded, the `any` types go, and the token comes from `shared/api/tokens`. | pending |
 | `axios/axios.ts` | Drop | — | Never imported. | n/a |
 | `store/index.ts` | Rewrite | `src/app/store/store.ts` | No redux-persist. Synchronous `preloadedState` from MMKV; serializable/immutable checks back on. | pending |
 | `store/hooks.ts` | Keep | `src/app/store/hooks.ts` | Typed hooks via `withTypes`. | pending |
@@ -241,11 +269,12 @@ that introduces it.
 | `store/rtk/apiSlice.ts`: request/response logging | Rewrite | `src/shared/api/baseQuery.ts` (dev only) | Method, URL, status and duration only, never headers or bodies. | pending |
 | `store/rtk/apiSlice.ts`: `unwrapData` | Drop | — | Corrupts any payload with a real `data` field; entity schemas parse the actual shape. | n/a |
 | `store/rtk/apiSlice.ts`: `createInfiniteQuery` | Drop | — | No consumer; `builder.infiniteQuery` replaces it. | n/a |
-| `store/rtk/apiSlice.ts`: `uploadUrl` endpoint | Rewrite | `src/features/upload-file/api/` (removable) | Lives with its only consumer. | pending |
+| `store/rtk/apiSlice.ts`: `uploadUrl` endpoint | Rewrite | `src/features/file-transfer/api/` (unit: `media`) | Lives with its only consumer. | pending |
 | `store/slices/userSlice.ts` | Rewrite | `src/entities/user/` | Profile from `/auth/me` via RTK Query, zod-validated. The token is not kept in Redux. | pending |
 | `store/slices/whiteListSlice.ts`: `isLogin` | Rewrite | `src/entities/session/` | Status (`unknown`/`signedOut`/`signedIn`) comes from the Keychain at boot, not a persisted flag. This fixes the reinstall mismatch. | pending |
 | `store/slices/whiteListSlice.ts`: `persistLanguage` | Rewrite | device-scoped `defineKey` in `src/shared/lib/i18n/` | Survives logout; it's a device preference. | pending |
-| `store/slices/whiteListSlice.ts`: `isOnBoarding`, `fcmToken`, `isKeepMeLoggedIn`, `isRememberMe`, `persistCurrency` | Drop | — (`68bb5d3:src/store/slices/whiteListSlice.ts`) | No onboarding, push or remember-me in scope; currency is app-specific. | n/a |
+| `store/slices/whiteListSlice.ts`: `isRememberMe`, `isKeepMeLoggedIn` | Rewrite | `src/features/auth-by-credentials/` | Merged into one Remember Me choice (default on) that sets the token persistence mode. | pending |
+| `store/slices/whiteListSlice.ts`: `isOnBoarding`, `fcmToken`, `persistCurrency` | Drop | — (`68bb5d3:src/store/slices/whiteListSlice.ts`) | No onboarding or push in scope; currency is app-specific. | n/a |
 | `store/slices/colorSlice.ts` | Rewrite | `src/shared/ui/theme/` (preference in a device-scoped `defineKey`) | Mode is `system`/`light`/`dark`, read synchronously at boot so the first frame isn't the wrong theme; no Redux needed. | pending |
 | `store/slices/languageSlice.ts` | Replace | `i18next` resources | i18next owns the dictionary and the current language. | pending |
 
@@ -264,17 +293,17 @@ that introduces it.
 | `utils.types.ts`: `ErrorResponse`, `SuccessResponse` | Replace | `AppError` union in `src/shared/api/` | One normalised error type. | pending |
 | `utils.types.ts`: `StorageResult` | Rewrite | `Result<T, E>` in `src/shared/lib/result/` | One discriminated result type, used by linking, storage and upload. | pending |
 | `utils.types.ts`: `Token` | Rewrite | `src/shared/api/tokens/` | Lives with token storage. | pending |
-| `utils.types.ts`: `Upload*`, `TransformedFile`, `PickedFile`, `GetFilePathResult` | Rewrite | `src/features/upload-file/` (removable) | Lives with the upload feature. | pending |
-| `utils.types.ts`: `MediaType`, `CameraOptions`, `GalleryOptions`, `MediaPickerResult` | Rewrite | `src/shared/lib/media-picker/` (removable) | Lives with the picker. | pending |
-| `utils.types.ts`: `UserData`, `Credentials`, `Coordinates` | Drop | — | Untyped profile, remember-me and location are all removed. | n/a |
+| `utils.types.ts`: `Upload*`, `TransformedFile`, `PickedFile`, `GetFilePathResult` | Rewrite | `src/features/file-transfer/` (unit: `media`) | Lives with the transfer feature. | pending |
+| `utils.types.ts`: `MediaType`, `CameraOptions`, `GalleryOptions`, `MediaPickerResult` | Rewrite | `src/shared/lib/media-picker/` (unit: `media`) | Lives with the picker. | pending |
+| `utils.types.ts`: `UserData`, `Credentials`, `Coordinates` | Drop | — | Untyped profile, the stored password and location are all removed. Remember Me no longer has a credentials type. | n/a |
 
 ## Summary
 
 | Action | Count |
 |---|---|
-| Keep | 25 |
-| Rewrite | 76 |
-| Replace | 23 |
-| Drop | 65 |
+| Keep | 26 |
+| Rewrite | 85 |
+| Replace | 22 |
+| Drop | 58 |
 
 Counted per table row with an awk tally over the tables, not by hand. A row that groups several files (for example the five loaders) counts once.
