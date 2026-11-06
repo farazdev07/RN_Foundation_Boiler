@@ -1,16 +1,21 @@
 // The factories replace native modules, which cannot load under Node.
 jest.mock('react-native-mmkv', () => {
-  const createMMKV = () => {
-    const values = new Map<string, string | number | boolean>();
+  const instances = new Map<string, Map<string, unknown>>();
+
+  // Instances with the same id share data, as they do on a device.
+  const createMMKV = ({ id = 'default' }: { id?: string } = {}) => {
+    const values = instances.get(id) ?? new Map<string, unknown>();
+    instances.set(id, values);
 
     return {
-      set: (key: string, value: string | number | boolean) => {
+      set: (key: string, value: unknown) => {
         values.set(key, value);
       },
       getString: (key: string) => {
         const value = values.get(key);
         return typeof value === 'string' ? value : undefined;
       },
+      contains: (key: string) => values.has(key),
       remove: (key: string) => values.delete(key),
       clearAll: () => values.clear(),
       getAllKeys: () => [...values.keys()],
@@ -21,9 +26,20 @@ jest.mock('react-native-mmkv', () => {
 });
 
 jest.mock('react-native-keychain', () => ({
+  ...jest.requireActual('react-native-keychain/lib/commonjs/enums'),
   setGenericPassword: jest.fn(() => Promise.resolve({ service: 'mock' })),
   getGenericPassword: jest.fn(() => Promise.resolve(false)),
   resetGenericPassword: jest.fn(() => Promise.resolve(true)),
+}));
+
+jest.mock('react-native-config', () => ({
+  __esModule: true,
+  default: {
+    APP_ENV: 'dev',
+    API_URL: 'https://api.test',
+    CDN_URL: 'https://cdn.test',
+    SENTRY_DSN: '',
+  },
 }));
 
 jest.mock('@react-native-community/netinfo', () => {
