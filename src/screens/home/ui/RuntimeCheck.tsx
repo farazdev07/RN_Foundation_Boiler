@@ -29,6 +29,8 @@ export function RuntimeCheck() {
     gesture: 'pending',
   });
 
+  const [keychainError, setKeychainError] = useState('');
+
   const report = (check: Check, status: Status) =>
     setResults(current => ({ ...current, [check]: status }));
 
@@ -60,7 +62,10 @@ export function RuntimeCheck() {
           stored && stored.password === 'ok' ? 'pass' : 'fail',
         ),
       )
-      .catch(() => report('keychain', 'fail'));
+      .catch((error: unknown) => {
+        setKeychainError(String(error));
+        report('keychain', 'fail');
+      });
 
     NetInfo.fetch()
       .then(() => report('netinfo', 'pass'))
@@ -92,6 +97,7 @@ export function RuntimeCheck() {
           {`${check}: ${results[check]}`}
         </Text>
       ))}
+      {keychainError ? <Text>{keychainError}</Text> : null}
       <GestureDetector gesture={pan}>
         <Animated.View
           testID="check-gesture-box"

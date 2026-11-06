@@ -63,5 +63,5 @@ jobs:
           xcodebuild -workspace RNFoundation.xcworkspace
           -scheme RNFoundation-Dev -configuration Dev-Debug
           -sdk iphonesimulator -destination 'generic/platform=iOS Simulator'
-          CODE_SIGNING_ALLOWED=NO build
+          build
         working-directory: ios
