@@ -89,3 +89,4 @@ keystore.properties
 google-services.json
 GoogleService-Info.plist
 service-account*.json
+android-build.log

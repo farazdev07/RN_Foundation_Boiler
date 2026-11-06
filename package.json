@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "android": "react-native run-android",
+    "android": "react-native run-android --mode devDebug --appIdSuffix dev",
     "ios": "react-native run-ios",
     "lint": "eslint src && node tools/check-boundaries.js",
     "start": "react-native start",
@@ -11,7 +11,9 @@
     "typecheck": "tsc --noEmit",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "postinstall": "husky"
+    "postinstall": "husky && node scripts/init-env.js",
+    "android:staging": "react-native run-android --mode stagingDebug --appIdSuffix staging",
+    "android:prod": "react-native run-android --mode prodDebug"
   },
   "dependencies": {
     "@react-native-community/netinfo": "12.0.1",

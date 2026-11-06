@@ -1,0 +1,67 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: corepack enable
+      - run: yarn install --immutable
+      - run: yarn format:check
+      - run: yarn lint
+      - run: yarn typecheck
+      - run: yarn test --coverage
+      - run: node tools/check-repo.js
+
+  android:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+      - uses: gradle/actions/setup-gradle@v4
+      - run: corepack enable
+      - run: yarn install --immutable
+      - run: ./gradlew assembleDevDebug -PreactNativeArchitectures=arm64-v8a
+        working-directory: android
+
+  ios:
+    if: github.event_name == 'pull_request'
+    # Standard runner: free on public repositories, per GitHub's runner reference.
+    runs-on: xcode-27
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.2'
+          bundler-cache: true
+      - run: corepack enable
+      - run: yarn install --immutable
+      - run: bundle exec pod install
+        working-directory: ios
+      - run: >-
+          xcodebuild -workspace RNFoundation.xcworkspace
+          -scheme RNFoundation-Dev -configuration Dev-Debug
+          -sdk iphonesimulator -destination 'generic/platform=iOS Simulator'
+          build
+        working-directory: ios

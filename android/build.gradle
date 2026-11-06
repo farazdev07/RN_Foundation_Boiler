@@ -4,7 +4,8 @@ buildscript {
         minSdkVersion = 24
         compileSdkVersion = 37
         targetSdkVersion = 36
-        ndkVersion = "27.1.12297006"
+        // Override with -PndkVersion=... when another r27 NDK is what the machine has.
+        ndkVersion = findProperty("ndkVersion") ?: "27.1.12297006"
         kotlinVersion = "2.2.0"
     }
     repositories {
