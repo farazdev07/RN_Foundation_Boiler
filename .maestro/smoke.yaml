@@ -1,0 +1,20 @@
+# Proves the native modules work on a device, including a real pan gesture.
+# Run: maestro --udid <device> test .maestro/smoke.yaml
+appId: com.faraz.foundation.dev
+---
+- launchApp
+- runFlow:
+    when:
+      visible: 'Not Now'
+    commands:
+      - tapOn: 'Not Now'
+- assertVisible: 'worklet: pass'
+- assertVisible: 'mmkv: pass'
+- assertVisible: 'keychain: pass'
+- assertVisible: 'netinfo: pass'
+- assertVisible: 'gesture: pending'
+- swipe:
+    from:
+      id: 'check-gesture-box'
+    direction: RIGHT
+- assertVisible: 'gesture: pass'

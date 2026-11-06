@@ -29,7 +29,7 @@ const SKIPPED_DIRECTORIES = new Set([
   'tools',
 ]);
 const TEXT_FILE =
-  /\.(gradle|kt|swift|m|mm|h|plist|xml|pbxproj|xcscheme|xcworkspacedata|storyboard|json|yml|properties|js|ts|tsx|md)$|(^|\/)(Podfile|Podfile\.lock|Gemfile)$/;
+  /\.(gradle|kt|swift|m|mm|h|plist|xml|pbxproj|xcscheme|xcworkspacedata|storyboard|json|yml|yaml|properties|js|ts|tsx|md)$|(^|\/)(Podfile|Podfile\.lock|Gemfile)$/;
 
 function parseArgs(argv) {
   const args = {};
