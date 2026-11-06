@@ -3,12 +3,18 @@
 appId: com.faraz.foundation.dev
 ---
 - launchApp
+# A debug build's first run waits for Metro to bundle from a cold cache.
+- extendedWaitUntil:
+    visible: 'RN Foundation'
+    timeout: 180000
 - runFlow:
     when:
       visible: 'Not Now'
     commands:
       - tapOn: 'Not Now'
-- assertVisible: 'worklet: pass'
+- extendedWaitUntil:
+    visible: 'worklet: pass'
+    timeout: 15000
 - assertVisible: 'mmkv: pass'
 - assertVisible: 'keychain: pass'
 - assertVisible: 'netinfo: pass'

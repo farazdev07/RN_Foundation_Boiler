@@ -247,6 +247,7 @@ if (require.main === module) {
     execSync('node scripts/init-env.js', { cwd: root, stdio: 'inherit' });
     console.log(`Created ${identity.name} (${identity.bundleId}). Next:`);
     console.log('  yarn install');
+    console.log('  bundle install');
     console.log('  cd ios && bundle exec pod install');
   } catch (error) {
     console.error(error.message);
