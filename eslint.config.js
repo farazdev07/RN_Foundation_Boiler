@@ -13,20 +13,26 @@ const screens = slice('screen', 'screens');
 const features = slice('feature', 'features');
 const entities = slice('entity', 'entities');
 const shared = slice('shared', 'shared');
+// shared/lib is split by purpose, so each folder is its own public API.
+const lib = {
+  to: { element: { type: 'shared-lib' } },
+  dependency: { source: '@shared/lib/*' },
+};
 
 // Importing a sibling slice matches no policy, so `default: disallow` rejects it.
 const layerPolicies = [
   {
     from: { element: { type: 'app' } },
-    allow: [screens, features, entities, shared],
+    allow: [screens, features, entities, shared, lib],
   },
   {
     from: { element: { type: 'screen' } },
-    allow: [features, entities, shared],
+    allow: [features, entities, shared, lib],
   },
-  { from: { element: { type: 'feature' } }, allow: [entities, shared] },
-  { from: { element: { type: 'entity' } }, allow: [shared] },
-  { from: { element: { type: 'shared' } }, allow: [shared] },
+  { from: { element: { type: 'feature' } }, allow: [entities, shared, lib] },
+  { from: { element: { type: 'entity' } }, allow: [shared, lib] },
+  { from: { element: { type: 'shared' } }, allow: [shared, lib] },
+  { from: { element: { type: 'shared-lib' } }, allow: [shared, lib] },
 ];
 
 const banned = {
@@ -104,6 +110,7 @@ module.exports = [
         { type: 'screen', pattern: 'src/screens/*' },
         { type: 'feature', pattern: 'src/features/*' },
         { type: 'entity', pattern: 'src/entities/*' },
+        { type: 'shared-lib', pattern: 'src/shared/lib/*' },
         { type: 'shared', pattern: 'src/shared/*' },
       ],
     },

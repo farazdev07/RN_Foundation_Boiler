@@ -98,6 +98,25 @@ const cases = [
   ],
   ['relative to sibling', 'src/features/alpha/x.ts', '../beta', DEPENDENCIES],
 
+  [
+    'deep shared/lib import',
+    'src/features/alpha/x.ts',
+    '@shared/lib/alpha/model/internal',
+    DEPENDENCIES,
+  ],
+  [
+    'shared/lib -> feature',
+    'src/shared/lib/alpha/x.ts',
+    '@features/beta',
+    DEPENDENCIES,
+  ],
+  [
+    'relative to shared/lib',
+    'src/features/alpha/x.ts',
+    '../../shared/lib/alpha',
+    DEPENDENCIES,
+  ],
+
   // Package restrictions, including on the paths where blocks could override each other.
   [
     'AsyncStorage in a screen',
@@ -156,6 +175,19 @@ const cases = [
   ['feature -> entity', 'src/features/alpha/x.ts', '@entities/alpha', null],
   ['feature -> shared', 'src/features/alpha/x.ts', '@shared/alpha', null],
   ['entity -> shared', 'src/entities/alpha/x.ts', '@shared/alpha', null],
+  [
+    'feature -> shared/lib',
+    'src/features/alpha/x.ts',
+    '@shared/lib/alpha',
+    null,
+  ],
+  ['shared -> shared/lib', 'src/shared/alpha/x.ts', '@shared/lib/alpha', null],
+  [
+    'shared/lib -> sibling lib',
+    'src/shared/lib/alpha/x.ts',
+    '@shared/lib/beta',
+    null,
+  ],
   ['shared -> shared segment', 'src/shared/alpha/x.ts', '@shared/beta', null],
   [
     'relative inside a slice',

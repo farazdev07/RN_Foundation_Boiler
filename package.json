@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "android": "react-native run-android --mode devDebug --appIdSuffix dev",
-    "ios": "react-native run-ios",
+    "ios": "react-native run-ios --scheme RNFoundation-Dev --mode Dev-Debug",
     "lint": "eslint src && node tools/check-boundaries.js",
     "start": "react-native start",
     "test": "jest",
@@ -13,7 +13,9 @@
     "format:check": "prettier --check .",
     "postinstall": "husky && node scripts/init-env.js",
     "android:staging": "react-native run-android --mode stagingDebug --appIdSuffix staging",
-    "android:prod": "react-native run-android --mode prodDebug"
+    "android:prod": "react-native run-android --mode prodDebug",
+    "ios:staging": "react-native run-ios --scheme RNFoundation-Staging --mode Staging-Debug",
+    "ios:prod": "react-native run-ios --scheme RNFoundation-Prod --mode Prod-Debug"
   },
   "dependencies": {
     "@react-native-community/netinfo": "12.0.1",
