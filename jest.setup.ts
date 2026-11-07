@@ -132,3 +132,49 @@ jest.mock('@react-native-community/datetimepicker', () => {
   };
 });
 // @unit-end:date-time
+
+// @unit-start:media
+jest.mock('react-native-image-crop-picker', () => ({
+  __esModule: true,
+  default: {
+    openPicker: jest.fn(),
+    openCamera: jest.fn(),
+    clean: jest.fn(() => Promise.resolve()),
+  },
+}));
+
+// fetch returns a promise with the progress hooks the library adds to it.
+jest.mock('react-native-blob-util', () => {
+  const request = (status = 200) => {
+    const promise = Promise.resolve({ respInfo: { status } }) as Promise<{
+      respInfo: { status: number };
+    }> & { progress: jest.Mock; uploadProgress: jest.Mock };
+    promise.progress = jest.fn(() => promise);
+    promise.uploadProgress = jest.fn(() => promise);
+    return promise;
+  };
+  const fetch = jest.fn(() => request());
+  return {
+    __esModule: true,
+    default: {
+      fetch,
+      config: jest.fn(() => ({ fetch })),
+      wrap: jest.fn((path: string) => `ReactNativeBlobUtil-file://${path}`),
+      fs: {
+        dirs: { DocumentDir: '/docs', CacheDir: '/cache' },
+        unlink: jest.fn(() => Promise.resolve()),
+      },
+      media: {
+        copyToMediaStore: jest.fn(() =>
+          Promise.resolve('content://downloads/1'),
+        ),
+      },
+      open: {
+        optionsMenu: jest.fn(() => Promise.resolve()),
+        chooser: jest.fn(() => Promise.resolve()),
+      },
+      __request: request,
+    },
+  };
+});
+// @unit-end:media

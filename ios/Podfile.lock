@@ -1400,6 +1400,29 @@ PODS:
     - ReactCommon/turbomodule/core
     - ReactNativeDependencies
     - Yoga
+  - react-native-blob-util (1.0.0):
+    - hermes-engine
+    - RCTRequired
+    - RCTTypeSafety
+    - React-bridging
+    - React-Core
+    - React-Core-prebuilt
+    - React-cxxstableapi
+    - React-debug
+    - React-Fabric
+    - React-featureflags
+    - React-graphics
+    - React-ImageManager
+    - React-jsi
+    - React-NativeModulesApple
+    - React-RCTFabric
+    - React-renderercss
+    - React-rendererdebug
+    - React-utils
+    - ReactCodegen
+    - ReactCommon/turbomodule/core
+    - ReactNativeDependencies
+    - Yoga
   - react-native-config (1.7.2):
     - react-native-config/App (= 1.7.2)
   - react-native-config/App (1.7.2):
@@ -2030,6 +2053,57 @@ PODS:
     - ReactNativeDependencies
     - RNWorklets (>= 0.8.0)
     - Yoga
+  - RNImageCropPicker (0.52.0):
+    - hermes-engine
+    - RCTRequired
+    - RCTTypeSafety
+    - React-bridging
+    - React-Core
+    - React-Core-prebuilt
+    - React-cxxstableapi
+    - React-debug
+    - React-Fabric
+    - React-featureflags
+    - React-graphics
+    - React-ImageManager
+    - React-jsi
+    - React-NativeModulesApple
+    - React-RCTFabric
+    - React-RCTImage
+    - React-renderercss
+    - React-rendererdebug
+    - React-utils
+    - ReactCodegen
+    - ReactCommon/turbomodule/core
+    - ReactNativeDependencies
+    - RNImageCropPicker/QBImagePickerController (= 0.52.0)
+    - TOCropViewController (~> 2.8.0)
+    - Yoga
+  - RNImageCropPicker/QBImagePickerController (0.52.0):
+    - hermes-engine
+    - RCTRequired
+    - RCTTypeSafety
+    - React-bridging
+    - React-Core
+    - React-Core-prebuilt
+    - React-cxxstableapi
+    - React-debug
+    - React-Fabric
+    - React-featureflags
+    - React-graphics
+    - React-ImageManager
+    - React-jsi
+    - React-NativeModulesApple
+    - React-RCTFabric
+    - React-RCTImage
+    - React-renderercss
+    - React-rendererdebug
+    - React-utils
+    - ReactCodegen
+    - ReactCommon/turbomodule/core
+    - ReactNativeDependencies
+    - TOCropViewController (~> 2.8.0)
+    - Yoga
   - RNKeychain (10.0.0):
     - hermes-engine
     - RCTRequired
@@ -2328,6 +2402,7 @@ PODS:
     - Yoga
   - SocketRocket (0.7.1):
     - ReactNativeDependencies
+  - TOCropViewController (2.8.0)
   - Yoga (0.0.0):
     - React-Core-prebuilt
 
@@ -2382,6 +2457,7 @@ DEPENDENCIES:
   - React-Mapbuffer (from `../node_modules/react-native/ReactCommon`)
   - React-microtasksnativemodule (from `../node_modules/react-native/ReactCommon/react/nativemodule/microtasks`)
   - React-mutationobservernativemodule (from `../node_modules/react-native/ReactCommon/react/nativemodule/mutationobserver`)
+  - react-native-blob-util (from `../node_modules/react-native-blob-util`)
   - react-native-config (from `../node_modules/react-native-config`)
   - react-native-keyboard-controller (from `../node_modules/react-native-keyboard-controller`)
   - "react-native-netinfo (from `../node_modules/@react-native-community/netinfo`)"
@@ -2427,6 +2503,7 @@ DEPENDENCIES:
   - RNBootSplash (from `../node_modules/react-native-bootsplash`)
   - "RNDateTimePicker (from `../node_modules/@react-native-community/datetimepicker`)"
   - RNGestureHandler (from `../node_modules/react-native-gesture-handler`)
+  - RNImageCropPicker (from `../node_modules/react-native-image-crop-picker`)
   - RNKeychain (from `../node_modules/react-native-keychain`)
   - RNLocalize (from `../node_modules/react-native-localize`)
   - RNReanimated (from `../node_modules/react-native-reanimated`)
@@ -2439,6 +2516,7 @@ DEPENDENCIES:
 SPEC REPOS:
   trunk:
     - MMKVCore
+    - TOCropViewController
 
 EXTERNAL SOURCES:
   boost:
@@ -2540,6 +2618,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/react/nativemodule/microtasks"
   React-mutationobservernativemodule:
     :path: "../node_modules/react-native/ReactCommon/react/nativemodule/mutationobserver"
+  react-native-blob-util:
+    :path: "../node_modules/react-native-blob-util"
   react-native-config:
     :path: "../node_modules/react-native-config"
   react-native-keyboard-controller:
@@ -2630,6 +2710,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/@react-native-community/datetimepicker"
   RNGestureHandler:
     :path: "../node_modules/react-native-gesture-handler"
+  RNImageCropPicker:
+    :path: "../node_modules/react-native-image-crop-picker"
   RNKeychain:
     :path: "../node_modules/react-native-keychain"
   RNLocalize:
@@ -2698,6 +2780,7 @@ SPEC CHECKSUMS:
   React-Mapbuffer: e4505b37aee54da1ba7ecba6b29481d33d42f84f
   React-microtasksnativemodule: 6c601251d281bad8babd1cdbf8ed87e7300da711
   React-mutationobservernativemodule: f2011b103c51b040b871f9b6cdc1cd1ac4984ce4
+  react-native-blob-util: 6e5c899b9b54db6ba4b0ad993087c486d5a8b9c7
   react-native-config: e4c06d90c3c9de69dd2c44e35e8acd1cfc389786
   react-native-keyboard-controller: ae47f943069c3d8e33388208101952205e013586
   react-native-netinfo: 94ab508cdb426680c1a4fb202706eab70625e4c0
@@ -2743,6 +2826,7 @@ SPEC CHECKSUMS:
   RNBootSplash: 15fa65b9bb3f3bc2d1b9912bb5ac07af07d5da71
   RNDateTimePicker: 2e8ee1f59d2075040ac4555f00abff72a80a5945
   RNGestureHandler: 31b42d92cb205b684973a3ee363a88cbdeb3cc48
+  RNImageCropPicker: 0cc1cffee6c02f4dcd6ea998818dad1a9f204a83
   RNKeychain: f88b8083fa3b54179b95b83bdcac9c1844f802f9
   RNLocalize: 5189c34897ff63b8014cb0f706ea745554d2f9d6
   RNReanimated: 02d6b0d54a0d4e9e02659f19be971935a371d12d
@@ -2750,8 +2834,9 @@ SPEC CHECKSUMS:
   RNSentry: 1d8fcee8db533af8dce1609e9a4ecb2c55ece95d
   RNWorklets: ec2adca24e3ce8d80b14b976cfe7b8d22b9d7682
   SocketRocket: d57b1af80c029e12a75cd9b218287c67381e4593
+  TOCropViewController: 797deaf39c90e6e9ddd848d88817f6b9a8a09888
   Yoga: 58b502c52b14ad3c4468805d461fc37d275c2a42
 
-PODFILE CHECKSUM: afd65c32b002a771cc97f526582a25e79b0c2017
+PODFILE CHECKSUM: e1a495362b09adffd224774dc376dd9f4b9c73a2
 
 COCOAPODS: 1.16.2

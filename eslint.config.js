@@ -52,6 +52,14 @@ const banned = {
     group: ['@react-native-community/netinfo'],
     message: 'NetInfo is only importable in shared/lib/network.',
   },
+  mediaPicker: {
+    group: ['react-native-image-crop-picker'],
+    message: 'Use pickMedia from @shared/lib/media-picker.',
+  },
+  blobUtil: {
+    group: ['react-native-blob-util'],
+    message: 'File transfer lives in features/file-transfer.',
+  },
   socketIo: {
     group: ['socket.io-client'],
     message: 'Use the socket from @shared/api.',
@@ -67,8 +75,17 @@ const banned = {
   },
 };
 
-const { asyncStorage, mmkv, keychain, netInfo, socketIo, sentry, navigation } =
-  banned;
+const {
+  asyncStorage,
+  mmkv,
+  keychain,
+  netInfo,
+  mediaPicker,
+  blobUtil,
+  socketIo,
+  sentry,
+  navigation,
+} = banned;
 
 // Flat config replaces a rule's options rather than merging them, so every path
 // needs one complete list. Later blocks win; these go from general to specific.
@@ -80,33 +97,69 @@ const restrict = (files, patterns) => ({
 const importRestrictions = [
   restrict(
     ['src/**/*.{ts,tsx}'],
-    [asyncStorage, mmkv, keychain, netInfo, socketIo, sentry],
+    [
+      asyncStorage,
+      mmkv,
+      keychain,
+      netInfo,
+      mediaPicker,
+      blobUtil,
+      socketIo,
+      sentry,
+    ],
   ),
   restrict(
     ['src/features/**/*.{ts,tsx}', 'src/entities/**/*.{ts,tsx}'],
-    [asyncStorage, mmkv, keychain, netInfo, socketIo, sentry, navigation],
+    [
+      asyncStorage,
+      mmkv,
+      keychain,
+      netInfo,
+      mediaPicker,
+      blobUtil,
+      socketIo,
+      sentry,
+      navigation,
+    ],
   ),
   restrict(
     ['src/shared/storage/kv/**/*.{ts,tsx}'],
-    [asyncStorage, keychain, netInfo, socketIo, sentry],
+    [asyncStorage, keychain, netInfo, mediaPicker, blobUtil, socketIo, sentry],
   ),
   restrict(
     ['src/shared/storage/secure/**/*.{ts,tsx}'],
-    [asyncStorage, mmkv, netInfo, socketIo, sentry],
+    [asyncStorage, mmkv, netInfo, mediaPicker, blobUtil, socketIo, sentry],
   ),
   // Tests stub these packages, so they have to name them.
   restrict(['src/**/*.test.{ts,tsx}'], [asyncStorage]),
   restrict(
     ['src/shared/lib/network/**/*.{ts,tsx}'],
-    [asyncStorage, mmkv, keychain, socketIo, sentry],
+    [asyncStorage, mmkv, keychain, mediaPicker, blobUtil, socketIo, sentry],
   ),
   restrict(
     ['src/app/monitoring/**/*.{ts,tsx}'],
-    [asyncStorage, mmkv, keychain, netInfo, socketIo],
+    [asyncStorage, mmkv, keychain, netInfo, mediaPicker, blobUtil, socketIo],
   ),
   restrict(
     ['src/shared/api/socket/**/*.{ts,tsx}'],
-    [asyncStorage, mmkv, keychain, netInfo, sentry],
+    [asyncStorage, mmkv, keychain, netInfo, mediaPicker, blobUtil, sentry],
+  ),
+  restrict(
+    ['src/shared/lib/media-picker/**/*.{ts,tsx}'],
+    [asyncStorage, mmkv, keychain, netInfo, blobUtil, socketIo, sentry],
+  ),
+  restrict(
+    ['src/features/file-transfer/**/*.{ts,tsx}'],
+    [
+      asyncStorage,
+      mmkv,
+      keychain,
+      netInfo,
+      mediaPicker,
+      socketIo,
+      sentry,
+      navigation,
+    ],
   ),
 ];
 

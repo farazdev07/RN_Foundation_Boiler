@@ -1,5 +1,19 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:tools="http://schemas.android.com/tools">
   <uses-permission android:name="android.permission.INTERNET" />
+  <!-- @unit-start:media -->
+  <!-- react-native-blob-util asks for broad storage access. Downloads go
+       through MediaStore, which needs none from Android 10 (API 29) on, so
+       the permissions only apply to older versions. -->
+  <uses-permission
+    android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+    android:maxSdkVersion="28"
+    tools:replace="android:maxSdkVersion" />
+  <uses-permission
+    android:name="android.permission.READ_EXTERNAL_STORAGE"
+    android:maxSdkVersion="28"
+    tools:replace="android:maxSdkVersion" />
+  <!-- @unit-end:media -->
 
   <application
     android:name=".MainApplication"

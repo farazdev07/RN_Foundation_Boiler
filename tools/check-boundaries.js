@@ -167,6 +167,24 @@ const cases = [
     RESTRICTED,
   ],
   [
+    'image picker in a screen',
+    'src/screens/alpha/x.ts',
+    'react-native-image-crop-picker',
+    RESTRICTED,
+  ],
+  [
+    'blob-util in shared',
+    'src/shared/alpha/x.ts',
+    'react-native-blob-util',
+    RESTRICTED,
+  ],
+  [
+    'blob-util in another feature',
+    'src/features/alpha/x.ts',
+    'react-native-blob-util',
+    RESTRICTED,
+  ],
+  [
     'socket.io in a feature',
     'src/features/alpha/x.ts',
     'socket.io-client',
@@ -247,6 +265,18 @@ const cases = [
     'navigation in a screen',
     'src/screens/alpha/x.ts',
     '@react-navigation/native',
+    null,
+  ],
+  [
+    'image picker in lib/media-picker',
+    'src/shared/lib/media-picker/x.ts',
+    'react-native-image-crop-picker',
+    null,
+  ],
+  [
+    'blob-util in features/file-transfer',
+    'src/features/file-transfer/x.ts',
+    'react-native-blob-util',
     null,
   ],
   [
