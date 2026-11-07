@@ -25,5 +25,9 @@
   "range-slider": {
     "paths": ["src/shared/ui/RangeSlider"],
     "touchpoints": ["src/shared/ui/index.ts"]
+  },
+  "image-viewer": {
+    "paths": ["src/shared/ui/ImageViewer"],
+    "touchpoints": ["src/shared/ui/index.ts"]
   }
 }
