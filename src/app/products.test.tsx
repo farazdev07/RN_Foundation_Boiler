@@ -138,6 +138,8 @@ describe('products', () => {
   beforeEach(() => {
     detailsOffline = false;
     globalThis.fetch = jest.fn(fakeServer) as typeof fetch;
+    // The dev request log.
+    jest.spyOn(console, 'log').mockImplementation(() => undefined);
   });
 
   afterEach(async () => {
