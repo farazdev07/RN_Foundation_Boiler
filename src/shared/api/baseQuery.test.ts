@@ -62,6 +62,19 @@ describe('baseQuery', () => {
     setRefreshHandler(null);
     await clearTokens();
     jest.spyOn(console, 'log').mockImplementation(() => undefined);
+
+    // RTK leaves its request-timeout timer running after a response. Unref it
+    // so it cannot hold the Jest worker open.
+    const realSetTimeout = setTimeout;
+    jest.spyOn(globalThis, 'setTimeout').mockImplementation(((
+      ...args: Parameters<typeof setTimeout>
+    ) => {
+      const timer = realSetTimeout(...args);
+      if ((args[1] ?? 0) >= 1000) {
+        (timer as unknown as { unref: () => void }).unref();
+      }
+      return timer;
+    }) as typeof setTimeout);
   });
 
   afterEach(() => {
