@@ -1,7 +1,11 @@
 export { refreshTokens } from './api/refreshTokens';
 export { useLogout, useSessionStatus } from './model/hooks';
 export { logout, restoreSession } from './model/lifecycle';
-export { onSessionEnd, sessionCleanup } from './model/sessionCleanup';
+export {
+  onSessionEnd,
+  sessionCleanup,
+  whenSessionWiped,
+} from './model/sessionCleanup';
 export {
   resetOnSessionEnd,
   selectSessionStatus,

@@ -14,6 +14,9 @@ let persisted = false;
 
 export const getAccessToken = (): string | null => current?.accessToken ?? null;
 
+// True when the refresh token survives a restart (Remember Me was on).
+export const isSessionPersisted = (): boolean => current !== null && persisted;
+
 export const getRefreshToken = (): string | null =>
   current?.refreshToken ?? null;
 

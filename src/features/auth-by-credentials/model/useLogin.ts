@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 import { useDispatch } from 'react-redux';
-import { signedIn } from '@entities/session';
+import { signedIn, whenSessionWiped } from '@entities/session';
 import { setTokens, type AppError } from '@shared/api';
 import { useLoginMutation, type Credentials } from '../api/loginApi';
 import { rememberedUsername } from './rememberedUsername';
@@ -21,6 +21,7 @@ export const useLogin = () => {
         return false;
       }
 
+      await whenSessionWiped();
       await setTokens(result.data, { persist: remember });
       if (remember) {
         rememberedUsername.set(credentials.username);

@@ -1,7 +1,6 @@
-import { createListenerMiddleware } from '@reduxjs/toolkit';
-import { baseApi, clearTokens } from '@shared/api';
+import { createListenerMiddleware, type Dispatch } from '@reduxjs/toolkit';
+import { baseApi, clearTokens, sessionExpired } from '@shared/api';
 import { clearAccountStorage } from '@shared/storage';
-import { isSessionEnd } from './sessionSlice';
 
 type Cleanup = () => void | Promise<void>;
 
@@ -16,19 +15,35 @@ export const onSessionEnd = (cleanup: Cleanup): (() => void) => {
   };
 };
 
-// Redux state is reset by resetOnSessionEnd. This clears everything else the
-// signed-in user left behind.
+const runWipe = async (dispatch: Dispatch): Promise<void> => {
+  // Drops RTK Query's running queries and subscriptions, not just its state.
+  dispatch(baseApi.util.resetApiState());
+  clearAccountStorage();
+  await clearTokens();
+  await Promise.all([...cleanups].map(cleanup => cleanup()));
+};
+
+let pending: Promise<void> = Promise.resolve();
+
+// Clears everything the signed-in user left outside Redux; Redux itself is
+// reset by resetOnSessionEnd. Wipes run one at a time, and the returned
+// promise settles when this one and any before it are done.
+export const wipeSessionData = (dispatch: Dispatch): Promise<void> => {
+  pending = pending.then(() => runWipe(dispatch)).catch(() => undefined);
+  return pending;
+};
+
+// Sign-in waits on this, so a wipe still running from an expired session can
+// never clear the tokens of the session that follows it.
+export const whenSessionWiped = (): Promise<void> => pending;
+
+// Logout awaits the wipe itself. A session the server ends arrives as an
+// action from the base query, with no caller to wait, so it is handled here.
 export const sessionCleanup = createListenerMiddleware();
 
 sessionCleanup.startListening({
-  predicate: isSessionEnd,
+  actionCreator: sessionExpired,
   effect: async (_action, api) => {
-    // Drops RTK Query's running queries and subscriptions, not just its state.
-    api.dispatch(baseApi.util.resetApiState());
-    clearAccountStorage();
-    // Both current paths have already cleared them; repeated so a future path
-    // that ends the session cannot leave a refresh token behind.
-    await clearTokens();
-    await Promise.all([...cleanups].map(cleanup => cleanup()));
+    await wipeSessionData(api.dispatch);
   },
 });

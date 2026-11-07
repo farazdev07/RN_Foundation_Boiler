@@ -271,9 +271,11 @@ describe('App auth', () => {
     await Keychain.setGenericPassword('auth.refreshToken', 'refresh-emilys-1', {
       service: 'auth.refreshToken',
     });
+    // Once only: RN's Jest setup makes this a shared mock that restoreAllMocks
+    // does not reset, so a permanent value would leak into later tests.
     jest
-      .spyOn(Linking, 'getInitialURL')
-      .mockResolvedValue('rn-foundation-dev://settings');
+      .mocked(Linking.getInitialURL)
+      .mockResolvedValueOnce('rn-foundation-dev://settings');
 
     await render(<App />);
 
@@ -315,4 +317,96 @@ describe('App auth', () => {
     expect(store.getState().session.status).toBe('signedOut');
     expect(await keychainHas('auth.refreshToken')).toBe(false);
   });
+
+  // @unit-start:biometric-unlock
+  describe('biometric unlock', () => {
+    const rememberedWithBiometrics = async () => {
+      markInstalled();
+      await Keychain.setGenericPassword(
+        'auth.refreshToken',
+        'refresh-emilys-1',
+        {
+          service: 'auth.refreshToken',
+        },
+      );
+      await Keychain.setGenericPassword('biometric.gate', 'unlocked', {
+        service: 'biometric.gate',
+      });
+      account().set('biometric.enabled', '{"v":1,"d":true}');
+    };
+
+    it('asks for biometrics on launch and resumes the session on a match', async () => {
+      await rememberedWithBiometrics();
+
+      await render(<App />);
+
+      expect(await screen.findByText('Hi, Emily')).toBeOnTheScreen();
+      expect(Keychain.getGenericPassword).toHaveBeenCalledWith(
+        expect.objectContaining({
+          service: 'biometric.gate',
+          authenticationPrompt: { title: 'Unlock RN Foundation' },
+        }),
+      );
+    });
+
+    it('falls back to login and wipes everything when the check fails', async () => {
+      await rememberedWithBiometrics();
+      draftNote.set("Emily's draft");
+      // A changed set of enrolled fingers or faces invalidates the entry, and
+      // a failed or cancelled prompt reads the same way: nothing comes back.
+      await Keychain.resetGenericPassword({ service: 'biometric.gate' });
+
+      await render(<App />);
+
+      expect(await screen.findByTestId('login-submit')).toBeOnTheScreen();
+      expect(store.getState().session.status).toBe('signedOut');
+      expect(draftNote.get()).toBeUndefined();
+      expect(getAccessToken()).toBeNull();
+      expect(meAuthHeaders).toEqual([]);
+    });
+
+    it('is turned on from Settings and removed again on logout', async () => {
+      await render(<App />);
+      await screen.findByTestId('login-submit');
+      await signIn('emilys');
+      await screen.findByText('Hi, Emily');
+      await fireEvent.press(screen.getByTestId('tab-settings'));
+
+      await fireEvent.press(
+        await screen.findByRole('checkbox', { name: 'Unlock with biometrics' }),
+      );
+
+      await waitFor(() =>
+        expect(
+          screen.getByRole('checkbox', { name: 'Unlock with biometrics' }),
+        ).toBeChecked(),
+      );
+      expect(await keychainHas('biometric.gate')).toBe(true);
+
+      await fireEvent.press(screen.getByTestId('settings-logout'));
+      await fireEvent.press(screen.getByTestId('logout-dialog-confirm'));
+      await screen.findByTestId('login-submit');
+
+      await waitFor(async () =>
+        expect(await keychainHas('biometric.gate')).toBe(false),
+      );
+      expect(account().contains('biometric.enabled')).toBe(false);
+    });
+
+    it('cannot be turned on without Remember Me', async () => {
+      await render(<App />);
+      await screen.findByTestId('login-submit');
+      await signIn('emilys', { remember: false });
+      await screen.findByText('Hi, Emily');
+      await fireEvent.press(screen.getByTestId('tab-settings'));
+
+      expect(
+        await screen.findByRole('checkbox', { name: 'Unlock with biometrics' }),
+      ).toBeDisabled();
+      expect(
+        screen.getByText('Sign in with Remember me to use this.'),
+      ).toBeOnTheScreen();
+    });
+  });
+  // @unit-end:biometric-unlock
 });

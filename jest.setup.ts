@@ -47,6 +47,7 @@ jest.mock('react-native-keychain', () => {
           : { username: '', password, service: serviceOf(options) },
       );
     }),
+    getSupportedBiometryType: jest.fn(() => Promise.resolve('FaceID')),
     resetGenericPassword: jest.fn((options?: { service?: string }) => {
       entries.delete(serviceOf(options));
       return Promise.resolve(true);

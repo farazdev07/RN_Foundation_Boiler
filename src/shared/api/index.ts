@@ -9,6 +9,7 @@ export { getErrorMessage, type AppError } from './errors';
 export {
   clearTokens,
   getAccessToken,
+  isSessionPersisted,
   readPersistedRefreshToken,
   resumeSession,
   setTokens,

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { View } from 'react-native';
 import { useLogout } from '@entities/session';
+import { BiometricToggle } from '@features/biometric-unlock'; // @unit:biometric-unlock
 import { useTranslation } from '@shared/lib/i18n';
 import {
   Button,
@@ -42,6 +43,9 @@ export function SettingsScreen() {
         />
         <View style={styles.section}>
           <Text variant="label">{t('account')}</Text>
+          {/* @unit-start:biometric-unlock */}
+          <BiometricToggle />
+          {/* @unit-end:biometric-unlock */}
           <Button
             testID="settings-logout"
             title={t('logout')}

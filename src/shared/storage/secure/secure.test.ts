@@ -126,4 +126,16 @@ describe('secureStorage', () => {
       });
     });
   });
+
+  describe('getBiometryType', () => {
+    it('returns the enrolled sensor', async () => {
+      expect(await secureStorage.getBiometryType()).toBe('FaceID');
+    });
+
+    it('returns null when the check fails', async () => {
+      keychain.getSupportedBiometryType.mockRejectedValueOnce(new Error('no'));
+
+      expect(await secureStorage.getBiometryType()).toBeNull();
+    });
+  });
 });

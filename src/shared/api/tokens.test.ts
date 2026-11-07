@@ -2,6 +2,7 @@ import * as Keychain from 'react-native-keychain';
 import {
   clearTokens,
   getAccessToken,
+  isSessionPersisted,
   readPersistedRefreshToken,
   setTokens,
 } from '@shared/api';
@@ -55,5 +56,15 @@ describe('tokens', () => {
 
     expect(getAccessToken()).toBeNull();
     expect(keychain.resetGenericPassword).toHaveBeenCalled();
+  });
+
+  it('reports whether the session survives a restart', async () => {
+    expect(isSessionPersisted()).toBe(false);
+
+    await setTokens(tokens, { persist: false });
+    expect(isSessionPersisted()).toBe(false);
+
+    await setTokens(tokens, { persist: true });
+    expect(isSessionPersisted()).toBe(true);
   });
 });

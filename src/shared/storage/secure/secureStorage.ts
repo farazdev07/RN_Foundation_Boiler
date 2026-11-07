@@ -51,6 +51,15 @@ export const secureStorage = {
     }
   },
 
+  // The sensor the device can use, or null when there is none or none enrolled.
+  async getBiometryType(): Promise<string | null> {
+    try {
+      return await Keychain.getSupportedBiometryType();
+    } catch {
+      return null;
+    }
+  },
+
   async remove(key: string): Promise<Result<void>> {
     try {
       await Keychain.resetGenericPassword({ service: key });

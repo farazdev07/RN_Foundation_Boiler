@@ -7,5 +7,15 @@
   "splash-animation": {
     "paths": ["src/app/splash"],
     "touchpoints": ["src/app/App.tsx"]
+  },
+  "biometric-unlock": {
+    "paths": ["src/features/biometric-unlock"],
+    "touchpoints": [
+      "src/app/services/AppServices.tsx",
+      "src/app/i18n/index.ts",
+      "src/screens/settings/ui/SettingsScreen.tsx",
+      "ios/RNFoundation/Info.plist",
+      "src/app/App.test.tsx"
+    ]
   }
 }
