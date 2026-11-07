@@ -8797,6 +8797,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"libphonenumber-js@npm:1.13.15":
+  version: 1.13.15
+  resolution: "libphonenumber-js@npm:1.13.15"
+  checksum: 10c0/041fa295a526566a9e0910240887d1daa678faf546303ef2580479dadafc40c240dae50cc9f1c73632d0772f09fd3d87fbb47ec505d9f569025997807c6fe6ae
+  languageName: node
+  linkType: hard
+
 "lines-and-columns@npm:^1.1.6":
   version: 1.2.4
   resolution: "lines-and-columns@npm:1.2.4"
@@ -10746,6 +10753,7 @@ __metadata:
     husky: "npm:9.1.7"
     i18next: "npm:26.5.4"
     jest: "npm:30.5.2"
+    libphonenumber-js: "npm:1.13.15"
     lint-staged: "npm:17.6.0"
     prettier: "npm:3.9.10"
     react: "npm:19.3.0"

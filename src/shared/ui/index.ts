@@ -38,3 +38,11 @@ export { Carousel } from './Carousel'; // @unit:carousel
 export { RangeSlider, type Range } from './RangeSlider'; // @unit:range-slider
 export { ImageViewer } from './ImageViewer'; // @unit:image-viewer
 export { Calendar, DateTimeField, dayKey } from './date-time'; // @unit:date-time
+// @unit-start:phone-input
+export {
+  emptyPhone,
+  PhoneInput,
+  type CountryCode,
+  type PhoneValue,
+} from './PhoneInput';
+// @unit-end:phone-input
