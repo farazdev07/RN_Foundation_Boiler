@@ -282,6 +282,21 @@ describe('App auth', () => {
     expect(await screen.findByTestId('settings-logout')).toBeOnTheScreen();
   });
 
+  it('wipes account data left by a session that was not remembered', async () => {
+    // The previous run signed in without Remember Me, so its token died with
+    // the process but its account data is still on disk.
+    markInstalled();
+    draftNote.set("Emily's draft");
+
+    await render(<App />);
+    await screen.findByTestId('login-submit');
+
+    await waitFor(() => expect(account().getAllKeys()).toEqual([]));
+    await signIn('michaelw');
+    expect(await screen.findByText('Hi, Michael')).toBeOnTheScreen();
+    expect(draftNote.get()).toBeUndefined();
+  });
+
   it('drops a Keychain token left by a previous install', async () => {
     await Keychain.setGenericPassword('auth.refreshToken', 'refresh-emilys-1', {
       service: 'auth.refreshToken',

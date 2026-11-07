@@ -37,7 +37,11 @@ export const restoreSession = async (
 
   const refreshToken = await readPersistedRefreshToken();
   if (!refreshToken) {
+    // A session without Remember Me keeps its token in memory only, but its
+    // account data is on disk. Nobody can resume that session now, so the data
+    // goes, before anyone else can sign in.
     dispatch(sessionChecked({ signedIn: false }));
+    await wipeSessionData(dispatch);
     return;
   }
 

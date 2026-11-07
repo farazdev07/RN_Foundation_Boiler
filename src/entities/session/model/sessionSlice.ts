@@ -34,13 +34,19 @@ export const selectSessionStatus = (state: {
 }): SessionStatus => state.session.status;
 
 // An ended session, by choice or by the server, leaves nothing for the next user.
+// So does a launch that finds no saved session: data persisted by a session
+// that was not remembered must not reach whoever signs in next.
 export const isSessionEnd = (action: UnknownAction): boolean =>
-  loggedOut.match(action) || sessionExpired.match(action);
+  loggedOut.match(action) ||
+  sessionExpired.match(action) ||
+  (sessionChecked.match(action) && !action.payload.signedIn);
 
 // Wraps the root reducer so every slice, including ones added later, returns to
 // its initial state when the session ends. The session slice still sees the
 // action, so it ends as `signedOut` rather than `unknown`.
 export const resetOnSessionEnd =
-  <S>(reducer: Reducer<S>): Reducer<S> =>
+  <S, P = S>(
+    reducer: Reducer<S, UnknownAction, P>,
+  ): Reducer<S, UnknownAction, P> =>
   (state, action) =>
     reducer(isSessionEnd(action) ? undefined : state, action);
