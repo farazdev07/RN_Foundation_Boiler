@@ -205,8 +205,8 @@ describe('products', () => {
 
   it('opens a product from a deep link and still shows a favourite offline', async () => {
     // Saved earlier, so it is on disk and in the store before launch. Seeded
-    // through the store rather than a first render: RNTL 14 renders nothing
-    // after unmounting and rendering again within one test.
+    // through the store rather than a first render: with RNTL 14, repeated
+    // unmount-and-render cycles in one test left later renders empty.
     store.dispatch(
       favoritesSlice.actions.favoriteToggled(summary(makeProduct(3))),
     );
