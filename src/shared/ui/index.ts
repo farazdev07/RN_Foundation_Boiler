@@ -35,3 +35,4 @@ export {
   type ToastVariant,
 } from './Toast';
 export { Carousel } from './Carousel'; // @unit:carousel
+export { RangeSlider, type Range } from './RangeSlider'; // @unit:range-slider

@@ -21,5 +21,9 @@
   "carousel": {
     "paths": ["src/shared/ui/Carousel"],
     "touchpoints": ["src/shared/ui/index.ts"]
+  },
+  "range-slider": {
+    "paths": ["src/shared/ui/RangeSlider"],
+    "touchpoints": ["src/shared/ui/index.ts"]
   }
 }
