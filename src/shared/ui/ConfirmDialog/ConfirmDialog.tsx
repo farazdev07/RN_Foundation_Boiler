@@ -15,6 +15,8 @@ type Props = {
   loading?: boolean;
   onConfirm: () => void;
   onCancel: () => void;
+  // Gives the buttons `<testID>-confirm` and `<testID>-cancel` for UI tests.
+  testID?: string;
 };
 
 const useStyles = makeStyles(({ spacing }) => ({
@@ -35,6 +37,7 @@ export function ConfirmDialog({
   loading = false,
   onConfirm,
   onCancel,
+  testID,
 }: Props) {
   const styles = useStyles();
   const { t } = useTranslation();
@@ -47,12 +50,14 @@ export function ConfirmDialog({
       {message ? <Text color="textSecondary">{message}</Text> : null}
       <View style={styles.actions}>
         <Button
+          {...(testID && { testID: `${testID}-cancel` })}
           title={cancelLabel ?? t('cancel')}
           variant="ghost"
           disabled={loading}
           onPress={onCancel}
         />
         <Button
+          {...(testID && { testID: `${testID}-confirm` })}
           title={confirmLabel ?? t('confirm')}
           variant={destructive ? 'destructive' : 'primary'}
           loading={loading}

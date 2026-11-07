@@ -12,9 +12,9 @@ type Props = PropsWithChildren<{
 }>;
 
 const useStyles = makeStyles(({ colors, radii, spacing, elevations }) => ({
-  backdrop: {
+  backdrop: { backgroundColor: colors.overlay },
+  center: {
     alignItems: 'center',
-    backgroundColor: colors.overlay,
     flex: 1,
     justifyContent: 'center',
     padding: spacing.lg,
@@ -49,21 +49,19 @@ export function Modal({
       onRequestClose={onRequestClose}
     >
       <GestureHandlerRootView style={StyleSheet.absoluteFill}>
+        {/* The backdrop is a sibling of the card, not its parent. An accessible
+            parent would merge the card into one "Close" element on iOS, hiding
+            the dialog's own buttons from VoiceOver and UI tests. */}
         <Pressable
           accessibilityRole="button"
           accessibilityLabel="Close"
           disabled={!dismissible}
           onPress={onRequestClose}
-          style={styles.backdrop}
-        >
-          <View
-            accessibilityViewIsModal
-            style={styles.card}
-            onStartShouldSetResponder={() => true}
-          >
-            {children}
-          </View>
-        </Pressable>
+          style={[StyleSheet.absoluteFill, styles.backdrop]}
+        />
+        <View style={styles.center} pointerEvents="box-none">
+          <View style={styles.card}>{children}</View>
+        </View>
         <ToastViewport />
       </GestureHandlerRootView>
     </RNModal>

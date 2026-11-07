@@ -1,5 +1,5 @@
 import { Text } from 'react-native';
-import { fireEvent, screen } from '@testing-library/react-native';
+import { fireEvent, screen, within } from '@testing-library/react-native';
 import { renderWithTheme } from '../testing/renderWithTheme';
 import { Modal } from './index';
 
@@ -38,5 +38,20 @@ describe('Modal', () => {
     await fireEvent.press(screen.getByRole('button', { name: 'Close' }));
 
     expect(onRequestClose).not.toHaveBeenCalled();
+  });
+
+  // Regression: the backdrop used to wrap the card, which on iOS merged the
+  // card's buttons into the backdrop's single accessibility element.
+  it('keeps the content outside the backdrop button', async () => {
+    await renderWithTheme(
+      <Modal visible onRequestClose={jest.fn()}>
+        <Text>Inside</Text>
+      </Modal>,
+    );
+
+    const backdrop = screen.getByRole('button', { name: 'Close' });
+
+    expect(within(backdrop).queryByText('Inside')).toBeNull();
+    expect(screen.getByText('Inside')).toBeOnTheScreen();
   });
 });
