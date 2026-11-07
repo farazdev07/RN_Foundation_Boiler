@@ -118,8 +118,7 @@ const signIn = async (
 const logOutThroughSettings = async () => {
   await fireEvent.press(screen.getByTestId('tab-settings'));
   await fireEvent.press(screen.getByTestId('settings-logout'));
-  const [, confirm] = screen.getAllByRole('button', { name: 'Log out' });
-  await fireEvent.press(confirm!);
+  await fireEvent.press(screen.getByTestId('logout-dialog-confirm'));
   await screen.findByTestId('login-submit');
 };
 

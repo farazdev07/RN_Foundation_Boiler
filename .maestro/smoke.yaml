@@ -1,17 +1,36 @@
-# Proves the native modules work on a device, including a real pan gesture.
+# Signs in, proves the native modules work (including a real pan gesture),
+# then logs out. Uses dummyjson's public test user.
 # Run: maestro --udid <device> test .maestro/smoke.yaml
 appId: com.faraz.foundation.dev
 ---
-- launchApp
+# clearState wipes app storage but, on iOS, not the Keychain, so starting on
+# the login screen also proves the reinstall wipe.
+- launchApp:
+    clearState: true
 # A debug build's first run waits for Metro to bundle from a cold cache.
 - extendedWaitUntil:
-    visible: 'RN Foundation'
+    visible:
+      id: 'login-submit'
     timeout: 180000
+- tapOn:
+    id: 'login-username'
+- inputText: 'emilys'
+- tapOn:
+    id: 'login-password'
+- inputText: 'emilyspass'
+# Submits through the password field's "go" key. Maestro's hideKeyboard presses
+# return on iOS, which would submit anyway, so this makes that path explicit.
+# The button itself is covered by the Jest tests.
+- pressKey: Enter
+# iOS offers to save the password.
 - runFlow:
     when:
       visible: 'Not Now'
     commands:
       - tapOn: 'Not Now'
+- extendedWaitUntil:
+    visible: 'Hi, Emily'
+    timeout: 20000
 - extendedWaitUntil:
     visible: 'worklet: pass'
     timeout: 15000
@@ -24,8 +43,7 @@ appId: com.faraz.foundation.dev
       id: 'check-gesture-box'
     direction: RIGHT
 - assertVisible: 'gesture: pass'
-# The check screen pulses forever, so Maestro would otherwise wait out the
-# toast's lifetime for the screen to settle.
+# Keeps queries from waiting out the toast's lifetime for the screen to settle.
 - tapOn:
     text: 'Show toast'
     waitToSettleTimeoutMs: 300
@@ -43,3 +61,25 @@ appId: com.faraz.foundation.dev
 - takeScreenshot: settings-dark
 - tapOn:
     id: 'radio-system'
+- tapOn:
+    id: 'settings-logout'
+# Maestro's iOS driver does not see inside an RN Modal (it reports only the
+# backdrop), so iOS taps the confirm button's position. Android uses its id.
+- runFlow:
+    when:
+      platform: Android
+    commands:
+      - tapOn:
+          id: 'logout-dialog-confirm'
+- runFlow:
+    when:
+      platform: iOS
+    commands:
+      - tapOn:
+          point: '73%,55%'
+- extendedWaitUntil:
+    visible:
+      id: 'login-submit'
+    timeout: 10000
+# Remember Me was on, so the username stays for the next sign-in.
+- assertVisible: 'emilys'

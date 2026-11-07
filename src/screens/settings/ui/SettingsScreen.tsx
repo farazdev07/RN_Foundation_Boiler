@@ -52,6 +52,7 @@ export function SettingsScreen() {
         </View>
       </View>
       <ConfirmDialog
+        testID="logout-dialog"
         visible={confirming}
         title={t('logoutTitle')}
         message={t('logoutMessage')}
