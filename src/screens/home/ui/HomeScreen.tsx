@@ -1,11 +1,13 @@
-import { ScrollView, StyleSheet, Text } from 'react-native';
+import { ScrollView, StyleSheet } from 'react-native';
+import { Text } from '@shared/ui';
 import { RuntimeCheck } from './RuntimeCheck';
 
-// Placeholder until Phase 4. RuntimeCheck is the Phase 3 native smoke test.
+// Placeholder until the reference feature. RuntimeCheck is the native smoke test
+// and goes when the smoke flow moves to real screens.
 export function HomeScreen() {
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.title}>RN Foundation</Text>
+      <Text variant="title">RN Foundation</Text>
       <RuntimeCheck />
     </ScrollView>
   );
@@ -15,9 +17,5 @@ const styles = StyleSheet.create({
   container: {
     gap: 12,
     padding: 16,
-  },
-  title: {
-    fontSize: 22,
-    fontWeight: '700',
   },
 });

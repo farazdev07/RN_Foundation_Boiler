@@ -1,5 +1,6 @@
 /* eslint-disable no-restricted-imports -- Phase 3 native smoke test only; deleted in Phase 4 once shared/storage and shared/lib/network exist. */
 import { useEffect, useState } from 'react';
+import { Button, Text as ThemedText, showToast } from '@shared/ui';
 import { StyleSheet, Text, View } from 'react-native';
 import NetInfo from '@react-native-community/netinfo';
 import { GestureDetector, usePanGesture } from 'react-native-gesture-handler';
@@ -8,7 +9,6 @@ import { createMMKV } from 'react-native-mmkv';
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
-  withRepeat,
   withTiming,
 } from 'react-native-reanimated';
 import { scheduleOnRN, scheduleOnUI } from 'react-native-worklets';
@@ -34,12 +34,9 @@ export function RuntimeCheck() {
   const report = (check: Check, status: Status) =>
     setResults(current => ({ ...current, [check]: status }));
 
-  const pulse = useSharedValue(1);
   const offsetX = useSharedValue(0);
 
   useEffect(() => {
-    pulse.value = withRepeat(withTiming(0.3, { duration: 800 }), -1, true);
-
     const markWorklet = () => report('worklet', 'pass');
     scheduleOnUI(() => {
       'worklet';
@@ -70,7 +67,7 @@ export function RuntimeCheck() {
     NetInfo.fetch()
       .then(() => report('netinfo', 'pass'))
       .catch(() => report('netinfo', 'fail'));
-  }, [pulse]);
+  }, []);
 
   const markGesture = () => report('gesture', 'pass');
   const pan = usePanGesture({
@@ -86,7 +83,6 @@ export function RuntimeCheck() {
   });
 
   const boxStyle = useAnimatedStyle(() => ({
-    opacity: pulse.value,
     transform: [{ translateX: offsetX.value }],
   }));
 
@@ -98,6 +94,12 @@ export function RuntimeCheck() {
         </Text>
       ))}
       {keychainError ? <Text>{keychainError}</Text> : null}
+      <ThemedText variant="title">Open Sans title</ThemedText>
+      <Button
+        title="Show toast"
+        icon="bell"
+        onPress={() => showToast('Swipe me up', 'success')}
+      />
       <GestureDetector gesture={pan}>
         <Animated.View
           testID="check-gesture-box"

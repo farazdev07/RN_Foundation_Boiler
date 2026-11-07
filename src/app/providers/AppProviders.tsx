@@ -1,5 +1,5 @@
 import { useMemo, type PropsWithChildren } from 'react';
-import { StatusBar, StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { KeyboardProvider } from 'react-native-keyboard-controller';
@@ -8,7 +8,7 @@ import { Provider } from 'react-redux';
 import '@app/i18n';
 import { toNavigationTheme } from '@app/navigation/navigationTheme';
 import { store } from '@app/store/store';
-import { ThemeProvider, useTheme } from '@shared/ui';
+import { ThemeProvider, ToastViewport, useTheme } from '@shared/ui';
 
 function ThemedNavigation({ children }: PropsWithChildren) {
   const theme = useTheme();
@@ -16,9 +16,6 @@ function ThemedNavigation({ children }: PropsWithChildren) {
 
   return (
     <NavigationContainer theme={navigationTheme}>
-      <StatusBar
-        barStyle={theme.mode === 'dark' ? 'light-content' : 'dark-content'}
-      />
       {children}
     </NavigationContainer>
   );
@@ -32,6 +29,7 @@ export function AppProviders({ children }: PropsWithChildren) {
           <KeyboardProvider>
             <ThemeProvider>
               <ThemedNavigation>{children}</ThemedNavigation>
+              <ToastViewport />
             </ThemeProvider>
           </KeyboardProvider>
         </SafeAreaProvider>

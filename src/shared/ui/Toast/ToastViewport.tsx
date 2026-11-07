@@ -89,22 +89,24 @@ export function ToastViewport() {
       pointerEvents="box-none"
       style={[StyleSheet.absoluteFill, { paddingTop: insets.top + 8 }]}
     >
-      <GestureDetector gesture={swipe}>
-        <Animated.View
-          entering={FadeInUp}
-          exiting={FadeOutUp}
-          testID="toast"
-          style={[styles.toast, styles[toast.variant], dragged]}
-        >
-          <Pressable
-            accessibilityRole="alert"
-            accessibilityHint="Swipe up or tap to dismiss"
-            onPress={() => dismiss(toast.id)}
+      {/* Entering/exiting animate transform too, so the drag offset lives on an
+          inner view; on one view Reanimated warns that they overwrite each other. */}
+      <Animated.View entering={FadeInUp} exiting={FadeOutUp}>
+        <GestureDetector gesture={swipe}>
+          <Animated.View
+            testID="toast"
+            style={[styles.toast, styles[toast.variant], dragged]}
           >
-            <Text color="surface">{toast.message}</Text>
-          </Pressable>
-        </Animated.View>
-      </GestureDetector>
+            <Pressable
+              accessibilityRole="alert"
+              accessibilityHint="Swipe up or tap to dismiss"
+              onPress={() => dismiss(toast.id)}
+            >
+              <Text color="surface">{toast.message}</Text>
+            </Pressable>
+          </Animated.View>
+        </GestureDetector>
+      </Animated.View>
     </Animated.View>
   );
 }

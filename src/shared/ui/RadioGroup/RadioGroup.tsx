@@ -60,6 +60,7 @@ export function RadioGroup<T extends string>({
             key={option.value}
             accessibilityRole="radio"
             accessibilityLabel={option.label}
+            testID={`radio-${option.value}`}
             accessibilityState={{ selected, checked: selected }}
             onPress={() => onChange(option.value)}
             style={styles.row}

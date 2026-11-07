@@ -37,4 +37,17 @@ describe('RadioGroup', () => {
 
     expect(onChange).toHaveBeenCalledWith('system');
   });
+
+  it('gives each option a stable test id', async () => {
+    await renderWithTheme(
+      <RadioGroup
+        label="Theme"
+        options={options}
+        value={null}
+        onChange={jest.fn()}
+      />,
+    );
+
+    expect(screen.getByTestId('radio-dark')).toBeOnTheScreen();
+  });
 });

@@ -24,3 +24,22 @@ appId: com.faraz.foundation.dev
       id: 'check-gesture-box'
     direction: RIGHT
 - assertVisible: 'gesture: pass'
+# The check screen pulses forever, so Maestro would otherwise wait out the
+# toast's lifetime for the screen to settle.
+- tapOn:
+    text: 'Show toast'
+    waitToSettleTimeoutMs: 300
+- assertVisible: 'Swipe me up'
+- swipe:
+    from:
+      id: 'toast'
+    direction: UP
+    waitToSettleTimeoutMs: 300
+- assertNotVisible: 'Swipe me up'
+- tapOn:
+    id: 'tab-settings'
+- tapOn:
+    id: 'radio-dark'
+- takeScreenshot: settings-dark
+- tapOn:
+    id: 'radio-system'
