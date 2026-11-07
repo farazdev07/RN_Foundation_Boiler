@@ -109,7 +109,12 @@ export const navigationRef = createNavigationContainerRef<RootStackParamList>();
 
 const Navigation = createStaticNavigation(RootStack);
 
-export function RootNavigator() {
+type Props = {
+  // Called once the first screen has mounted.
+  onReady?: () => void;
+};
+
+export function RootNavigator({ onReady }: Props) {
   const theme = useTheme();
   const navigationTheme = useMemo(() => toNavigationTheme(theme), [theme]);
   const status = useSessionStatus();
@@ -120,7 +125,12 @@ export function RootNavigator() {
   }
 
   return (
-    <Navigation ref={navigationRef} theme={navigationTheme} linking={linking} />
+    <Navigation
+      ref={navigationRef}
+      theme={navigationTheme}
+      linking={linking}
+      {...(onReady && { onReady })}
+    />
   );
 }
 

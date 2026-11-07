@@ -1,5 +1,6 @@
 import { Linking } from 'react-native';
 import { createMMKV } from 'react-native-mmkv';
+import BootSplash from 'react-native-bootsplash';
 import * as Keychain from 'react-native-keychain';
 import { z } from 'zod';
 import {
@@ -163,6 +164,8 @@ describe('App auth', () => {
 
     expect(await screen.findByText('Welcome back')).toBeOnTheScreen();
     expect(screen.getByRole('checkbox', { name: 'Remember me' })).toBeChecked();
+    // The native splash is hidden only once the first screen is ready.
+    await waitFor(() => expect(BootSplash.hide).toHaveBeenCalled());
   });
 
   it('asks for both fields before calling the server', async () => {

@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+  <!-- Template mark: three stacked layers. Replace with your own logo and
+       rerun the bootsplash generate command in the README. -->
+  <rect width="512" height="512" rx="112" fill="#1F6FEB"/>
+  <path d="M256 112 400 184 256 256 112 184Z" fill="#FFFFFF"/>
+  <path d="M136 244 256 304 376 244 400 256 256 328 112 256Z" fill="#FFFFFF" opacity="0.85"/>
+  <path d="M136 316 256 376 376 316 400 328 256 400 112 328Z" fill="#FFFFFF" opacity="0.7"/>
+</svg>

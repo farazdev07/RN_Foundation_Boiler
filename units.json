@@ -3,5 +3,9 @@
     "paths": ["src/app/monitoring"],
     "touchpoints": ["index.js"],
     "packages": ["@sentry/react-native"]
+  },
+  "splash-animation": {
+    "paths": ["src/app/splash"],
+    "touchpoints": ["src/app/App.tsx"]
   }
 }

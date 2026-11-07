@@ -97,3 +97,23 @@ jest.mock(
   'react-native-gesture-handler/lib/module/handlers/gestures/installUIRuntimeBindings',
   () => ({ installUIRuntimeBindings: jest.fn() }),
 );
+
+jest.mock('react-native-bootsplash', () => ({
+  hide: jest.fn(() => Promise.resolve()),
+  isVisible: jest.fn(() => true),
+  // Runs `animate` once, when ready, as the real hook does after layout.
+  useHideAnimation: jest.fn(
+    ({ ready = true, animate }: { ready?: boolean; animate: () => void }) => {
+      const { useEffect, useRef } =
+        jest.requireActual<typeof import('react')>('react');
+      const started = useRef(false);
+      useEffect(() => {
+        if (ready && !started.current) {
+          started.current = true;
+          animate();
+        }
+      });
+      return { container: { style: {} }, logo: { source: 0, style: {} } };
+    },
+  ),
+}));

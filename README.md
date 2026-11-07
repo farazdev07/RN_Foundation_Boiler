@@ -61,4 +61,7 @@ This sets the app name and bundle IDs across Android and iOS. To also drop optio
 - Crash reporting uses Sentry and starts only when `SENTRY_DSN` is set in the `.env.*` file. Without it, nothing is
   sent. Remove it with `--remove sentry`. Delivery to a real Sentry project has not been tested, because the
   template has no DSN.
+- To change the launch screen, replace `src/shared/assets/brand/logo.svg` and run
+  `yarn react-native-bootsplash generate src/shared/assets/brand/logo.svg --platforms=android,ios --background=F6F7F9 --logo-width=100 --assets-output=src/shared/assets/bootsplash --plist=ios/RNFoundation/Info.plist`.
+  The splash has no dark variant: the free generator does not make one.
 - Releases are covered in [docs/release.md](docs/release.md).
