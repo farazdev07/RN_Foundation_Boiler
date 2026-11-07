@@ -82,6 +82,8 @@ const importRestrictions = [
     ['src/shared/storage/secure/**/*.{ts,tsx}'],
     [asyncStorage, mmkv, netInfo],
   ),
+  // Tests stub these packages, so they have to name them.
+  restrict(['src/**/*.test.{ts,tsx}'], [asyncStorage]),
   restrict(
     ['src/shared/lib/network/**/*.{ts,tsx}'],
     [asyncStorage, mmkv, keychain],
