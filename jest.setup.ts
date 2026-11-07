@@ -25,12 +25,34 @@ jest.mock('react-native-mmkv', () => {
   return { createMMKV };
 });
 
-jest.mock('react-native-keychain', () => ({
-  ...jest.requireActual('react-native-keychain/lib/commonjs/enums'),
-  setGenericPassword: jest.fn(() => Promise.resolve({ service: 'mock' })),
-  getGenericPassword: jest.fn(() => Promise.resolve(false)),
-  resetGenericPassword: jest.fn(() => Promise.resolve(true)),
-}));
+// Stateful per service, so tests can check what is actually left in the Keychain.
+jest.mock('react-native-keychain', () => {
+  const entries = new Map<string, string>();
+  const serviceOf = (options?: { service?: string }) =>
+    options?.service ?? 'default';
+
+  return {
+    ...jest.requireActual('react-native-keychain/lib/commonjs/enums'),
+    setGenericPassword: jest.fn(
+      (_username: string, password: string, options?: { service?: string }) => {
+        entries.set(serviceOf(options), password);
+        return Promise.resolve({ service: serviceOf(options) });
+      },
+    ),
+    getGenericPassword: jest.fn((options?: { service?: string }) => {
+      const password = entries.get(serviceOf(options));
+      return Promise.resolve(
+        password === undefined
+          ? false
+          : { username: '', password, service: serviceOf(options) },
+      );
+    }),
+    resetGenericPassword: jest.fn((options?: { service?: string }) => {
+      entries.delete(serviceOf(options));
+      return Promise.resolve(true);
+    }),
+  };
+});
 
 jest.mock('react-native-config', () => ({
   __esModule: true,
@@ -41,7 +63,6 @@ jest.mock('react-native-config', () => ({
     SENTRY_DSN: '',
   },
 }));
-
 
 jest.mock('react-native-localize', () => ({
   findBestLanguageTag: jest.fn(() => ({

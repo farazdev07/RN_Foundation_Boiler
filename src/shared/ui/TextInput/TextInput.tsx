@@ -12,7 +12,8 @@ import { makeStyles, useTheme } from '../theme';
 type Props = Omit<TextInputProps, 'style' | 'editable'> & {
   ref?: Ref<ComponentRef<typeof RNTextInput>>;
   label?: string;
-  error?: string;
+  // Forms usually compute this, so undefined is accepted as "no error".
+  error?: string | undefined;
   disabled?: boolean;
   start?: ReactNode;
   end?: ReactNode;
