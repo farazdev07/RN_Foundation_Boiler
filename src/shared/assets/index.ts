@@ -5,3 +5,8 @@ import type { Manifest } from 'react-native-bootsplash';
 // logo. The native splash uses copies of these inside ios/ and android/.
 export const bootsplashManifest: Manifest = require('./bootsplash/manifest.json');
 export const bootsplashLogo: ImageRequireSource = require('./bootsplash/logo.png');
+
+// App images, by name. Every require() here is resolved at build time, so a
+// missing file fails the bundle rather than a screen. Add entries like
+//   emptyCart: require('./images/empty-cart.png'),
+export const images = {} satisfies Record<string, ImageRequireSource>;
