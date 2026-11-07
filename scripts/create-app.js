@@ -162,6 +162,14 @@ function stripUnitMarkers(text, unit) {
     } else if (line.includes(`@unit-end:${unit}`)) {
       insideBlock = false;
     } else if (line.includes(`@unit:${unit}`)) {
+      // A line that closes a bracket ends a statement started above it, as
+      // when Prettier wraps a tagged export. Removing only this line would
+      // leave broken code behind.
+      if (/^\s*[}\])]/.test(line)) {
+        throw new Error(
+          `@unit:${unit} tags the last line of a multi-line statement; wrap it in @unit-start/@unit-end instead:\n${line.trim()}`,
+        );
+      }
       found = true;
     } else if (!insideBlock) {
       kept.push(line);

@@ -20,6 +20,18 @@ const options = {
 };
 
 describe('stripUnitMarkers', () => {
+  it('refuses a line tag on the end of a wrapped statement', () => {
+    const wrapped = [
+      'export {',
+      '  PhoneInput,',
+      "} from './PhoneInput'; // @unit:phone-input",
+    ].join('\n');
+
+    expect(() => stripUnitMarkers(wrapped, 'phone-input')).toThrow(
+      'multi-line statement',
+    );
+  });
+
   it('removes single tagged lines and marked blocks, keeping the rest', () => {
     const source = [
       'keep one',
