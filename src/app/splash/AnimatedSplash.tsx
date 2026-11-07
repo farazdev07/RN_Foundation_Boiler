@@ -23,8 +23,6 @@ export function AnimatedSplash({ ready }: Props) {
     ready,
     manifest: bootsplashManifest,
     logo: bootsplashLogo,
-    statusBarTranslucent: true,
-    navigationBarTranslucent: true,
     animate: () => {
       Animated.parallel([
         Animated.timing(scale, {
