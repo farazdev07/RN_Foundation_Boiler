@@ -34,4 +34,18 @@ describe('parseEnv', () => {
 
     expect(parseEnv(local).API_URL).toBe(local.API_URL);
   });
+
+  it('treats an empty or missing socket URL as off, and requires HTTPS for one outside dev', () => {
+    expect(parseEnv({ ...valid, SOCKET_URL: '' }).SOCKET_URL).toBe('');
+    expect(parseEnv(valid).SOCKET_URL).toBeUndefined();
+    expect(() =>
+      parseEnv({ ...valid, SOCKET_URL: 'ws://rt.example.com' }),
+    ).toThrow();
+    expect(() =>
+      parseEnv({ ...valid, SOCKET_URL: 'http://rt.example.com' }),
+    ).toThrow('SOCKET_URL must use HTTPS');
+    expect(
+      parseEnv({ ...valid, SOCKET_URL: 'https://rt.example.com' }).SOCKET_URL,
+    ).toBe('https://rt.example.com');
+  });
 });

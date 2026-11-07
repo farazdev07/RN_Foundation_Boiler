@@ -167,6 +167,18 @@ const cases = [
     RESTRICTED,
   ],
   [
+    'socket.io in a feature',
+    'src/features/alpha/x.ts',
+    'socket.io-client',
+    RESTRICTED,
+  ],
+  [
+    'socket.io elsewhere in shared/api',
+    'src/shared/api/x.ts',
+    'socket.io-client',
+    RESTRICTED,
+  ],
+  [
     'Sentry in a screen',
     'src/screens/alpha/x.ts',
     '@sentry/react-native',
@@ -235,6 +247,12 @@ const cases = [
     'navigation in a screen',
     'src/screens/alpha/x.ts',
     '@react-navigation/native',
+    null,
+  ],
+  [
+    'socket.io in shared/api/socket',
+    'src/shared/api/socket/x.ts',
+    'socket.io-client',
     null,
   ],
   [

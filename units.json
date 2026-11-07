@@ -39,5 +39,17 @@
     "paths": ["src/shared/ui/PhoneInput"],
     "touchpoints": ["src/shared/ui/index.ts"],
     "packages": ["libphonenumber-js"]
+  },
+  "socket": {
+    "paths": [
+      "src/shared/api/socket",
+      "src/app/services/useRealtime.ts",
+      "src/app/services/useRealtime.test.tsx"
+    ],
+    "touchpoints": [
+      "src/shared/api/index.ts",
+      "src/app/services/AppServices.tsx"
+    ],
+    "packages": ["socket.io-client", "socket.io"]
   }
 }

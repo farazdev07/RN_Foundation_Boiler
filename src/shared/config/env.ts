@@ -6,6 +6,8 @@ const envSchema = z.object({
   API_URL: z.url(),
   CDN_URL: z.url(),
   SENTRY_DSN: z.string().optional(),
+  // Empty or missing turns the realtime connection off.
+  SOCKET_URL: z.union([z.url(), z.literal('')]).optional(),
 });
 
 export type Env = z.infer<typeof envSchema>;
@@ -22,6 +24,13 @@ export const parseEnv = (source: unknown): Env => {
     !parsed.data.API_URL.startsWith('https://')
   ) {
     throw new Error('API_URL must use HTTPS outside the dev environment');
+  }
+  if (
+    parsed.data.APP_ENV !== 'dev' &&
+    parsed.data.SOCKET_URL &&
+    !parsed.data.SOCKET_URL.startsWith('https://')
+  ) {
+    throw new Error('SOCKET_URL must use HTTPS outside the dev environment');
   }
   return parsed.data;
 };

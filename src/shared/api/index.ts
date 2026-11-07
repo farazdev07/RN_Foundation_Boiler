@@ -15,3 +15,11 @@ export {
   setTokens,
   type Tokens,
 } from './tokens';
+// @unit-start:socket
+export {
+  createSocketClient,
+  socket,
+  type SocketClient,
+  type SocketStatus,
+} from './socket';
+// @unit-end:socket

@@ -52,6 +52,10 @@ const banned = {
     group: ['@react-native-community/netinfo'],
     message: 'NetInfo is only importable in shared/lib/network.',
   },
+  socketIo: {
+    group: ['socket.io-client'],
+    message: 'Use the socket from @shared/api.',
+  },
   sentry: {
     group: ['@sentry/*'],
     message: 'Report errors through @shared/lib/monitoring.',
@@ -63,7 +67,8 @@ const banned = {
   },
 };
 
-const { asyncStorage, mmkv, keychain, netInfo, sentry, navigation } = banned;
+const { asyncStorage, mmkv, keychain, netInfo, socketIo, sentry, navigation } =
+  banned;
 
 // Flat config replaces a rule's options rather than merging them, so every path
 // needs one complete list. Later blocks win; these go from general to specific.
@@ -75,29 +80,33 @@ const restrict = (files, patterns) => ({
 const importRestrictions = [
   restrict(
     ['src/**/*.{ts,tsx}'],
-    [asyncStorage, mmkv, keychain, netInfo, sentry],
+    [asyncStorage, mmkv, keychain, netInfo, socketIo, sentry],
   ),
   restrict(
     ['src/features/**/*.{ts,tsx}', 'src/entities/**/*.{ts,tsx}'],
-    [asyncStorage, mmkv, keychain, netInfo, sentry, navigation],
+    [asyncStorage, mmkv, keychain, netInfo, socketIo, sentry, navigation],
   ),
   restrict(
     ['src/shared/storage/kv/**/*.{ts,tsx}'],
-    [asyncStorage, keychain, netInfo, sentry],
+    [asyncStorage, keychain, netInfo, socketIo, sentry],
   ),
   restrict(
     ['src/shared/storage/secure/**/*.{ts,tsx}'],
-    [asyncStorage, mmkv, netInfo, sentry],
+    [asyncStorage, mmkv, netInfo, socketIo, sentry],
   ),
   // Tests stub these packages, so they have to name them.
   restrict(['src/**/*.test.{ts,tsx}'], [asyncStorage]),
   restrict(
     ['src/shared/lib/network/**/*.{ts,tsx}'],
-    [asyncStorage, mmkv, keychain, sentry],
+    [asyncStorage, mmkv, keychain, socketIo, sentry],
   ),
   restrict(
     ['src/app/monitoring/**/*.{ts,tsx}'],
-    [asyncStorage, mmkv, keychain, netInfo],
+    [asyncStorage, mmkv, keychain, netInfo, socketIo],
+  ),
+  restrict(
+    ['src/shared/api/socket/**/*.{ts,tsx}'],
+    [asyncStorage, mmkv, keychain, netInfo, sentry],
   ),
 ];
 
