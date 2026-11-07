@@ -118,3 +118,17 @@ jest.mock('react-native-bootsplash', () => ({
     },
   ),
 }));
+
+// @unit-start:date-time
+// The picker is native. The iOS component becomes a View that tests can fire
+// onChange on; the Android dialog becomes a spy.
+jest.mock('@react-native-community/datetimepicker', () => {
+  const { View } =
+    jest.requireActual<typeof import('react-native')>('react-native');
+  return {
+    __esModule: true,
+    default: View,
+    DateTimePickerAndroid: { open: jest.fn(), dismiss: jest.fn() },
+  };
+});
+// @unit-end:date-time

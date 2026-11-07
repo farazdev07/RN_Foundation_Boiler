@@ -29,5 +29,10 @@
   "image-viewer": {
     "paths": ["src/shared/ui/ImageViewer"],
     "touchpoints": ["src/shared/ui/index.ts"]
+  },
+  "date-time": {
+    "paths": ["src/shared/ui/date-time"],
+    "touchpoints": ["src/shared/ui/index.ts", "jest.setup.ts"],
+    "packages": ["@react-native-community/datetimepicker"]
   }
 }
