@@ -99,6 +99,12 @@ android {
         // suffixes make the application ID differ from the namespace.
         resValue "string", "build_config_package", "com.faraz.foundation"
     }
+    // Fonts live once in src/shared/assets/native; iOS references the same files.
+    sourceSets {
+        main {
+            assets.srcDirs += ["../../src/shared/assets/native"]
+        }
+    }
     flavorDimensions = ["environment"]
     productFlavors {
         dev {

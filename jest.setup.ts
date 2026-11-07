@@ -42,6 +42,14 @@ jest.mock('react-native-config', () => ({
   },
 }));
 
+
+jest.mock('react-native-localize', () => ({
+  findBestLanguageTag: jest.fn(() => ({
+    languageTag: 'en',
+    isRTL: false,
+  })),
+}));
+
 jest.mock('@react-native-community/netinfo', () => {
   const online = { isConnected: true, isInternetReachable: true };
   const netInfo = {
