@@ -70,6 +70,32 @@ jobs:
       - run: ./gradlew assembleDevDebug -PreactNativeArchitectures=arm64-v8a
         working-directory: android
 
+  # The same generated app as create-app, built for iOS. create-app renames the
+  # Xcode project and schemes, and drops the Podfile.lock.
+  create-app-ios:
+    if: github.event_name == 'pull_request' || github.ref == 'refs/heads/main'
+    runs-on: xcode-27
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.2'
+          bundler-cache: true
+      - run: corepack enable
+      - run: node scripts/create-app.js --name AcmeShop --bundle-id com.acme.shop --display-name "Acme Shop" --remove all
+      - run: yarn install --no-immutable
+      - run: bundle exec pod install
+        working-directory: ios
+      - run: >-
+          xcodebuild -workspace AcmeShop.xcworkspace
+          -scheme AcmeShop-Dev -configuration Dev-Debug
+          -sdk iphonesimulator -destination 'generic/platform=iOS Simulator'
+          build
+        working-directory: ios
+
   ios:
     if: github.event_name == 'pull_request' || github.ref == 'refs/heads/main'
     # Standard runner: free on public repositories, per GitHub's runner reference.
