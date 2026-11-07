@@ -8,9 +8,11 @@ import {
   clearTokens,
   getAccessToken,
   sessionExpired,
+  resumeSession,
   setRefreshHandler,
   setTokens,
 } from '@shared/api';
+import { err, ok } from '@shared/lib/result';
 
 const api = baseApi.injectEndpoints({
   overrideExisting: true,
@@ -119,7 +121,7 @@ describe('baseQuery', () => {
   describe('on 401', () => {
     it('refreshes and retries once with the new token', async () => {
       await setTokens(tokens, { persist: false });
-      const handler = jest.fn(() => Promise.resolve(fresh));
+      const handler = jest.fn(() => Promise.resolve(ok(fresh)));
       setRefreshHandler(handler);
       fetchMock
         .mockResolvedValueOnce(json(401))
@@ -137,7 +139,7 @@ describe('baseQuery', () => {
 
     it('refreshes only once for a burst of expired requests', async () => {
       await setTokens(tokens, { persist: false });
-      const handler = jest.fn(() => Promise.resolve(fresh));
+      const handler = jest.fn(() => Promise.resolve(ok(fresh)));
       setRefreshHandler(handler);
       fetchMock.mockImplementation(async request =>
         request.headers.get('Authorization') === 'Bearer new'
@@ -160,10 +162,8 @@ describe('baseQuery', () => {
       ]);
     });
 
-    it.each([
-      ['refresh is rejected', () => Promise.resolve(null)],
-      ['refresh throws', () => Promise.reject(new Error('offline'))],
-    ])('ends the session once when %s', async (_name, handler) => {
+    it('ends the session once when the refresh is rejected', async () => {
+      const handler = () => Promise.resolve(err('rejected' as const));
       await setTokens(tokens, { persist: false });
       setRefreshHandler(handler);
       fetchMock.mockImplementation(async () => json(401));
@@ -181,8 +181,47 @@ describe('baseQuery', () => {
       expect(getAccessToken()).toBeNull();
     });
 
+    it.each([
+      ['unavailable', () => Promise.resolve(err('unavailable' as const))],
+      ['throws', () => Promise.reject(new Error('offline'))],
+    ])(
+      'keeps the session when the refresh server is %s',
+      async (_name, handler) => {
+        await setTokens(tokens, { persist: false });
+        setRefreshHandler(handler);
+        fetchMock.mockImplementation(async () => json(401));
+        const { store, actions } = makeStore();
+
+        const result = await store.dispatch(
+          api.endpoints.item.initiate('1', { subscribe: false }),
+        );
+
+        expect(result.error).toMatchObject({ kind: 'http', status: 401 });
+        expect(actions).not.toContain(sessionExpired.type);
+        expect(getAccessToken()).toBe('old');
+      },
+    );
+
+    it('refreshes a resumed session on its first request', async () => {
+      resumeSession('refresh');
+      const handler = jest.fn(() => Promise.resolve(ok(fresh)));
+      setRefreshHandler(handler);
+      fetchMock
+        .mockResolvedValueOnce(json(401))
+        .mockResolvedValueOnce(json(200, { id: 1 }));
+      const { store } = makeStore();
+
+      const result = await store.dispatch(
+        api.endpoints.item.initiate('1', { subscribe: false }),
+      );
+
+      expect(headerOf(fetchMock.mock.calls[0]!)).toBeNull();
+      expect(handler).toHaveBeenCalledWith('refresh');
+      expect(result.data).toEqual({ id: 1 });
+    });
+
     it('does not refresh a request sent without a token', async () => {
-      const handler = jest.fn(() => Promise.resolve(fresh));
+      const handler = jest.fn(() => Promise.resolve(ok(fresh)));
       setRefreshHandler(handler);
       fetchMock.mockResolvedValueOnce(json(401, { message: 'Bad login' }));
       const { store } = makeStore();

@@ -8,6 +8,7 @@ import {
 } from '@reduxjs/toolkit/query';
 import { env } from '@shared/config';
 import { devLog } from '@shared/lib/logger';
+import { err, type Result } from '@shared/lib/result';
 import { isRetryable, toAppError, type AppError } from './errors';
 import {
   clearTokens,
@@ -25,7 +26,14 @@ const RETRY_BASE_DELAY_MS = 300;
 // reacts to it.
 export const sessionExpired = createAction('session/expired');
 
-type RefreshHandler = (refreshToken: string) => Promise<Tokens | null>;
+// `rejected`: the server refused the refresh token, so the session is over.
+// `unavailable`: the server could not answer (offline, timeout, 5xx), so the
+// session is kept and the request fails like any other network error.
+export type RefreshFailure = 'rejected' | 'unavailable';
+
+export type RefreshHandler = (
+  refreshToken: string,
+) => Promise<Result<Tokens, RefreshFailure>>;
 
 let refreshHandler: RefreshHandler | null = null;
 let refreshInFlight: Promise<boolean> | null = null;
@@ -49,14 +57,17 @@ const rawBaseQuery = fetchBaseQuery({
 
 const refresh = async (api: BaseQueryApi): Promise<boolean> => {
   const refreshToken = getRefreshToken();
-  const tokens =
+  const outcome: Result<Tokens, RefreshFailure> =
     refreshToken && refreshHandler
-      ? await refreshHandler(refreshToken).catch(() => null)
-      : null;
+      ? await refreshHandler(refreshToken).catch(() => err('unavailable'))
+      : err('rejected');
 
-  if (tokens) {
-    await rotateTokens(tokens);
+  if (outcome.ok) {
+    await rotateTokens(outcome.value);
     return true;
+  }
+  if (outcome.error === 'unavailable') {
+    return false;
   }
 
   await clearTokens();
@@ -94,7 +105,9 @@ const authenticatedQuery: BaseQueryFn<
   const sentWith = getAccessToken();
   let result = await rawBaseQuery(args, api, extraOptions);
 
-  if (result.error?.status === 401 && sentWith) {
+  // A signed-out request (a failed login, say) has no refresh token, so its 401
+  // is returned as it is.
+  if (result.error?.status === 401 && getRefreshToken()) {
     // Another request may already have refreshed while this one was in flight.
     const refreshed =
       getAccessToken() !== sentWith ? true : await refreshOnce(api);

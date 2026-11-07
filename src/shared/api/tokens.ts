@@ -9,7 +9,7 @@ const REFRESH_TOKEN_KEY = 'auth.refreshToken';
 
 // The access token only ever lives in memory. Without `persist` the refresh token
 // does too, so the session ends with the process.
-let current: Tokens | null = null;
+let current: { accessToken: string | null; refreshToken: string } | null = null;
 let persisted = false;
 
 export const getAccessToken = (): string | null => current?.accessToken ?? null;
@@ -34,6 +34,13 @@ export const setTokens = async (
 // A rotated token keeps the storage mode chosen when the session began.
 export const rotateTokens = (tokens: Tokens): Promise<void> =>
   setTokens(tokens, { persist: persisted });
+
+// A restored session starts with no access token. Its first request gets a 401,
+// which refreshes through the normal path once the network allows it.
+export const resumeSession = (refreshToken: string): void => {
+  current = { accessToken: null, refreshToken };
+  persisted = true;
+};
 
 export const readPersistedRefreshToken = (): Promise<string | null> =>
   secureStorage.get(REFRESH_TOKEN_KEY);
