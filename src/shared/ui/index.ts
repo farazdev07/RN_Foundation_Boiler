@@ -34,3 +34,4 @@ export {
   ToastViewport,
   type ToastVariant,
 } from './Toast';
+export { Carousel } from './Carousel'; // @unit:carousel

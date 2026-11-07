@@ -17,5 +17,9 @@
       "ios/RNFoundation/Info.plist",
       "src/app/App.test.tsx"
     ]
+  },
+  "carousel": {
+    "paths": ["src/shared/ui/Carousel"],
+    "touchpoints": ["src/shared/ui/index.ts"]
   }
 }
