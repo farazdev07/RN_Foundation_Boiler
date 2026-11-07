@@ -123,25 +123,30 @@ const logOutThroughSettings = async () => {
 };
 
 describe('App auth', () => {
+  // RTK Query leaves timers running after a test: a 15 s request timeout and a
+  // 500 ms subscription sync. Jest gives a finished worker 500 ms to exit, so
+  // any pending timer gets it force-exited. Unref'd timers still fire while the
+  // process lives but never hold it open. Installed once, so restoring the
+  // per-test mocks cannot remove it.
+  const realSetTimeout = globalThis.setTimeout;
+  beforeAll(() => {
+    globalThis.setTimeout = ((...args: Parameters<typeof setTimeout>) => {
+      const timer = realSetTimeout(...args);
+      (timer as unknown as { unref?: () => void }).unref?.();
+      return timer;
+    }) as typeof setTimeout;
+  });
+
+  afterAll(() => {
+    globalThis.setTimeout = realSetTimeout;
+  });
+
   beforeEach(() => {
     globalThis.fetch = jest.fn(fakeServer) as typeof fetch;
     revokedRefreshTokens.clear();
     expiredAccessTokens.clear();
     meAuthHeaders.length = 0;
     jest.spyOn(console, 'log').mockImplementation(() => undefined);
-
-    // RTK leaves its request-timeout timer running after a response. Unref it
-    // so it cannot hold the Jest worker open.
-    const realSetTimeout = setTimeout;
-    jest.spyOn(globalThis, 'setTimeout').mockImplementation(((
-      ...args: Parameters<typeof setTimeout>
-    ) => {
-      const timer = realSetTimeout(...args);
-      if ((args[1] ?? 0) >= 1000) {
-        (timer as unknown as { unref?: () => void }).unref?.();
-      }
-      return timer;
-    }) as typeof setTimeout);
   });
 
   afterEach(async () => {

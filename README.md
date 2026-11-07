@@ -55,6 +55,8 @@ This sets the app name and bundle IDs across Android and iOS. To also drop optio
 ## Good to know
 
 - `ios/build` holds generated codegen as well as build output. If you delete it, run `pod install` again.
+- The Sentry iOS SDK is downloaded into `~/Library/Caches/sentry-react-native` during `pod install`. If you clear
+  that folder, the iOS build fails with `'Sentry/Sentry.h' file not found` until you run `pod install` again.
 - If your machine has a different r27 NDK, pass `-PndkVersion=<version>` to Gradle.
 - Crash reporting uses Sentry and starts only when `SENTRY_DSN` is set in the `.env.*` file. Without it, nothing is
   sent. Remove it with `--remove sentry`. Delivery to a real Sentry project has not been tested, because the
