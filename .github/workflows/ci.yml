@@ -62,7 +62,9 @@ jobs:
       - uses: gradle/actions/setup-gradle@v4
       - run: corepack enable
       - run: node scripts/create-app.js --name AcmeShop --bundle-id com.acme.shop --display-name "Acme Shop" --remove all
-      - run: yarn install
+      # Removing units drops packages, so the new app's lockfile must change.
+      # Yarn refuses that in CI unless told otherwise.
+      - run: yarn install --no-immutable
       - run: yarn typecheck
       - run: yarn test
       - run: ./gradlew assembleDevDebug -PreactNativeArchitectures=arm64-v8a
