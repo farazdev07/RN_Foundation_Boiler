@@ -1,5 +1,7 @@
-# Signs in, proves the native modules work (including a real pan gesture),
-# then logs out. Uses dummyjson's public test user.
+# Signs in, favourites a product, checks it survives a relaunch, then logs out.
+# Covers the native modules through real screens: the Keychain (session
+# restore), MMKV (favourites on disk), gestures (carousel swipe, image viewer)
+# and deep links. Uses dummyjson's public test user.
 # Run: maestro --udid <device> test .maestro/smoke.yaml
 appId: com.faraz.foundation.dev
 ---
@@ -31,30 +33,74 @@ appId: com.faraz.foundation.dev
 - extendedWaitUntil:
     visible: 'Hi, Emily'
     timeout: 20000
+
+# Products: the list loads from the network.
+- tapOn:
+    id: 'tab-products'
 - extendedWaitUntil:
-    visible: 'worklet: pass'
-    timeout: 15000
-- assertVisible: 'mmkv: pass'
-- assertVisible: 'keychain: pass'
-- assertVisible: 'netinfo: pass'
-- assertVisible: 'gesture: pending'
-- swipe:
-    from:
-      id: 'check-gesture-box'
-    direction: RIGHT
-- assertVisible: 'gesture: pass'
+    visible:
+      id: 'product-1'
+    timeout: 20000
 # Keeps queries from waiting out the toast's lifetime for the screen to settle.
 - tapOn:
-    text: 'Show toast'
+    id: 'favorite-1'
     waitToSettleTimeoutMs: 300
-- assertVisible: 'Swipe me up'
+- assertVisible: 'Added to favourites'
 - swipe:
     from:
       id: 'toast'
     direction: UP
     waitToSettleTimeoutMs: 300
-- assertNotVisible: 'Swipe me up'
-# Opens Settings through the app's deep link rather than the tab.
+- assertNotVisible: 'Added to favourites'
+
+# Details: opened through its deep link. Product 6 has three images, so the
+# carousel can be swiped before opening and closing the full-screen viewer.
+- openLink: 'rn-foundation-dev://products/6'
+- runFlow:
+    when:
+      visible: 'Open'
+    commands:
+      - tapOn: 'Open'
+- extendedWaitUntil:
+    visible:
+      id: 'product-details'
+    timeout: 20000
+# Across the carousel by screen position: a swipe aimed at the list element
+# did not page it on iOS.
+- swipe:
+    start: '85%, 35%'
+    end: '10%, 35%'
+    duration: 400
+- assertVisible: '2 / 3'
+- tapOn: 'Image 2 of 3.*'
+- tapOn: 'Close'
+- assertVisible:
+    id: 'product-details'
+
+# Favourites, reached through a deep link rather than the tab.
+- openLink: 'rn-foundation-dev://favorites'
+- runFlow:
+    when:
+      visible: 'Open'
+    commands:
+      - tapOn: 'Open'
+- extendedWaitUntil:
+    visible:
+      id: 'product-1'
+    timeout: 10000
+
+# A relaunch restores the session from the Keychain and the favourite from MMKV.
+- stopApp
+- launchApp
+- extendedWaitUntil:
+    visible: 'Hi, Emily'
+    timeout: 30000
+- tapOn:
+    id: 'tab-favorites'
+- assertVisible:
+    id: 'product-1'
+
+# Settings, again through a deep link, then logout.
 - openLink: 'rn-foundation-dev://settings'
 - runFlow:
     when:
