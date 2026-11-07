@@ -1,4 +1,20 @@
 {
+  "products": {
+    "paths": [
+      "src/entities/product",
+      "src/features/toggle-favorite",
+      "src/screens/product-list",
+      "src/screens/product-details",
+      "src/screens/favorites",
+      "src/app/products.test.tsx"
+    ],
+    "touchpoints": [
+      "src/app/store/store.ts",
+      "src/app/navigation/RootNavigator.tsx",
+      "src/app/i18n/index.ts"
+    ],
+    "uses": ["carousel", "image-viewer"]
+  },
   "sentry": {
     "paths": ["src/app/monitoring"],
     "touchpoints": ["index.js"],

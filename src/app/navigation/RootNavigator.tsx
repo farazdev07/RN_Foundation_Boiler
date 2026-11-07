@@ -11,8 +11,11 @@ import {
   type NativeStackNavigationOptions,
 } from '@react-navigation/native-stack';
 import { useSessionStatus } from '@entities/session';
+import { FavoritesScreen } from '@screens/favorites'; // @unit:products
 import { HomeScreen } from '@screens/home';
 import { LoginScreen } from '@screens/login';
+import { ProductDetailsScreen } from '@screens/product-details'; // @unit:products
+import { ProductListScreen } from '@screens/product-list'; // @unit:products
 import { SettingsScreen } from '@screens/settings';
 import { i18next } from '@shared/lib/i18n';
 import {
@@ -50,6 +53,24 @@ const Tabs = createBottomTabNavigator({
         tabBarButtonTestID: 'tab-home',
       },
     },
+    // @unit-start:products
+    Products: {
+      screen: ProductListScreen,
+      options: () => ({
+        title: i18next.t('productList:title'),
+        tabBarIcon: tabIcon('shopping-bag'),
+        tabBarButtonTestID: 'tab-products',
+      }),
+    },
+    Favorites: {
+      screen: FavoritesScreen,
+      options: () => ({
+        title: i18next.t('favorites:title'),
+        tabBarIcon: tabIcon('heart'),
+        tabBarButtonTestID: 'tab-favorites',
+      }),
+    },
+    // @unit-end:products
     Settings: {
       screen: SettingsScreen,
       // Options are static here, so the string is looked up once. Fine while the
@@ -85,7 +106,22 @@ const RootStack = createNativeStackNavigator({
   groups: {
     SignedIn: {
       if: useIsSignedIn,
-      screens: { Tabs },
+      screens: {
+        Tabs,
+        // @unit-start:products
+        ProductDetails: {
+          screen: ProductDetailsScreen,
+          layout: routeLayout,
+          // The title arrives with the product.
+          options: {
+            headerShown: true,
+            title: '',
+            headerBackButtonDisplayMode: 'minimal',
+          },
+          linking: { path: 'products/:id', parse: { id: Number } },
+        },
+        // @unit-end:products
+      },
     },
     SignedOut: {
       if: useIsSignedOut,
