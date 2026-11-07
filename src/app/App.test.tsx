@@ -2,6 +2,7 @@ import { createMMKV } from 'react-native-mmkv';
 import * as Keychain from 'react-native-keychain';
 import { z } from 'zod';
 import {
+  act,
   fireEvent,
   render,
   screen,
@@ -281,12 +282,15 @@ describe('App auth', () => {
 
     expiredAccessTokens.add('access-emilys-1');
     revokedRefreshTokens.add('refresh-emilys-1');
-    await store.dispatch(
-      getCurrentUser.initiate(undefined, {
-        forceRefetch: true,
-        subscribe: false,
-      }),
-    );
+    // Any authenticated request will do; refetching the user is the simplest.
+    await act(async () => {
+      await store.dispatch(
+        getCurrentUser.initiate(undefined, {
+          forceRefetch: true,
+          subscribe: false,
+        }),
+      );
+    });
 
     expect(await screen.findByTestId('login-submit')).toBeOnTheScreen();
     await waitFor(() => expect(draftNote.get()).toBeUndefined());
