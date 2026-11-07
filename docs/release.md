@@ -39,6 +39,13 @@ CI imports the certificate and profile from secrets into a temporary keychain fi
 **Not yet verified:** this needs an Apple Developer team, certificate and profile, so an iOS archive has not been
 signed with it.
 
+## Sentry source maps
+
+The template does not add Sentry's Gradle plugin or Xcode build phase, because both fail without an auth token.
+Without source maps, JS stack traces in Sentry are minified. When a project has a Sentry org, upload them in the
+release job with `SENTRY_AUTH_TOKEN` from CI secrets, following the
+[Sentry React Native source maps guide](https://docs.sentry.io/platforms/react-native/sourcemaps/).
+
 ## Before a release
 
 - `API_URL` is HTTPS in `.env.production`.

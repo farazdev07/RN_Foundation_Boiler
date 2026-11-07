@@ -56,4 +56,7 @@ This sets the app name and bundle IDs across Android and iOS. To also drop optio
 
 - `ios/build` holds generated codegen as well as build output. If you delete it, run `pod install` again.
 - If your machine has a different r27 NDK, pass `-PndkVersion=<version>` to Gradle.
+- Crash reporting uses Sentry and starts only when `SENTRY_DSN` is set in the `.env.*` file. Without it, nothing is
+  sent. Remove it with `--remove sentry`. Delivery to a real Sentry project has not been tested, because the
+  template has no DSN.
 - Releases are covered in [docs/release.md](docs/release.md).

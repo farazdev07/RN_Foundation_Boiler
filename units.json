@@ -1,1 +1,7 @@
-{}
+{
+  "sentry": {
+    "paths": ["src/app/monitoring"],
+    "touchpoints": ["index.js"],
+    "packages": ["@sentry/react-native"]
+  }
+}

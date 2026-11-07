@@ -166,6 +166,24 @@ const cases = [
     'react-native-mmkv',
     RESTRICTED,
   ],
+  [
+    'Sentry in a screen',
+    'src/screens/alpha/x.ts',
+    '@sentry/react-native',
+    RESTRICTED,
+  ],
+  [
+    'Sentry in shared',
+    'src/shared/alpha/x.ts',
+    '@sentry/react-native',
+    RESTRICTED,
+  ],
+  [
+    'Sentry elsewhere in app',
+    'src/app/x.ts',
+    '@sentry/react-native',
+    RESTRICTED,
+  ],
 
   // What must stay legal, so a rule that is too broad fails here too.
   ['app -> screen', 'src/app/x.ts', '@screens/alpha', null],
@@ -217,6 +235,12 @@ const cases = [
     'navigation in a screen',
     'src/screens/alpha/x.ts',
     '@react-navigation/native',
+    null,
+  ],
+  [
+    'Sentry in app/monitoring',
+    'src/app/monitoring/x.ts',
+    '@sentry/react-native',
     null,
   ],
 ];

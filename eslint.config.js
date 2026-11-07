@@ -52,6 +52,10 @@ const banned = {
     group: ['@react-native-community/netinfo'],
     message: 'NetInfo is only importable in shared/lib/network.',
   },
+  sentry: {
+    group: ['@sentry/*'],
+    message: 'Report errors through @shared/lib/monitoring.',
+  },
   navigation: {
     group: ['@react-navigation/*'],
     message:
@@ -59,7 +63,7 @@ const banned = {
   },
 };
 
-const { asyncStorage, mmkv, keychain, netInfo, navigation } = banned;
+const { asyncStorage, mmkv, keychain, netInfo, sentry, navigation } = banned;
 
 // Flat config replaces a rule's options rather than merging them, so every path
 // needs one complete list. Later blocks win; these go from general to specific.
@@ -69,24 +73,31 @@ const restrict = (files, patterns) => ({
 });
 
 const importRestrictions = [
-  restrict(['src/**/*.{ts,tsx}'], [asyncStorage, mmkv, keychain, netInfo]),
+  restrict(
+    ['src/**/*.{ts,tsx}'],
+    [asyncStorage, mmkv, keychain, netInfo, sentry],
+  ),
   restrict(
     ['src/features/**/*.{ts,tsx}', 'src/entities/**/*.{ts,tsx}'],
-    [asyncStorage, mmkv, keychain, netInfo, navigation],
+    [asyncStorage, mmkv, keychain, netInfo, sentry, navigation],
   ),
   restrict(
     ['src/shared/storage/kv/**/*.{ts,tsx}'],
-    [asyncStorage, keychain, netInfo],
+    [asyncStorage, keychain, netInfo, sentry],
   ),
   restrict(
     ['src/shared/storage/secure/**/*.{ts,tsx}'],
-    [asyncStorage, mmkv, netInfo],
+    [asyncStorage, mmkv, netInfo, sentry],
   ),
   // Tests stub these packages, so they have to name them.
   restrict(['src/**/*.test.{ts,tsx}'], [asyncStorage]),
   restrict(
     ['src/shared/lib/network/**/*.{ts,tsx}'],
-    [asyncStorage, mmkv, keychain],
+    [asyncStorage, mmkv, keychain, sentry],
+  ),
+  restrict(
+    ['src/app/monitoring/**/*.{ts,tsx}'],
+    [asyncStorage, mmkv, keychain, netInfo],
   ),
 ];
 
