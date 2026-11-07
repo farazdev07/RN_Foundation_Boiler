@@ -54,8 +54,6 @@
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Your photo library lets you pick photos and videos to attach.</string>
 	<!-- @unit-end:media -->
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string></string>
 	<key>RCTNewArchEnabled</key>
 	<true/>
 	<key>UIApplicationSceneManifest</key>
