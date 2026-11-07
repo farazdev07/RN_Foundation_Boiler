@@ -83,7 +83,8 @@ export function ZoomableImage({
 
   const doubleTap = useTapGesture({
     numberOfTaps: 2,
-    onDeactivate: () => {
+    // A tap is discrete: it activates once recognised, so act on activation.
+    onActivate: () => {
       'worklet';
       settle(nextDoubleTapScale(scale.value));
     },
