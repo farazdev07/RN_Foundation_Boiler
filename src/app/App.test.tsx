@@ -1,3 +1,4 @@
+import { Linking } from 'react-native';
 import { createMMKV } from 'react-native-mmkv';
 import * as Keychain from 'react-native-keychain';
 import { z } from 'zod';
@@ -260,6 +261,20 @@ describe('App auth', () => {
 
     expect(await screen.findByText('Hi, Emily')).toBeOnTheScreen();
     expect(meAuthHeaders).toEqual([null, 'Bearer access-emilys-2']);
+  });
+
+  it('opens the screen a deep link points to', async () => {
+    markInstalled();
+    await Keychain.setGenericPassword('auth.refreshToken', 'refresh-emilys-1', {
+      service: 'auth.refreshToken',
+    });
+    jest
+      .spyOn(Linking, 'getInitialURL')
+      .mockResolvedValue('rn-foundation-dev://settings');
+
+    await render(<App />);
+
+    expect(await screen.findByTestId('settings-logout')).toBeOnTheScreen();
   });
 
   it('drops a Keychain token left by a previous install', async () => {

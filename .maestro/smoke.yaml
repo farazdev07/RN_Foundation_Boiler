@@ -54,8 +54,17 @@ appId: com.faraz.foundation.dev
     direction: UP
     waitToSettleTimeoutMs: 300
 - assertNotVisible: 'Swipe me up'
-- tapOn:
-    id: 'tab-settings'
+# Opens Settings through the app's deep link rather than the tab.
+- openLink: 'rn-foundation-dev://settings'
+- runFlow:
+    when:
+      visible: 'Open'
+    commands:
+      - tapOn: 'Open'
+- extendedWaitUntil:
+    visible:
+      id: 'radio-dark'
+    timeout: 10000
 - tapOn:
     id: 'radio-dark'
 - takeScreenshot: settings-dark
@@ -63,20 +72,8 @@ appId: com.faraz.foundation.dev
     id: 'radio-system'
 - tapOn:
     id: 'settings-logout'
-# Maestro's iOS driver does not see inside an RN Modal (it reports only the
-# backdrop), so iOS taps the confirm button's position. Android uses its id.
-- runFlow:
-    when:
-      platform: Android
-    commands:
-      - tapOn:
-          id: 'logout-dialog-confirm'
-- runFlow:
-    when:
-      platform: iOS
-    commands:
-      - tapOn:
-          point: '73%,55%'
+- tapOn:
+    id: 'logout-dialog-confirm'
 - extendedWaitUntil:
     visible:
       id: 'login-submit'

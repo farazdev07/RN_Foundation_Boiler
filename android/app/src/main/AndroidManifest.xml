@@ -22,6 +22,14 @@
             <action android:name="android.intent.action.MAIN" />
             <category android:name="android.intent.category.LAUNCHER" />
         </intent-filter>
+        <!-- Deep links. Each flavour has its own scheme, so dev, staging and
+             prod can be installed together without sharing links. -->
+        <intent-filter>
+            <action android:name="android.intent.action.VIEW" />
+            <category android:name="android.intent.category.DEFAULT" />
+            <category android:name="android.intent.category.BROWSABLE" />
+            <data android:scheme="${appScheme}" />
+        </intent-filter>
       </activity>
     </application>
 </manifest>

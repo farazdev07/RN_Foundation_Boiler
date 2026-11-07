@@ -372,6 +372,7 @@
 			baseConfigurationReference = 6F70011812B1A90070244186 /* Pods-RNFoundation.prod-debug.xcconfig */;
 			buildSettings = {
 				APP_DISPLAY_NAME = "RN Foundation";
+				APP_URL_SCHEME = rn-foundation;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
@@ -478,6 +479,7 @@
 			baseConfigurationReference = 3CCC945034D840B3B580E81F /* Pods-RNFoundation.dev-debug.xcconfig */;
 			buildSettings = {
 				APP_DISPLAY_NAME = "RN Foundation Dev";
+				APP_URL_SCHEME = rn-foundation-dev;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
@@ -510,6 +512,7 @@
 			baseConfigurationReference = B14C0C92D7F60F3B57FCEF34 /* Pods-RNFoundation.dev-release.xcconfig */;
 			buildSettings = {
 				APP_DISPLAY_NAME = "RN Foundation Dev";
+				APP_URL_SCHEME = rn-foundation-dev;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
@@ -694,6 +697,7 @@
 			baseConfigurationReference = D3296353A0D695885F13EE82 /* Pods-RNFoundation.prod-release.xcconfig */;
 			buildSettings = {
 				APP_DISPLAY_NAME = "RN Foundation";
+				APP_URL_SCHEME = rn-foundation;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
@@ -723,6 +727,7 @@
 			baseConfigurationReference = 70630444AE720387B4992DEF /* Pods-RNFoundation.staging-release.xcconfig */;
 			buildSettings = {
 				APP_DISPLAY_NAME = "RN Foundation Staging";
+				APP_URL_SCHEME = rn-foundation-staging;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
@@ -914,6 +919,7 @@
 			baseConfigurationReference = 12279B5F51A6912D57C4FE56 /* Pods-RNFoundation.staging-debug.xcconfig */;
 			buildSettings = {
 				APP_DISPLAY_NAME = "RN Foundation Staging";
+				APP_URL_SCHEME = rn-foundation-staging;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;

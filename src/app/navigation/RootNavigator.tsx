@@ -22,6 +22,7 @@ import {
   useTheme,
   type IconName,
 } from '@shared/ui';
+import { linking } from './linking';
 import { toNavigationTheme } from './navigationTheme';
 
 // Each route gets its own boundary, so one broken screen leaves the rest usable.
@@ -118,7 +119,9 @@ export function RootNavigator() {
     return null;
   }
 
-  return <Navigation ref={navigationRef} theme={navigationTheme} />;
+  return (
+    <Navigation ref={navigationRef} theme={navigationTheme} linking={linking} />
+  );
 }
 
 const styles = StyleSheet.create({
