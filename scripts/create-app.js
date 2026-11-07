@@ -222,6 +222,23 @@ function removeUnits(root, requested) {
         `Unknown unit "${name}". Known: ${Object.keys(units).join(', ')}`,
       );
     }
+  }
+
+  // A unit lists the units it imports under `uses`. Removing one of those
+  // while keeping the unit that uses it would leave code that cannot build.
+  for (const [name, unit] of Object.entries(units)) {
+    if (names.includes(name)) {
+      continue;
+    }
+    const missing = (unit.uses ?? []).filter(used => names.includes(used));
+    if (missing.length) {
+      throw new Error(
+        `Unit "${name}" uses ${missing.map(used => `"${used}"`).join(', ')}; remove "${name}" too, or keep ${missing.length > 1 ? 'them' : 'it'}`,
+      );
+    }
+  }
+
+  for (const name of names) {
     removeUnit(root, name, units[name]);
     delete units[name];
   }

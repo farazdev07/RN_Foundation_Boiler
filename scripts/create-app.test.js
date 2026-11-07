@@ -188,6 +188,27 @@ describe('createApp', () => {
     );
   });
 
+  it('refuses to remove a unit that a kept unit uses', () => {
+    write(root, 'src/shared/ui/Carousel/index.ts', 'export {};');
+    write(
+      root,
+      'units.json',
+      JSON.stringify({
+        carousel: { paths: ['src/shared/ui/Carousel'] },
+        products: { paths: [], uses: ['carousel'] },
+      }),
+    );
+
+    expect(() => createApp(root, { ...options, remove: 'carousel' })).toThrow(
+      'Unit "products" uses "carousel"',
+    );
+    // Checked before anything is deleted.
+    expect(fs.existsSync(path.join(root, 'src/shared/ui/Carousel'))).toBe(true);
+
+    createApp(root, { ...options, remove: 'carousel,products' });
+    expect(JSON.parse(read(root, 'units.json'))).toEqual({});
+  });
+
   it('rejects an unknown unit', () => {
     expect(() => createApp(root, { ...options, remove: 'nope' })).toThrow(
       'Unknown unit',
