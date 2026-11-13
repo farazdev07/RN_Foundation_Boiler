@@ -1,4 +1,5 @@
 import type { FetchBaseQueryError } from '@reduxjs/toolkit/query';
+import { i18next } from '@shared/lib/i18n';
 
 export type AppError =
   | { kind: 'network' }
@@ -42,12 +43,12 @@ export const isRetryable = (error: AppError): boolean =>
 export const getErrorMessage = (error: AppError): string => {
   switch (error.kind) {
     case 'network':
-      return 'Check your connection and try again.';
+      return i18next.t('common:errorNetwork');
     case 'timeout':
-      return 'The request took too long. Try again.';
+      return i18next.t('common:errorTimeout');
     case 'http':
-      return error.message ?? 'Something went wrong. Try again.';
+      return error.message ?? i18next.t('common:errorGeneric');
     default:
-      return 'Something went wrong. Try again.';
+      return i18next.t('common:errorGeneric');
   }
 };

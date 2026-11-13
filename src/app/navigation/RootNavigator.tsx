@@ -48,10 +48,11 @@ const Tabs = createBottomTabNavigator({
   screens: {
     Home: {
       screen: HomeScreen,
-      options: {
+      options: () => ({
+        title: i18next.t('home:title'),
         tabBarIcon: tabIcon('house'),
         tabBarButtonTestID: 'tab-home',
-      },
+      }),
     },
     // @unit-start:products
     Products: {

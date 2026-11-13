@@ -1,6 +1,7 @@
 import type { PropsWithChildren } from 'react';
 import { Modal as RNModal, Pressable, StyleSheet, View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { useTranslation } from '@shared/lib/i18n';
 import { ToastViewport } from '../Toast';
 import { makeStyles } from '../theme';
 
@@ -39,6 +40,7 @@ export function Modal({
   children,
 }: Props) {
   const styles = useStyles();
+  const { t } = useTranslation();
 
   return (
     <RNModal
@@ -54,7 +56,7 @@ export function Modal({
             the dialog's own buttons from VoiceOver and UI tests. */}
         <Pressable
           accessibilityRole="button"
-          accessibilityLabel="Close"
+          accessibilityLabel={t('close')}
           disabled={!dismissible}
           onPress={onRequestClose}
           style={[StyleSheet.absoluteFill, styles.backdrop]}

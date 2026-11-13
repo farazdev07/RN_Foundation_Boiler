@@ -1,10 +1,12 @@
 import { useMemo, useState } from 'react';
 import { FlatList, Pressable } from 'react-native';
+import { useTranslation } from '@shared/lib/i18n';
 import { Modal } from '../Modal';
 import { Text } from '../Text';
 import { TextInput } from '../TextInput';
 import { makeStyles } from '../theme';
 import {
+  dialPrefix,
   formatAsYouType,
   listCountries,
   matchesCountry,
@@ -52,13 +54,15 @@ export function PhoneInput({
   label,
   error,
   placeholder,
-  searchPlaceholder = 'Search country or code',
-  chooseCountryLabel = 'Choose country',
+  searchPlaceholder,
+  chooseCountryLabel,
   disabled = false,
   locale,
   testID,
 }: Props) {
   const styles = useStyles();
+  const { t } = useTranslation();
+  const searchLabel = searchPlaceholder ?? t('searchCountry');
   const countries = useMemo(() => listCountries(locale), [locale]);
   const [picking, setPicking] = useState(false);
   const [query, setQuery] = useState('');
@@ -99,14 +103,16 @@ export function PhoneInput({
           <Pressable
             {...(testID && { testID: `${testID}-country` })}
             accessibilityRole="button"
-            accessibilityLabel={`${chooseCountryLabel}, ${selected?.name ?? value.country}`}
+            accessibilityLabel={`${chooseCountryLabel ?? t('chooseCountry')}, ${selected?.name ?? value.country}`}
             disabled={disabled}
             onPress={() => setPicking(true)}
             style={styles.country}
             hitSlop={8}
           >
             <Text>{selected?.flag}</Text>
-            <Text color="textSecondary">{`+${selected?.callingCode ?? ''}`}</Text>
+            <Text color="textSecondary">
+              {dialPrefix(selected?.callingCode)}
+            </Text>
           </Pressable>
         }
       />
@@ -114,7 +120,8 @@ export function PhoneInput({
         <TextInput
           value={query}
           onChangeText={setQuery}
-          placeholder={searchPlaceholder}
+          placeholder={searchLabel}
+          accessibilityLabel={searchLabel}
           autoCorrect={false}
           autoCapitalize="none"
         />
@@ -134,7 +141,7 @@ export function PhoneInput({
             >
               <Text>{item.flag}</Text>
               <Text style={styles.optionName}>{item.name}</Text>
-              <Text color="textSecondary">{`+${item.callingCode}`}</Text>
+              <Text color="textSecondary">{dialPrefix(item.callingCode)}</Text>
             </Pressable>
           )}
         />

@@ -7,6 +7,8 @@ const { ESLint } = require('eslint');
 const fixtures = path.join(__dirname, 'boundary-fixtures');
 const DEPENDENCIES = 'boundaries/dependencies';
 const RESTRICTED = 'no-restricted-imports';
+const JSX_TEXT = 'react/jsx-no-literals';
+const TEXT_PROP = 'no-restricted-syntax';
 
 const importing = source =>
   `import { value } from '${source}';\nexport { value };\n`;
@@ -293,7 +295,71 @@ const cases = [
   ],
 ];
 
-const ARCHITECTURE_RULES = new Set([DEPENDENCIES, RESTRICTED]);
+// Whole snippets rather than one import, for rules about what a file contains.
+// [description, file being linted, code, expected rule or null]
+const codeCases = [
+  [
+    'core UI -> optional UI unit',
+    'src/shared/ui/Button/x.ts',
+    importing('../Carousel'),
+    RESTRICTED,
+  ],
+  [
+    'optional UI unit -> another unit',
+    'src/shared/ui/PhoneInput/x.ts',
+    importing('../date-time'),
+    RESTRICTED,
+  ],
+  [
+    'optional UI unit -> core UI',
+    'src/shared/ui/PhoneInput/x.ts',
+    importing('../TextInput'),
+    null,
+  ],
+  [
+    'hard-coded JSX text',
+    'src/screens/alpha/x.tsx',
+    'export const X = () => <Text>Save</Text>;\n',
+    JSX_TEXT,
+  ],
+  [
+    'hard-coded label prop',
+    'src/screens/alpha/x.tsx',
+    'export const X = () => <Button title="Save" />;\n',
+    TEXT_PROP,
+  ],
+  [
+    'hard-coded label in a condition',
+    'src/screens/alpha/x.tsx',
+    "export const X = (on) => <Button accessibilityLabel={on ? 'Hide' : 'Show'} />;\n",
+    TEXT_PROP,
+  ],
+  [
+    'hard-coded default for a label prop',
+    'src/shared/ui/Alpha/x.tsx',
+    "export const X = ({ closeLabel = 'Close' }) => <Button title={closeLabel} />;\n",
+    TEXT_PROP,
+  ],
+  [
+    'translated text and non-text props',
+    'src/screens/alpha/x.tsx',
+    'export const X = ({ t }) => <Button title={t(\'save\')} variant="ghost" testID="save" />;\n',
+    null,
+  ],
+  [
+    'literal text in a test',
+    'src/screens/alpha/x.test.tsx',
+    'export const X = () => <Text>Save</Text>;\n',
+    null,
+  ],
+];
+
+const ARCHITECTURE_RULES = new Set([
+  DEPENDENCIES,
+  RESTRICTED,
+  JSX_TEXT,
+  TEXT_PROP,
+]);
 
 async function main() {
   // The resolver reads ./tsconfig.json from the process cwd, not the ESLint cwd.
@@ -307,8 +373,18 @@ async function main() {
 
   let failures = 0;
 
-  for (const [description, file, source, expected] of cases) {
-    const [result] = await eslint.lintText(importing(source), {
+  const all = [
+    ...cases.map(([description, file, source, expected]) => [
+      description,
+      file,
+      importing(source),
+      expected,
+    ]),
+    ...codeCases,
+  ];
+
+  for (const [description, file, code, expected] of all) {
+    const [result] = await eslint.lintText(code, {
       filePath: path.join(fixtures, file),
     });
     const fired = [
@@ -331,7 +407,7 @@ async function main() {
   }
 
   console.log(
-    `boundary fixtures: ${cases.length - failures}/${cases.length} passed`,
+    `boundary fixtures: ${all.length - failures}/${all.length} passed`,
   );
   process.exitCode = failures === 0 ? 0 : 1;
 }

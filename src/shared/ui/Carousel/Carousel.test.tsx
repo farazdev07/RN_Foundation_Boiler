@@ -26,8 +26,7 @@ const renderCarousel = async (
   return onIndexChange;
 };
 
-const position = () =>
-  screen.getByLabelText(/^\d+ \/ \d+$/).props.accessibilityLabel;
+const position = () => screen.getByLabelText(/^Slide/).props.accessibilityLabel;
 
 describe('activeDotIndex', () => {
   it.each([
@@ -55,16 +54,16 @@ describe('Carousel', () => {
   it('advances on its own and wraps around', async () => {
     const onIndexChange = await renderCarousel({ intervalMs: 1000 });
 
-    expect(position()).toBe('1 / 3');
+    expect(position()).toBe('Slide 1 of 3');
     await act(async () => {
       jest.advanceTimersByTime(1000);
     });
-    expect(position()).toBe('2 / 3');
+    expect(position()).toBe('Slide 2 of 3');
     await act(async () => {
       jest.advanceTimersByTime(2000);
     });
 
-    expect(position()).toBe('1 / 3');
+    expect(position()).toBe('Slide 1 of 3');
     expect(onIndexChange).toHaveBeenLastCalledWith(0);
   });
 
@@ -73,7 +72,7 @@ describe('Carousel', () => {
     await act(async () => {
       jest.advanceTimersByTime(3000);
     });
-    expect(position()).toBe('1 / 3');
+    expect(position()).toBe('Slide 1 of 3');
   });
 
   it('pauses while the user drags and follows the swipe', async () => {
@@ -84,12 +83,12 @@ describe('Carousel', () => {
     await act(async () => {
       jest.advanceTimersByTime(3000);
     });
-    expect(position()).toBe('1 / 3');
+    expect(position()).toBe('Slide 1 of 3');
 
     await fireEvent(list, 'momentumScrollEnd', {
       nativeEvent: { contentOffset: { x: 600, y: 0 } },
     });
-    expect(position()).toBe('3 / 3');
+    expect(position()).toBe('Slide 3 of 3');
     expect(onIndexChange).toHaveBeenLastCalledWith(2);
   });
 
@@ -108,7 +107,7 @@ describe('Carousel', () => {
       jest.advanceTimersByTime(3000);
     });
 
-    expect(position()).toBe('1 / 3');
+    expect(position()).toBe('Slide 1 of 3');
   });
 
   it('shows no dots and does not move with a single slide', async () => {
@@ -118,6 +117,6 @@ describe('Carousel', () => {
     });
 
     expect(screen.getByText('Only')).toBeOnTheScreen();
-    expect(screen.queryByLabelText(/\//)).toBeNull();
+    expect(screen.queryByLabelText(/Slide/)).toBeNull();
   });
 });

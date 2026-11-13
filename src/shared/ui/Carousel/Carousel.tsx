@@ -13,6 +13,7 @@ import {
   type NativeScrollEvent,
   type NativeSyntheticEvent,
 } from 'react-native';
+import { useTranslation } from '@shared/lib/i18n';
 import { makeStyles } from '../theme';
 import { activeDotIndex } from './activeDot';
 
@@ -60,6 +61,7 @@ export function Carousel<T>({
   testID,
 }: Props<T>) {
   const styles = useStyles();
+  const { t } = useTranslation();
   const listRef = useRef<FlatList<T>>(null);
   const [width, setWidth] = useState(0);
   const [index, setIndex] = useState(0);
@@ -155,7 +157,10 @@ export function Carousel<T>({
         <View
           style={styles.dots}
           accessible
-          accessibilityLabel={`${index + 1} / ${data.length}`}
+          accessibilityLabel={t('slidePosition', {
+            current: index + 1,
+            total: data.length,
+          })}
         >
           {Array.from({ length: dotCount }, (_, dot) => (
             <View

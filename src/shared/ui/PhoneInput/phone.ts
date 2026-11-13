@@ -90,6 +90,10 @@ export const toPhoneValue = (
   };
 };
 
+// "92" becomes "+92", the way a calling code is written.
+export const dialPrefix = (callingCode: string | undefined): string =>
+  `+${callingCode ?? ''}`;
+
 // Formats as the user types, for the country they picked.
 export const formatAsYouType = (text: string, country: CountryCode): string =>
   new AsYouType(country).input(text);

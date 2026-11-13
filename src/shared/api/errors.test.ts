@@ -1,4 +1,5 @@
 import { getErrorMessage, type AppError } from '@shared/api';
+import { common, initI18n } from '@shared/lib/i18n';
 import { isRetryable, toAppError } from './errors';
 
 describe('toAppError', () => {
@@ -43,6 +44,10 @@ describe('isRetryable', () => {
 });
 
 describe('getErrorMessage', () => {
+  beforeAll(() => {
+    initI18n({ common });
+  });
+
   it('prefers the server message', () => {
     expect(
       getErrorMessage({ kind: 'http', status: 400, message: 'Email taken' }),

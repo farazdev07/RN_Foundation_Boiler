@@ -17,6 +17,7 @@ import Animated, {
   useSharedValue,
 } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useTranslation } from '@shared/lib/i18n';
 import { Icon } from '../Icon';
 import { Text } from '../Text';
 import { ZoomableImage } from './ZoomableImage';
@@ -37,10 +38,11 @@ export function ImageViewer({
   visible,
   onClose,
   initialIndex = 0,
-  closeLabel = 'Close',
+  closeLabel,
 }: Props) {
   const { width, height } = useWindowDimensions();
   const insets = useSafeAreaInsets();
+  const { t } = useTranslation();
   const [index, setIndex] = useState(initialIndex);
   const [zoomed, setZoomed] = useState(false);
   const dismissY = useSharedValue(0);
@@ -112,7 +114,7 @@ export function ImageViewer({
           </Text>
           <Pressable
             accessibilityRole="button"
-            accessibilityLabel={closeLabel}
+            accessibilityLabel={closeLabel ?? t('close')}
             hitSlop={12}
             onPress={onClose}
             style={styles.close}

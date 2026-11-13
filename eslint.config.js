@@ -87,6 +87,59 @@ const {
   navigation,
 } = banned;
 
+// The optional units inside shared/ui (see units.json). `allowed` lists the
+// ones a component may import because docs/migration-map.md records it.
+const OPTIONAL_UI = [
+  'Carousel',
+  'RangeSlider',
+  'ImageViewer',
+  'date-time',
+  'PhoneInput',
+];
+
+const optionalUi = (allowed = []) => ({
+  group: OPTIONAL_UI.filter(name => !allowed.includes(name)).flatMap(name => [
+    `../${name}`,
+    `../${name}/*`,
+  ]),
+  message:
+    'Optional UI units must stay removable: do not import one from another shared component.',
+});
+
+// User-facing text comes from i18n (CLAUDE.md). These catch the forms it takes
+// in components: JSX text, the props that are shown or read aloud, and default
+// values for label-like props.
+const TEXT_PROPS =
+  '/^(title|label|message|placeholder|accessibilityLabel|accessibilityHint|confirmLabel|cancelLabel|actionLabel|closeLabel|doneLabel)$/';
+const WORD = '/[A-Za-z]{2}/';
+const textProp = `JSXAttribute[name.name=${TEXT_PROPS}]`;
+
+const hardCodedText = {
+  files: ['src/**/*.tsx'],
+  ignores: ['src/**/*.test.tsx', 'src/**/testing/**'],
+  rules: {
+    'react/jsx-no-literals': [
+      'error',
+      { noStrings: true, ignoreProps: true, allowedStrings: [' · '] },
+    ],
+    'no-restricted-syntax': [
+      'error',
+      ...[
+        `${textProp} > Literal[value=${WORD}]`,
+        `${textProp} > JSXExpressionContainer > Literal[value=${WORD}]`,
+        `${textProp} > JSXExpressionContainer > ConditionalExpression > Literal[value=${WORD}]`,
+        `${textProp} > JSXExpressionContainer > LogicalExpression > Literal[value=${WORD}]`,
+        `${textProp} > JSXExpressionContainer > TemplateLiteral > TemplateElement[value.raw=${WORD}]`,
+        `AssignmentPattern[left.name=/(Label|[pP]laceholder|[tT]itle|[mM]essage)$/] > Literal[value=${WORD}]`,
+      ].map(selector => ({
+        selector,
+        message:
+          "User-facing text must come from i18n: use t() and the slice's i18n/en.ts.",
+      })),
+    ],
+  },
+};
+
 // Flat config replaces a rule's options rather than merging them, so every path
 // needs one complete list. Later blocks win; these go from general to specific.
 const restrict = (files, patterns) => ({
@@ -108,6 +161,25 @@ const importRestrictions = [
       sentry,
     ],
   ),
+  // Optional UI units stay removable only if nothing else in the kit imports
+  // them. A unit's own files import each other with "./", so this one list
+  // covers core components and other units alike.
+  restrict(
+    ['src/shared/ui/**/*.{ts,tsx}'],
+    [
+      asyncStorage,
+      mmkv,
+      keychain,
+      netInfo,
+      mediaPicker,
+      blobUtil,
+      socketIo,
+      sentry,
+      optionalUi(),
+    ],
+  ),
+  // A recorded exception gets its own block, for example
+  //   restrict(['src/shared/ui/PhoneInput/**'], [...general, optionalUi(['Select'])])
   restrict(
     ['src/features/**/*.{ts,tsx}', 'src/entities/**/*.{ts,tsx}'],
     [
@@ -198,4 +270,5 @@ module.exports = [
     },
   },
   ...importRestrictions,
+  hardCodedText,
 ];

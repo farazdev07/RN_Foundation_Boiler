@@ -10,6 +10,7 @@ import Animated, {
 } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { scheduleOnRN } from 'react-native-worklets';
+import { useTranslation } from '@shared/lib/i18n';
 import { Text } from '../Text';
 import { makeStyles } from '../theme';
 import { toastStore } from './toastStore';
@@ -34,6 +35,7 @@ const dismiss = (id: number) => toastStore.hide(id);
 // Mount one at the app root; Modal mounts its own so toasts show above it.
 export function ToastViewport() {
   const styles = useStyles();
+  const { t } = useTranslation();
   const insets = useSafeAreaInsets();
   const [viewportId, setViewportId] = useState<number | null>(null);
   const toast = useSyncExternalStore(toastStore.subscribe, toastStore.getToast);
@@ -99,7 +101,8 @@ export function ToastViewport() {
           >
             <Pressable
               accessibilityRole="alert"
-              accessibilityHint="Swipe up or tap to dismiss"
+              accessibilityHint={t('toastHint')}
+              accessibilityLiveRegion="polite"
               onPress={() => dismiss(toast.id)}
             >
               <Text color="surface">{toast.message}</Text>

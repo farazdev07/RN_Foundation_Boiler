@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
 import { Pressable, View } from 'react-native';
+import { useTranslation } from '@shared/lib/i18n';
 import { Icon } from '../Icon';
 import { Text } from '../Text';
 import { makeStyles } from '../theme';
@@ -73,11 +74,12 @@ export function Calendar({
   maxDate,
   weekStartsOn,
   locale,
-  previousLabel = 'Previous month',
-  nextLabel = 'Next month',
-  markedLabel = 'marked',
+  previousLabel,
+  nextLabel,
+  markedLabel,
 }: Props) {
   const styles = useStyles();
+  const { t } = useTranslation();
   const [month, setMonth] = useState(() =>
     addMonths(selected ?? new Date(), 0),
   );
@@ -101,7 +103,7 @@ export function Calendar({
       <View style={styles.header}>
         <Pressable
           accessibilityRole="button"
-          accessibilityLabel={previousLabel}
+          accessibilityLabel={previousLabel ?? t('previousMonth')}
           onPress={() => setMonth(current => addMonths(current, -1))}
           style={styles.nav}
           hitSlop={8}
@@ -113,7 +115,7 @@ export function Calendar({
         </Text>
         <Pressable
           accessibilityRole="button"
-          accessibilityLabel={nextLabel}
+          accessibilityLabel={nextLabel ?? t('nextMonth')}
           onPress={() => setMonth(current => addMonths(current, 1))}
           style={styles.nav}
           hitSlop={8}
@@ -144,7 +146,7 @@ export function Calendar({
                     accessibilityRole="button"
                     accessibilityLabel={formatDayLabel(
                       date,
-                      marked ? markedLabel : undefined,
+                      marked ? (markedLabel ?? t('markedDay')) : undefined,
                       locale,
                     )}
                     accessibilityState={{ selected: isSelected, disabled }}

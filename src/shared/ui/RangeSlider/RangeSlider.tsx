@@ -7,6 +7,7 @@ import Animated, {
   type SharedValue,
 } from 'react-native-reanimated';
 import { scheduleOnRN } from 'react-native-worklets';
+import { useTranslation } from '@shared/lib/i18n';
 import { Text } from '../Text';
 import { makeStyles } from '../theme';
 import { clamp, snap, toPosition, toValue } from './rangeMath';
@@ -148,6 +149,7 @@ export function RangeSlider({
   testID,
 }: Props) {
   const styles = useStyles();
+  const { t } = useTranslation();
   const [width, setWidth] = useState(0);
   const track = Math.max(width - THUMB, 0);
   const gapPx = max === min ? 0 : (minGap / (max - min)) * track;
@@ -198,7 +200,7 @@ export function RangeSlider({
       <View style={styles.header}>
         {label ? <Text variant="label">{label}</Text> : <View />}
         <Text variant="label" color="textSecondary">
-          {`${lowText} to ${highText}`}
+          {t('rangeSummary', { from: lowText, to: highText })}
         </Text>
       </View>
       <View
@@ -217,7 +219,7 @@ export function RangeSlider({
               track={track}
               gapPx={gapPx}
               disabled={disabled}
-              label={`${label ?? ''} minimum`.trim()}
+              label={t('rangeMinimum', { label: label ?? '' }).trim()}
               valueText={lowText}
               onEnd={commit}
               onStep={stepThumb('low')}
@@ -231,7 +233,7 @@ export function RangeSlider({
               track={track}
               gapPx={gapPx}
               disabled={disabled}
-              label={`${label ?? ''} maximum`.trim()}
+              label={t('rangeMaximum', { label: label ?? '' }).trim()}
               valueText={highText}
               onEnd={commit}
               onStep={stepThumb('high')}

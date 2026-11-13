@@ -5,6 +5,7 @@ import {
   View,
   type TextInputProps,
 } from 'react-native';
+import { useTranslation } from '@shared/lib/i18n';
 import { Icon } from '../Icon';
 import { Text } from '../Text';
 import { makeStyles, useTheme } from '../theme';
@@ -65,6 +66,7 @@ export function TextInput({
 }: Props) {
   const styles = useStyles();
   const { colors } = useTheme();
+  const { t } = useTranslation();
   const [focused, setFocused] = useState(false);
   const [revealed, setRevealed] = useState(false);
 
@@ -106,7 +108,7 @@ export function TextInput({
         {secureTextEntry ? (
           <Pressable
             accessibilityRole="button"
-            accessibilityLabel={revealed ? 'Hide password' : 'Show password'}
+            accessibilityLabel={t(revealed ? 'hidePassword' : 'showPassword')}
             hitSlop={8}
             onPress={() => setRevealed(current => !current)}
           >

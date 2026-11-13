@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
 import { FlatList, Pressable, View } from 'react-native';
+import { useTranslation } from '@shared/lib/i18n';
 import { Button } from '../Button';
 import { Icon } from '../Icon';
 import { Modal } from '../Modal';
@@ -52,12 +53,13 @@ export function Select<T extends string>(props: Props<T>) {
   const {
     label,
     options,
-    placeholder = 'Select',
+    placeholder,
     searchable = false,
     error,
     disabled = false,
   } = props;
   const styles = useStyles();
+  const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState('');
 
@@ -78,7 +80,8 @@ export function Select<T extends string>(props: Props<T>) {
     options
       .filter(option => selected.includes(option.value))
       .map(option => option.label)
-      .join(', ') || placeholder;
+      .join(', ') ||
+    (placeholder ?? t('select'));
 
   const close = () => {
     setOpen(false);
@@ -131,7 +134,7 @@ export function Select<T extends string>(props: Props<T>) {
         <Text variant="subtitle">{label}</Text>
         {searchable ? (
           <TextInput
-            label="Search"
+            label={t('search')}
             value={query}
             onChangeText={setQuery}
             autoCorrect={false}
@@ -163,7 +166,7 @@ export function Select<T extends string>(props: Props<T>) {
             );
           }}
         />
-        {props.multiple ? <Button title="Done" onPress={close} /> : null}
+        {props.multiple ? <Button title={t('done')} onPress={close} /> : null}
       </Modal>
     </View>
   );

@@ -1,4 +1,5 @@
 import { Modal as RNModal, View } from 'react-native';
+import { useTranslation } from '@shared/lib/i18n';
 import { Spinner } from '../Spinner';
 import { Text } from '../Text';
 import { makeStyles } from '../theme';
@@ -19,6 +20,7 @@ const useStyles = makeStyles(({ colors, spacing }) => ({
 // user must not act until something finishes.
 export function LoadingOverlay({ visible, message }: Props) {
   const styles = useStyles();
+  const { t } = useTranslation();
 
   return (
     <RNModal
@@ -30,7 +32,7 @@ export function LoadingOverlay({ visible, message }: Props) {
       <View
         style={styles.backdrop}
         accessibilityRole="progressbar"
-        accessibilityLabel={message ?? 'Loading'}
+        accessibilityLabel={message ?? t('loading')}
       >
         <Spinner size="large" color="surface" />
         {message ? <Text color="surface">{message}</Text> : null}

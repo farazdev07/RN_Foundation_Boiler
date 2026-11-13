@@ -3,6 +3,7 @@ import { Platform, Pressable, View } from 'react-native';
 import DateTimePicker, {
   DateTimePickerAndroid,
 } from '@react-native-community/datetimepicker';
+import { useTranslation } from '@shared/lib/i18n';
 import { Button } from '../Button';
 import { Icon } from '../Icon';
 import { Modal } from '../Modal';
@@ -62,11 +63,12 @@ export function DateTimeField({
   minimumDate,
   maximumDate,
   disabled = false,
-  doneLabel = 'Done',
+  doneLabel,
   locale,
   testID,
 }: Props) {
   const styles = useStyles();
+  const { t } = useTranslation();
   const [draft, setDraft] = useState<Date | null>(null);
   const limits = {
     ...(minimumDate && { minimumDate }),
@@ -139,7 +141,7 @@ export function DateTimeField({
               onValueChange={(_event, picked) => setDraft(picked)}
             />
           ) : null}
-          <Button title={doneLabel} onPress={confirm} />
+          <Button title={doneLabel ?? t('done')} onPress={confirm} />
         </Modal>
       ) : null}
     </View>
