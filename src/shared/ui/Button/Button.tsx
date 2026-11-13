@@ -39,6 +39,7 @@ const useStyles = makeStyles(({ colors, radii, spacing }) => ({
   destructive: { backgroundColor: colors.error },
   disabled: { opacity: 0.5 },
   pressed: { opacity: 0.8 },
+  content: { alignItems: 'center', flexDirection: 'row', gap: spacing.sm },
   hidden: { opacity: 0 },
   overlay: { position: 'absolute' },
 }));
@@ -70,7 +71,7 @@ export function Button({
       {...rest}
     >
       {/* The label stays in the layout so the button keeps its width. */}
-      <View style={[styles.base, loading && styles.hidden]}>
+      <View style={[styles.content, loading && styles.hidden]}>
         {icon ? <Icon name={icon} size={20} color={color} /> : null}
         <Text variant="label" color={color}>
           {title}
