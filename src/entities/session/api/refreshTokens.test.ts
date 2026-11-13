@@ -40,6 +40,8 @@ describe('refreshTokens', () => {
 
   it.each([
     ['a server error', () => Promise.resolve(json(503, {}))],
+    ['a request timeout', () => Promise.resolve(json(408, {}))],
+    ['rate limiting', () => Promise.resolve(json(429, {}))],
     [
       'a network failure',
       () => Promise.reject(new TypeError('Network request failed')),

@@ -5,6 +5,7 @@ import { err, ok } from '@shared/lib/result';
 
 const REFRESH_TIMEOUT_MS = 15_000;
 const TOKEN_LIFETIME_MINUTES = 30;
+const REJECTED_STATUSES = new Set([400, 401, 403]);
 
 const tokensSchema = z.object({
   accessToken: z.string().min(1),
@@ -28,8 +29,9 @@ export const refreshTokens: RefreshHandler = async refreshToken => {
       signal: controller.signal,
     });
 
-    // 4xx means the server looked at the token and said no.
-    if (response.status >= 400 && response.status < 500) {
+    // The server looked at the token and said no. Other 4xx answers, such as
+    // 408 or 429, say nothing about the token, so the session is kept.
+    if (REJECTED_STATUSES.has(response.status)) {
       return err('rejected');
     }
     if (!response.ok) {
