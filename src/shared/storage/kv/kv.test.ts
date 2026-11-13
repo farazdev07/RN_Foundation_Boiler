@@ -106,6 +106,13 @@ describe('defineKey', () => {
       expect(device.getString('k')).toBe('{"v":1,"d":{"total":5}}');
     });
 
+    it('keep a value the current schema rejects, so a later fix can read it', () => {
+      write('{"v":2,"d":{"count":"five"}}');
+
+      expect(userKey().get()).toBeUndefined();
+      expect(device.getString('k')).toBe('{"v":2,"d":{"count":"five"}}');
+    });
+
     it('do not run a migration on data from a newer version', () => {
       write('{"v":3,"d":{"count":1}}');
       const migrate = jest.fn();

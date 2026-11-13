@@ -114,7 +114,13 @@ export function defineKey<T>({
     }
 
     const parsed = schema.safeParse(envelope.d);
-    return parsed.success ? parsed.data : discard('stored shape is invalid');
+    if (parsed.success) {
+      return parsed.data;
+    }
+    // A schema tightened without a version bump must not delete user data.
+    return kind === 'user'
+      ? keep('stored shape is invalid')
+      : discard('stored shape is invalid');
   };
 
   return { get, set, remove };
