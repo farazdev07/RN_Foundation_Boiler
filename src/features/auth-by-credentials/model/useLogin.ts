@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 import { signedIn, whenSessionWiped } from '@entities/session';
-import { setTokens, type AppError } from '@shared/api';
+import { asAppError, setTokens } from '@shared/api';
 import { useLoginMutation, type Credentials } from '../api/loginApi';
 import { rememberedUsername } from './rememberedUsername';
 
@@ -37,7 +37,7 @@ export const useLogin = () => {
   return {
     submit,
     isLoading,
-    error: error as AppError | undefined,
+    error: error === undefined ? undefined : asAppError(error),
     reset,
   };
 };

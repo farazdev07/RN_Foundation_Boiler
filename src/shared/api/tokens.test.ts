@@ -6,6 +6,7 @@ import {
   readPersistedRefreshToken,
   setTokens,
 } from '@shared/api';
+import { setErrorReporter } from '@shared/lib/monitoring';
 
 const keychain = jest.mocked(Keychain);
 const tokens = { accessToken: 'access', refreshToken: 'refresh' };
@@ -36,6 +37,21 @@ describe('tokens', () => {
     expect(keychain.resetGenericPassword).toHaveBeenCalledWith({
       service: 'auth.refreshToken',
     });
+  });
+
+  it('reports a refresh token the Keychain would not save, and keeps the session', async () => {
+    const reporter = jest.fn();
+    setErrorReporter(reporter);
+    jest.spyOn(console, 'warn').mockImplementation(() => undefined);
+    keychain.setGenericPassword.mockRejectedValueOnce(new Error('locked'));
+
+    await setTokens(tokens, { persist: true });
+
+    expect(getAccessToken()).toBe('access');
+    expect(reporter).toHaveBeenCalledWith(new Error('locked'), {
+      where: 'tokens.persistRefreshToken',
+    });
+    setErrorReporter(null);
   });
 
   it('reads the persisted refresh token', async () => {

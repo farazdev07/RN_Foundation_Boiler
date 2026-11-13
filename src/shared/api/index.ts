@@ -5,7 +5,7 @@ export {
   type RefreshFailure,
   type RefreshHandler,
 } from './baseQuery';
-export { getErrorMessage, type AppError } from './errors';
+export { asAppError, getErrorMessage, type AppError } from './errors';
 export {
   clearTokens,
   getAccessToken,

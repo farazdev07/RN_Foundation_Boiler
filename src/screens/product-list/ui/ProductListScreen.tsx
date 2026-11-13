@@ -7,7 +7,7 @@ import {
   type ProductSummary,
 } from '@entities/product';
 import { FavoriteButton } from '@features/toggle-favorite';
-import { getErrorMessage, type AppError } from '@shared/api';
+import { getErrorMessage } from '@shared/api';
 import { useDebounce } from '@shared/lib/debounce';
 import { useTranslation } from '@shared/lib/i18n';
 import {
@@ -60,7 +60,7 @@ export function ProductListScreen() {
         <EmptyState
           icon="wifi-off"
           title={t('errorTitle')}
-          message={getErrorMessage(error as AppError)}
+          message={getErrorMessage(error)}
           actionLabel={t('retry')}
           onAction={() => refetch()}
         />

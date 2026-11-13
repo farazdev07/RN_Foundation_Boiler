@@ -35,12 +35,31 @@ export const toAppError = (error: FetchBaseQueryError): AppError => {
   }
 };
 
+const KINDS = new Set(['network', 'timeout', 'parse', 'http', 'unknown']);
+
+// RTK Query types a hook's error as AppError or a SerializedError (something
+// threw inside a query). This gives callers one type without a cast.
+export const asAppError = (error: unknown): AppError => {
+  if (typeof error === 'object' && error !== null) {
+    const { kind, message } = error as { kind?: unknown; message?: unknown };
+    if (typeof kind === 'string' && KINDS.has(kind)) {
+      return error as AppError;
+    }
+    if (typeof message === 'string') {
+      return { kind: 'unknown', detail: message };
+    }
+  }
+  return { kind: 'unknown', detail: String(error) };
+};
+
 export const isRetryable = (error: AppError): boolean =>
   error.kind === 'network' ||
   error.kind === 'timeout' ||
   (error.kind === 'http' && error.status >= 500);
 
-export const getErrorMessage = (error: AppError): string => {
+// Takes whatever a query hook reports, so screens never cast.
+export const getErrorMessage = (reported: unknown): string => {
+  const error = asAppError(reported);
   switch (error.kind) {
     case 'network':
       return i18next.t('common:errorNetwork');

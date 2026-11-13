@@ -1,6 +1,6 @@
 import { getErrorMessage, type AppError } from '@shared/api';
 import { common, initI18n } from '@shared/lib/i18n';
-import { isRetryable, toAppError } from './errors';
+import { asAppError, isRetryable, toAppError } from './errors';
 
 describe('toAppError', () => {
   it.each([
@@ -40,6 +40,23 @@ describe('isRetryable', () => {
     [{ kind: 'parse', detail: '' }, false],
   ])('%j -> %s', (error, expected) => {
     expect(isRetryable(error)).toBe(expected);
+  });
+});
+
+describe('asAppError', () => {
+  it('passes an AppError through', () => {
+    const error: AppError = { kind: 'http', status: 404, message: null };
+
+    expect(asAppError(error)).toBe(error);
+  });
+
+  it.each([
+    [{ name: 'TypeError', message: 'x is undefined' }, 'x is undefined'],
+    [new Error('boom'), 'boom'],
+    ['plain', 'plain'],
+    [undefined, 'undefined'],
+  ])('turns %p into an unknown error', (thrown, detail) => {
+    expect(asAppError(thrown)).toEqual({ kind: 'unknown', detail });
   });
 });
 

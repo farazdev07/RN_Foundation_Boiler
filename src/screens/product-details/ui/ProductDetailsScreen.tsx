@@ -7,7 +7,7 @@ import {
 } from '@react-navigation/native';
 import { formatPrice, useGetProductQuery } from '@entities/product';
 import { FavoriteButton, useFavorites } from '@features/toggle-favorite';
-import { getErrorMessage, type AppError } from '@shared/api';
+import { getErrorMessage } from '@shared/api';
 import { useTranslation } from '@shared/lib/i18n';
 import {
   Carousel,
@@ -62,7 +62,7 @@ export function ProductDetailsScreen({ route }: Props) {
           <EmptyState
             icon="wifi-off"
             title={t('errorTitle')}
-            {...(error && { message: getErrorMessage(error as AppError) })}
+            {...(error && { message: getErrorMessage(error) })}
             actionLabel={t('retry')}
             onAction={() => refetch()}
           />

@@ -1,3 +1,4 @@
+import { reportError } from '@shared/lib/monitoring';
 import { secureStorage } from '@shared/storage';
 
 export type Tokens = {
@@ -28,7 +29,15 @@ export const setTokens = async (
   persisted = persist;
 
   if (persist) {
-    await secureStorage.set(REFRESH_TOKEN_KEY, tokens.refreshToken);
+    const saved = await secureStorage.set(
+      REFRESH_TOKEN_KEY,
+      tokens.refreshToken,
+    );
+    // The session carries on in memory, but the next launch will find the old
+    // token or none and sign the user out. Never silent: this is the only trace.
+    if (!saved.ok) {
+      reportError(saved.error, { where: 'tokens.persistRefreshToken' });
+    }
   } else {
     await secureStorage.remove(REFRESH_TOKEN_KEY);
   }
