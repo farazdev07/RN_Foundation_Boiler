@@ -23,7 +23,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/core@npm:^7.11.6, @babel/core@npm:^7.12.3, @babel/core@npm:^7.23.9, @babel/core@npm:^7.24.4, @babel/core@npm:^7.25.2, @babel/core@npm:^7.27.4":
+"@babel/core@npm:7.29.7, @babel/core@npm:^7.11.6, @babel/core@npm:^7.12.3, @babel/core@npm:^7.23.9, @babel/core@npm:^7.24.4, @babel/core@npm:^7.25.2, @babel/core@npm:^7.27.4":
   version: 7.29.7
   resolution: "@babel/core@npm:7.29.7"
   dependencies:
@@ -1394,7 +1394,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/preset-env@npm:^7.25.3":
+"@babel/preset-env@npm:7.29.7":
   version: 7.29.7
   resolution: "@babel/preset-env@npm:7.29.7"
   dependencies:
@@ -1503,7 +1503,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/runtime@npm:^7.25.0, @babel/runtime@npm:^7.29.7":
+"@babel/runtime@npm:7.29.10, @babel/runtime@npm:^7.25.0, @babel/runtime@npm:^7.29.7":
   version: 7.29.10
   resolution: "@babel/runtime@npm:7.29.10"
   checksum: 10c0/32f975da8e9c2cae6b33e1a477f8fe8bbff6722c982b5ce35f99affaf3a7a1b612c8272b43afa0e51d3000928d6f3ba38f9296301115db5640264907c027b0cd
@@ -4175,7 +4175,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react@npm:*, @types/react@npm:^19.2.0":
+"@types/react@npm:*, @types/react@npm:19.3.0":
   version: 19.3.0
   resolution: "@types/react@npm:19.3.0"
   dependencies:
@@ -10826,10 +10826,10 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "rn-foundation@workspace:."
   dependencies:
-    "@babel/core": "npm:^7.25.2"
+    "@babel/core": "npm:7.29.7"
     "@babel/plugin-transform-export-namespace-from": "npm:7.29.7"
-    "@babel/preset-env": "npm:^7.25.3"
-    "@babel/runtime": "npm:^7.25.0"
+    "@babel/preset-env": "npm:7.29.7"
+    "@babel/runtime": "npm:7.29.10"
     "@commitlint/cli": "npm:21.2.4"
     "@commitlint/config-conventional": "npm:21.2.4"
     "@eslint/js": "npm:9.39.5"
@@ -10853,7 +10853,7 @@ __metadata:
     "@sentry/react-native": "npm:8.32.0"
     "@testing-library/react-native": "npm:14.1.0"
     "@types/jest": "npm:30.0.0"
-    "@types/react": "npm:^19.2.0"
+    "@types/react": "npm:19.3.0"
     babel-plugin-module-resolver: "npm:5.0.3"
     eslint: "npm:9.39.5"
     eslint-import-resolver-typescript: "npm:4.4.5"

@@ -23,7 +23,6 @@ module.exports = {
     '!src/**/index.ts',
     '!src/**/*.types.ts',
     '!src/**/testing/**',
-    '!src/screens/home/ui/RuntimeCheck.tsx',
   ],
   coverageThreshold: {
     global: {

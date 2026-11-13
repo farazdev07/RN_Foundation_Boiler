@@ -1,7 +1,7 @@
 # 0005. Release pipeline on GitHub Actions, Fastlane later
 
 - Status: Accepted
-- Date: 2026-11-07
+- Date: 2026-11-07, corrected 2026-11-13
 
 ## Context
 
@@ -11,9 +11,13 @@ GitHub Actions, Codemagic, and Fastlane, which is a tool that runs inside a CI r
 
 ## Decision
 
+**Correction, 2026-11-13:** the release workflow described here is not built yet. Gradle reads the signing
+variables today; no CI job sets them, decodes a keystore or archives for iOS. `ci.yml` only verifies and builds
+debug variants. The sentences below describe the intended pipeline.
+
 - **Signing is set up now, through the environment.** Android's Gradle reads the keystore path and passwords from
   environment variables. Without them it produces an unsigned artifact, never a debug-signed one. iOS passes team,
-  identity and profile to `xcodebuild archive` at build time. CI decodes them from secrets into temporary files.
+  identity and profile to `xcodebuild archive` at build time. The release job, once written, decodes them from secrets into temporary files.
   `tools/check-repo.js` fails CI if signing material or an env file is tracked. Details are in
   [release.md](../release.md).
 - **CI stays on GitHub Actions.** It already runs verify, Android, iOS and generated-app jobs. Hosted macOS runners
