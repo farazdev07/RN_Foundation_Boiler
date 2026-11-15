@@ -22,7 +22,8 @@ why. Lint and tests enforce most of them, so a violation shows up as a failing c
 - Import a slice only through its `index.ts`, never a deep path.
 - Entities and features never import `@react-navigation/*`. They take callbacks, and screens navigate.
 - Each package with a native or vendor surface has one owning folder (MMKV, Keychain, NetInfo, Sentry, socket.io,
-  the image picker, blob-util). Use the wrapper it exports.
+  the image picker, blob-util, react-hook-form, FlashList, the image library, WebView, the bottom sheet). Use the
+  wrapper it exports. To add one, add it to `banned` in `eslint.config.js` and give its folder an `owns` block.
 - Do not loosen `eslint.config.js` or the boundary fixtures to make an import pass. Restructure the code instead.
 
 ## Patterns
@@ -33,13 +34,19 @@ why. Lint and tests enforce most of them, so a violation shows up as a failing c
   `loadPersistedState` in `src/app/store/store.ts`. Pick the key's kind (`cache` or `user`) and scope (`device`
   or `account`) on purpose: account data must be wiped on logout.
 - **Per-user data outside Redux and MMKV** (a Keychain entry, a file) registers a cleanup with `onSessionEnd`.
-- **Strings** live in the slice's `i18n/en.ts` and are registered in `src/app/i18n/index.ts`. No hard-coded
-  user-facing text.
+- **Strings** live in the slice's `i18n/en.ts` (and `i18n/ar.ts`, typed as `typeof` the English object) and are
+  registered in `src/app/i18n/index.ts`. No hard-coded user-facing text: lint fails on JSX text and on literal
+  labels, and `t()` keys are type-checked.
+- **New slices** start from `yarn new <feature|entity|screen> <name>`.
+- **Forms:** a zod schema, `useZodForm` from `@shared/lib/form`, and `Form*` fields. Copy `LoginForm`.
+- **Lists and images:** `List` and `useInfiniteQueryList` for a screen's list, with a memoised row; `Image` for
+  every image. Use `useBreakpoint` or `useResponsiveValue` for tablet layouts, never a scaling helper.
 - **Styles** come from theme tokens through `makeStyles` or `useTheme`. Use start/end rather than left/right.
   No raw colours in components, except where a colour must ignore the theme (the image viewer's black backdrop).
 - **Optional units:** every line a unit adds outside its folders carries `@unit:<name>`. Use
   `@unit-start:<name>` / `@unit-end:<name>` for anything that spans lines or that Prettier may wrap. Keep
-  `units.json` in step: `paths`, `touchpoints`, `packages`, `uses`.
+  `units.json` in step: `paths`, `touchpoints`, `packages`, `uses`. A unit inside `shared/ui` also goes in
+  `OPTIONAL_UI` in `eslint.config.js`, so nothing else in the kit can import it.
 
 ## Working rules
 

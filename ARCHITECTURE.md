@@ -41,23 +41,29 @@ Three rules hold across all layers:
    shows this: `ProductCard` (entity) takes an `action` slot, and the screen passes in `FavoriteButton` (feature).
 3. **Public API only.** Code outside a slice imports it through its `index.ts`, never a file inside it.
 
-`eslint-plugin-boundaries` enforces all three. `tools/boundary-fixtures/` holds a deliberately violating file for
+`eslint-plugin-boundaries` enforces all three. Lint also fails on user-facing text written into a component
+instead of i18n, and on one shared UI component importing an optional UI unit. `tools/boundary-fixtures/` holds a deliberately violating file for
 each rule, and `tools/check-boundaries.js` asserts that lint reports exactly the expected rule on each one, so a
 plugin upgrade that quietly weakens a rule fails CI. Lint runs in the pre-commit hook and in CI.
 
 Lint also limits where some packages may be imported, so each one has a single owner:
 
-| Package                           | Only in                                                                    |
-| --------------------------------- | -------------------------------------------------------------------------- |
-| `react-native-mmkv`               | `shared/storage/kv`                                                        |
-| `react-native-keychain`           | `shared/storage/secure`                                                    |
-| `@react-native-community/netinfo` | `shared/lib/network`                                                       |
-| `@sentry/react-native`            | `app/monitoring`                                                           |
-| `socket.io-client`                | `shared/api/socket`                                                        |
-| `react-native-image-crop-picker`  | `shared/lib/media-picker`                                                  |
-| `react-native-blob-util`          | `features/file-transfer`                                                   |
-| `@react-navigation/*`             | not in `features` or `entities`                                            |
-| AsyncStorage                      | nowhere; `tools/check-repo.js` also fails CI if it appears in the lockfile |
+| Package                            | Only in                                                                    |
+| ---------------------------------- | -------------------------------------------------------------------------- |
+| `react-native-mmkv`                | `shared/storage/kv`                                                        |
+| `react-native-keychain`            | `shared/storage/secure`                                                    |
+| `@react-native-community/netinfo`  | `shared/lib/network`                                                       |
+| `@sentry/react-native`             | `app/monitoring`                                                           |
+| `socket.io-client`                 | `shared/api/socket`                                                        |
+| `react-native-image-crop-picker`   | `shared/lib/media-picker`                                                  |
+| `react-native-blob-util`           | `features/file-transfer`                                                   |
+| `react-hook-form`, `@hookform/*`   | `shared/lib/form`                                                          |
+| `@shopify/flash-list`              | `shared/ui/List`                                                           |
+| `react-native-turbo-image`         | `shared/ui/Image`                                                          |
+| `react-native-webview`             | `shared/ui/WebView`                                                        |
+| `@lodev09/react-native-true-sheet` | `shared/ui/BottomSheet`                                                    |
+| `@react-navigation/*`              | not in `features` or `entities`                                            |
+| AsyncStorage                       | nowhere; `tools/check-repo.js` also fails CI if it appears in the lockfile |
 
 Entities and features never navigate. They take callbacks, and the screen decides where to go. Route params are
 typed through React Navigation's global `RootParamList`, so a screen gets typed navigation without importing
@@ -72,10 +78,10 @@ src/features/toggle-favorite/
 ├── ui/                   components
 ├── api/                  RTK Query endpoints, injected into the shared baseApi
 ├── lib/                  pure helpers
-└── i18n/en.ts            the slice's strings, registered by app/i18n
+└── i18n/                 en.ts, optional ar.ts, and an index that pairs them; registered by app/i18n
 ```
 
-A slice has only the folders it needs. Each slice owns its strings, and `app/i18n` registers them, so deleting a
+`yarn new <feature|entity|screen> <name>` creates this shape. A slice has only the folders it needs. Each slice owns its strings, and `app/i18n` registers them, so deleting a
 slice deletes its strings too.
 
 ## Data flow
@@ -193,10 +199,33 @@ sequenceDiagram
   Nav->>N: onReady, hide (optional 220 ms fade)
 ```
 
+## Forms, lists and images
+
+- **Forms** use react-hook-form with a zod schema through `useZodForm` (`shared/lib/form`) and the `Form*` fields
+  in `shared/ui`. The schema is both the validation and the type the submit handler receives. `LoginForm` is the
+  reference.
+- **Screen lists** use `List`, a wrapper over FlashList, fed by `useInfiniteQueryList`
+  ([ADR 0012](docs/adr/0012-flashlist-for-screen-lists.md)). Rows are memoised and recycled.
+- **Remote images** go through `shared/ui/Image`, which caches them
+  ([ADR 0011](docs/adr/0011-image-caching.md)).
+
+## Languages and layout
+
+- Each slice exports `{ en, ar? }`. `app/i18n` collects them into one object, passes it to `initI18n`, and
+  declares its English shape as i18next's resource type, so every `t()` key is checked by TypeScript.
+- English is the fallback. Arabic is typed as `typeof` the English strings, so a missing key fails typecheck.
+- The language is a device-scope key. `setLanguage` changes text at once and calls `I18nManager.forceRTL` for the
+  next launch; React Native reads the direction only at startup.
+- A language change remounts the navigator with its current state, because the static navigator config reads tab
+  and header titles once per mount.
+- **Breakpoints** are window-width classes in the theme: `compact`, `medium` (600 pt) and `expanded` (840 pt).
+  `useBreakpoint` and `useResponsiveValue` read them. `Screen` caps content at `layout.maxContentWidth`.
+
 ## Optional units
 
 Several parts of the foundation are optional: `products`, `biometric-unlock`, `splash-animation`, `media`,
-`sentry`, `socket`, `date-time`, `phone-input`, `carousel`, `range-slider` and `image-viewer`.
+`sentry`, `socket`, `date-time`, `phone-input`, `carousel`, `range-slider`, `image-viewer`, `otp-input`,
+`webview` and `bottom-sheet`.
 [`units.json`](units.json) declares each unit's folders, packages and **touchpoints** (files outside its folders
 that mention it), plus the units it `uses`. In touchpoints, the lines belonging to a unit are tagged:
 
@@ -215,13 +244,13 @@ a kept unit `uses`. CI generates an app with every unit removed and builds it, s
 
 ## Testing
 
-| Level              | Tool                            | What it covers                                                                           |
-| ------------------ | ------------------------------- | ---------------------------------------------------------------------------------------- |
-| Unit and component | Jest, RNTL 14                   | Pure logic, slices, components in both themes. Co-located `*.test.ts(x)`                 |
-| Integration        | Jest, the whole `<App />`       | Only the network is faked. Auth, Remember Me, logout wipe, deep links, products          |
-| Architecture       | Boundary fixtures               | Each layer rule, by exact rule ID                                                        |
-| Repo hygiene       | `tools/check-repo.js`           | No AsyncStorage, `allowBackup` off, no signing material or env file tracked              |
-| Generated app      | CI `create-app` job             | An app with every unit removed typechecks, passes its tests and builds for Android       |
-| Device             | Maestro (`.maestro/smoke.yaml`) | Login, products, favourites across a relaunch, gestures, deep links, logout. Run locally |
+| Level              | Tool                            | What it covers                                                                                                                                                                |
+| ------------------ | ------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Unit and component | Jest, RNTL 14                   | Pure logic, slices and component behaviour. Theme switching is tested in `ThemeProvider` and `Text`; most components are tested in light mode only. Co-located `*.test.ts(x)` |
+| Integration        | Jest, the whole `<App />`       | Only the network is faked. Auth, Remember Me, logout wipe, deep links, products                                                                                               |
+| Architecture       | Lint fixtures                   | Each layer rule, each package owner, the hard-coded-text rules and UI unit isolation, by exact rule ID                                                                        |
+| Repo hygiene       | `tools/check-repo.js`           | No AsyncStorage, `allowBackup` off, no signing material or env file tracked                                                                                                   |
+| Generated app      | CI `create-app` jobs            | An app with every unit removed typechecks, passes its tests and builds for Android and iOS                                                                                    |
+| Device             | Maestro (`.maestro/smoke.yaml`) | Login, products, favourites across a relaunch, gestures, deep links, logout. Run locally                                                                                      |
 
 Coverage must stay at 70% or above for lines, branches, functions and statements.

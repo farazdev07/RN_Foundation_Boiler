@@ -71,7 +71,7 @@ appId: com.faraz.foundation.dev
     start: '85%, 35%'
     end: '10%, 35%'
     duration: 400
-- assertVisible: '2 / 3'
+- assertVisible: 'Slide 2 of 3'
 - tapOn: 'Image 2 of 3.*'
 - tapOn: 'Close'
 - assertVisible:
