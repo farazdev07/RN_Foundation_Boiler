@@ -10,7 +10,7 @@ import { Icon } from '../Icon';
 import { Text } from '../Text';
 import { makeStyles, useTheme } from '../theme';
 
-type Props = Omit<TextInputProps, 'style' | 'editable'> & {
+export type Props = Omit<TextInputProps, 'style' | 'editable'> & {
   ref?: Ref<ComponentRef<typeof RNTextInput>>;
   label?: string;
   // Forms usually compute this, so undefined is accepted as "no error".

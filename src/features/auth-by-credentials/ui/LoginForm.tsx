@@ -1,8 +1,16 @@
-import { useRef, useState, type ComponentRef } from 'react';
-import { View, type TextInput as RNTextInput } from 'react-native';
+import { useEffect, useMemo } from 'react';
+import { View } from 'react-native';
 import { getErrorMessage } from '@shared/api';
+import { useZodForm } from '@shared/lib/form';
 import { useTranslation } from '@shared/lib/i18n';
-import { Button, Checkbox, Text, TextInput, makeStyles } from '@shared/ui';
+import {
+  Button,
+  FormCheckbox,
+  FormTextInput,
+  Text,
+  makeStyles,
+} from '@shared/ui';
+import { loginSchema } from '../model/loginSchema';
 import { rememberedUsername } from '../model/rememberedUsername';
 import { useLogin } from '../model/useLogin';
 
@@ -10,67 +18,56 @@ const useStyles = makeStyles(({ spacing }) => ({
   form: { gap: spacing.md },
 }));
 
+// The reference form: a zod schema, useZodForm, and Form* fields. Copy this
+// shape for any new form.
 export function LoginForm() {
   const styles = useStyles();
   const { t } = useTranslation('auth');
   const { submit, isLoading, error, reset } = useLogin();
-  const passwordRef = useRef<ComponentRef<typeof RNTextInput>>(null);
 
-  const [username, setUsername] = useState(
-    () => rememberedUsername.get() ?? '',
+  const schema = useMemo(() => loginSchema(t('required')), [t]);
+  const { control, submitWith, setFocus, subscribe } = useZodForm(schema, {
+    defaultValues: {
+      username: rememberedUsername.get() ?? '',
+      password: '',
+      remember: true,
+    },
+  });
+
+  // A server error describes the last attempt, so editing a field clears it.
+  useEffect(
+    () => subscribe({ formState: { values: true }, callback: () => reset() }),
+    [subscribe, reset],
   );
-  const [password, setPassword] = useState('');
-  const [remember, setRemember] = useState(true);
-  const [showRequired, setShowRequired] = useState(false);
 
-  const onSubmit = () => {
-    if (!username.trim() || !password) {
-      setShowRequired(true);
-      return;
-    }
-    submit({ username: username.trim(), password, remember });
-  };
-
-  const edit = (setter: (value: string) => void) => (value: string) => {
-    setter(value);
-    if (error) {
-      reset();
-    }
-  };
+  const onSubmit = submitWith(submit);
 
   return (
     <View style={styles.form}>
-      <TextInput
+      <FormTextInput
+        control={control}
+        name="username"
         testID="login-username"
         label={t('username')}
-        value={username}
-        onChangeText={edit(setUsername)}
-        error={showRequired && !username.trim() ? t('required') : undefined}
         autoCapitalize="none"
         autoCorrect={false}
         autoComplete="username"
         textContentType="username"
         returnKeyType="next"
-        onSubmitEditing={() => passwordRef.current?.focus()}
+        onSubmitEditing={() => setFocus('password')}
       />
-      <TextInput
-        ref={passwordRef}
+      <FormTextInput
+        control={control}
+        name="password"
         testID="login-password"
         label={t('password')}
-        value={password}
-        onChangeText={edit(setPassword)}
-        error={showRequired && !password ? t('required') : undefined}
         secureTextEntry
         autoComplete="current-password"
         textContentType="password"
         returnKeyType="go"
         onSubmitEditing={onSubmit}
       />
-      <Checkbox
-        label={t('rememberMe')}
-        checked={remember}
-        onChange={setRemember}
-      />
+      <FormCheckbox control={control} name="remember" label={t('rememberMe')} />
       {error ? (
         <Text color="error" accessibilityRole="alert">
           {getErrorMessage(error)}
