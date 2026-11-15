@@ -153,8 +153,8 @@ const { control, submitWith } = useZodForm(schema, { defaultValues });
 
 ## Languages
 
-English and Arabic ship. Settings has the switch. Text changes at once; the layout direction changes on the next
-launch, because React Native reads it at startup, and Settings says so. To add a language, add it to
+English and Arabic ship. Settings has the switch. Text and layout direction both change at once,
+with no restart: every root view takes its `direction` style from `useDirection()`. To add a language, add it to
 `SUPPORTED_LANGUAGES`, `LANGUAGE_NAMES` and, if needed, `RTL_LANGUAGES` in `src/shared/lib/i18n/i18n.ts`, add
 `i18n/<language>.ts` to the slices, and add it to `CFBundleLocalizations` in `Info.plist`. A slice without a
 translation falls back to English.
@@ -183,7 +183,6 @@ This leaves the minimal Home screen, which is the place to start the app's own h
 - **Right-to-left is not verified on a device.** Arabic text, the direction switch and the slider and calendar
   maths are covered by tests. Nobody has looked at the app in Arabic on a phone. `Carousel` and `ImageViewer` page
   by scroll offset and have not been checked in RTL. The Arabic strings were not written by a native speaker.
-- **Switching between English and Arabic needs a restart** to flip the layout. There is no restart library.
 - **`BottomSheet`, `WebView` and `OtpInput` have no screen in the template,** so they have been built and unit
   tested but not used on a device.
 - **Remote images use React Native's interop layer** for older native views, not a Fabric component

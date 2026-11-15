@@ -284,7 +284,7 @@ describe('App auth', () => {
     expect(await screen.findByTestId('settings-logout')).toBeOnTheScreen();
   });
 
-  it('switches the whole app to Arabic from Settings, tab titles included', async () => {
+  it('switches the whole app to Arabic from Settings, tab titles and direction included', async () => {
     markInstalled();
     await Keychain.setGenericPassword('auth.refreshToken', 'refresh-emilys-1', {
       service: 'auth.refreshToken',
@@ -302,15 +302,14 @@ describe('App auth', () => {
     expect(await screen.findByText('المظهر')).toBeOnTheScreen();
     expect(screen.getAllByText('الإعدادات').length).toBeGreaterThan(0);
     expect(screen.getAllByText('الرئيسية').length).toBeGreaterThan(0);
-    // Arabic needs a right-to-left layout, which only a restart applies.
-    expect(
-      screen.getByText('أعد تشغيل التطبيق لإكمال تغيير اتجاه الواجهة.'),
-    ).toBeOnTheScreen();
+    // The layout flips with the language, without a restart.
+    expect(screen.getByTestId('app-root')).toHaveStyle({ direction: 'rtl' });
 
     await fireEvent.press(screen.getByRole('radio', { name: 'English' }));
 
     expect(await screen.findByText('Appearance')).toBeOnTheScreen();
     expect(screen.queryByText('الإعدادات')).toBeNull();
+    expect(screen.getByTestId('app-root')).toHaveStyle({ direction: 'ltr' });
   });
 
   it('wipes account data left by a session that was not remembered', async () => {

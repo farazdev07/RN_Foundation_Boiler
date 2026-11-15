@@ -33,7 +33,7 @@ export function SettingsScreen() {
   const styles = useStyles();
   const { t } = useTranslation('settings');
   const { preference, setPreference } = useThemePreference();
-  const { language, setLanguage, restartNeeded } = useLanguage();
+  const { language, setLanguage } = useLanguage();
   const logout = useLogout();
   const [confirming, setConfirming] = useState(false);
 
@@ -59,11 +59,6 @@ export function SettingsScreen() {
             value={language}
             onChange={setLanguage}
           />
-          {restartNeeded ? (
-            <Text variant="caption" color="textSecondary">
-              {t('restartForDirection')}
-            </Text>
-          ) : null}
         </View>
         <View style={styles.section}>
           <Text variant="label">{t('account')}</Text>

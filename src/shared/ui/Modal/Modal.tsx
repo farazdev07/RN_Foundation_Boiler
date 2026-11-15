@@ -1,7 +1,7 @@
 import type { PropsWithChildren } from 'react';
 import { Modal as RNModal, Pressable, StyleSheet, View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { useTranslation } from '@shared/lib/i18n';
+import { useDirection, useTranslation } from '@shared/lib/i18n';
 import { ToastViewport } from '../Toast';
 import { makeStyles } from '../theme';
 
@@ -32,7 +32,7 @@ const useStyles = makeStyles(({ colors, radii, spacing, elevations }) => ({
 }));
 
 // RN's Modal sits above the app root, so it hosts its own gesture root and
-// toast viewport.
+// toast viewport, and sets the layout direction again.
 export function Modal({
   visible,
   onRequestClose,
@@ -41,6 +41,7 @@ export function Modal({
 }: Props) {
   const styles = useStyles();
   const { t } = useTranslation();
+  const direction = useDirection();
 
   return (
     <RNModal
@@ -50,7 +51,7 @@ export function Modal({
       visible={visible}
       onRequestClose={onRequestClose}
     >
-      <GestureHandlerRootView style={StyleSheet.absoluteFill}>
+      <GestureHandlerRootView style={[StyleSheet.absoluteFill, { direction }]}>
         {/* The backdrop is a sibling of the card, not its parent. An accessible
             parent would merge the card into one "Close" element on iOS, hiding
             the dialog's own buttons from VoiceOver and UI tests. */}

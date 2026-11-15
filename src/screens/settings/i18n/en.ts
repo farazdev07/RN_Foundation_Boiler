@@ -5,8 +5,6 @@ export const settings = {
   light: 'Light',
   dark: 'Dark',
   language: 'Language',
-  restartForDirection:
-    'Restart the app to finish switching the layout direction.',
   account: 'Account',
   logout: 'Log out',
   logoutTitle: 'Log out?',

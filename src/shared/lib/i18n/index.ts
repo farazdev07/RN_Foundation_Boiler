@@ -7,7 +7,9 @@ export {
   initI18n,
   isRtlLanguage,
   setLanguage,
+  useDirection,
   useLanguage,
+  type Direction,
   type Language,
   type LocalizedStrings,
 } from './i18n';

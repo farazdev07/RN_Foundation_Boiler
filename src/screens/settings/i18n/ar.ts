@@ -8,7 +8,6 @@ export const settingsAr: typeof settings = {
   light: 'فاتح',
   dark: 'داكن',
   language: 'اللغة',
-  restartForDirection: 'أعد تشغيل التطبيق لإكمال تغيير اتجاه الواجهة.',
   account: 'الحساب',
   logout: 'تسجيل الخروج',
   logoutTitle: 'تسجيل الخروج؟',

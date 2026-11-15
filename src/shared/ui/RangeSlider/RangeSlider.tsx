@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { I18nManager, View, type LayoutChangeEvent } from 'react-native';
+import { View, type LayoutChangeEvent } from 'react-native';
 import { GestureDetector, usePanGesture } from 'react-native-gesture-handler';
 import Animated, {
   useAnimatedStyle,
@@ -7,7 +7,7 @@ import Animated, {
   type SharedValue,
 } from 'react-native-reanimated';
 import { scheduleOnRN } from 'react-native-worklets';
-import { useTranslation } from '@shared/lib/i18n';
+import { useDirection, useTranslation } from '@shared/lib/i18n';
 import { Text } from '../Text';
 import { makeStyles } from '../theme';
 import { clamp, directionSign, snap, toPosition, toValue } from './rangeMath';
@@ -91,7 +91,8 @@ function Thumb({
   testID,
 }: ThumbProps) {
   const start = useSharedValue(0);
-  const sign = directionSign(I18nManager.isRTL);
+  const direction = useDirection();
+  const sign = directionSign(direction === 'rtl');
 
   const pan = usePanGesture({
     enabled: !disabled,

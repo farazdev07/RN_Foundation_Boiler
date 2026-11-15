@@ -1,6 +1,7 @@
 import { useEffect, useId, useRef, type PropsWithChildren } from 'react';
 import { View } from 'react-native';
 import { TrueSheet, type SheetDetent } from '@lodev09/react-native-true-sheet';
+import { useDirection } from '@shared/lib/i18n';
 import { reportError } from '@shared/lib/monitoring';
 import { Text } from '../Text';
 import { makeStyles, useTheme } from '../theme';
@@ -38,6 +39,8 @@ export function BottomSheet({
   const styles = useStyles();
   const { colors, radii } = useTheme();
   const sheet = useRef<TrueSheet>(null);
+  // The sheet is its own native root, so the direction is set again here.
+  const direction = useDirection();
   const name = useId();
   // What the native sheet was last told, so a re-render does not present it
   // twice and a user's swipe is not answered with a second dismiss.
@@ -69,7 +72,7 @@ export function BottomSheet({
         onClose();
       }}
     >
-      <View style={styles.content}>
+      <View style={[styles.content, { direction }]}>
         {title ? (
           <Text variant="subtitle" accessibilityRole="header">
             {title}

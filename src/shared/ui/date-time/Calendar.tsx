@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
-import { I18nManager, Pressable, View } from 'react-native';
-import { useTranslation } from '@shared/lib/i18n';
+import { Pressable, View } from 'react-native';
+import { useDirection, useTranslation } from '@shared/lib/i18n';
 import { Icon } from '../Icon';
 import { Text } from '../Text';
 import { makeStyles } from '../theme';
@@ -93,8 +93,9 @@ export function Calendar({
     [weekStart, locale],
   );
   // "Back" points at the start edge, which is the right in an RTL layout.
-  const backIcon = I18nManager.isRTL ? 'chevron-right' : 'chevron-left';
-  const forwardIcon = I18nManager.isRTL ? 'chevron-left' : 'chevron-right';
+  const rtl = useDirection() === 'rtl';
+  const backIcon = rtl ? 'chevron-right' : 'chevron-left';
+  const forwardIcon = rtl ? 'chevron-left' : 'chevron-right';
   const todayKey = dayKey(new Date());
   const selectedKey = selected ? dayKey(selected) : undefined;
   const weeks = Array.from({ length: 6 }, (_, week) =>

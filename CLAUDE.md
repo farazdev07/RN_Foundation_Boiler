@@ -37,6 +37,8 @@ why. Lint and tests enforce most of them, so a violation shows up as a failing c
 - **Strings** live in the slice's `i18n/en.ts` (and `i18n/ar.ts`, typed as `typeof` the English object) and are
   registered in `src/app/i18n/index.ts`. No hard-coded user-facing text: lint fails on JSX text and on literal
   labels, and `t()` keys are type-checked.
+- **Direction** comes from `useDirection()` and flips live. Never read `I18nManager.isRTL`. Use `start`/`end`
+  styles, not `left`/`right`.
 - **New slices** start from `yarn new <feature|entity|screen> <name>`.
 - **Forms:** a zod schema, `useZodForm` from `@shared/lib/form`, and `Form*` fields. Copy `LoginForm`.
 - **Lists and images:** `List` and `useInfiniteQueryList` for a screen's list, with a memoised row; `Image` for

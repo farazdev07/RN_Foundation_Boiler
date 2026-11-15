@@ -46,9 +46,9 @@ const detectLanguage = (): Language =>
 export const isRtlLanguage = (language: Language): boolean =>
   RTL_LANGUAGES.has(language);
 
-// React Native reads the layout direction once, when the app starts. This sets
-// what the next start will use; `isDirectionPending` says whether the running
-// app still has the old one.
+// React Native reads this once, when the app starts, so it only sets what the
+// next start uses for native views. The running app is flipped by `useDirection`:
+// every root view sets it as its `direction` style, which lays out at once.
 const applyDirection = (language: Language): void => {
   const rtl = isRtlLanguage(language);
   I18nManager.allowRTL(rtl);
@@ -59,11 +59,6 @@ const currentLanguage = (): Language => {
   const parsed = z.enum(SUPPORTED_LANGUAGES).safeParse(i18next.language);
   return parsed.success ? parsed.data : 'en';
 };
-
-// True after switching between a left-to-right and a right-to-left language,
-// until the app is restarted.
-export const isDirectionPending = (): boolean =>
-  I18nManager.isRTL !== isRtlLanguage(currentLanguage());
 
 // Turns { auth: { en, ar } } into i18next's { en: { auth }, ar: { auth } }.
 const toResources = (namespaces: Namespaces) =>
@@ -108,11 +103,16 @@ export const setLanguage = (language: Language): void => {
 // For a language picker. Re-renders when the language changes.
 export const useLanguage = () => {
   useTranslation();
-  return {
-    language: currentLanguage(),
-    setLanguage,
-    restartNeeded: isDirectionPending(),
-  };
+  return { language: currentLanguage(), setLanguage };
+};
+
+export type Direction = 'ltr' | 'rtl';
+
+// The layout direction of the current language. Use this, not
+// `I18nManager.isRTL`, which keeps the value the app started with.
+export const useDirection = (): Direction => {
+  useTranslation();
+  return isRtlLanguage(currentLanguage()) ? 'rtl' : 'ltr';
 };
 
 export { i18next };

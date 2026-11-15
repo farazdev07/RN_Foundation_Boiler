@@ -1,4 +1,5 @@
 import { I18nManager } from 'react-native';
+import { act, renderHook } from '@testing-library/react-native';
 import { createMMKV } from 'react-native-mmkv';
 import {
   common,
@@ -6,8 +7,8 @@ import {
   initI18n,
   isRtlLanguage,
   setLanguage,
+  useDirection,
 } from '@shared/lib/i18n';
-import { isDirectionPending } from './i18n';
 
 const settings = {
   en: { title: 'Settings', language: 'Language' },
@@ -53,20 +54,21 @@ describe('i18n', () => {
     );
   });
 
-  it('asks for a right-to-left layout for Arabic, and says a restart is pending', () => {
+  it('flips the layout direction at once, and sets it for the next launch', async () => {
     expect(isRtlLanguage('ar')).toBe(true);
     expect(isRtlLanguage('en')).toBe(false);
 
-    setLanguage('ar');
+    const { result } = await renderHook(() => useDirection());
+    expect(result.current).toBe('ltr');
 
+    await act(() => setLanguage('ar'));
+
+    expect(result.current).toBe('rtl');
     expect(forceRTL).toHaveBeenLastCalledWith(true);
-    // The running app keeps its direction until it restarts.
-    expect(I18nManager.isRTL).toBe(false);
-    expect(isDirectionPending()).toBe(true);
 
-    setLanguage('en');
+    await act(() => setLanguage('en'));
 
+    expect(result.current).toBe('ltr');
     expect(forceRTL).toHaveBeenLastCalledWith(false);
-    expect(isDirectionPending()).toBe(false);
   });
 });

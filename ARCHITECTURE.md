@@ -214,8 +214,12 @@ sequenceDiagram
 - Each slice exports `{ en, ar? }`. `app/i18n` collects them into one object, passes it to `initI18n`, and
   declares its English shape as i18next's resource type, so every `t()` key is checked by TypeScript.
 - English is the fallback. Arabic is typed as `typeof` the English strings, so a missing key fails typecheck.
-- The language is a device-scope key. `setLanguage` changes text at once and calls `I18nManager.forceRTL` for the
-  next launch; React Native reads the direction only at startup.
+- The language is a device-scope key. `setLanguage` changes text and direction at once.
+- **Direction is a style, not a restart.** `useDirection()` gives the current language's direction. The app root,
+  `Modal` and `BottomSheet` (each its own native root) set it as their `direction` style, and the navigator takes
+  it as its `direction` prop. `I18nManager.forceRTL` is still called, only so native views match on the next
+  launch. Read `useDirection()`, never `I18nManager.isRTL`, which keeps its startup value. A new native root (a
+  raw RN `Modal`) must set the style itself.
 - A language change remounts the navigator with its current state, because the static navigator config reads tab
   and header titles once per mount.
 - **Breakpoints** are window-width classes in the theme: `compact`, `medium` (600 pt) and `expanded` (840 pt).

@@ -18,7 +18,7 @@ import { LoginScreen } from '@screens/login';
 import { ProductDetailsScreen } from '@screens/product-details'; // @unit:products
 import { ProductListScreen } from '@screens/product-list'; // @unit:products
 import { SettingsScreen } from '@screens/settings';
-import { i18next, useTranslation } from '@shared/lib/i18n';
+import { i18next, useDirection, useTranslation } from '@shared/lib/i18n';
 import {
   ErrorBoundary,
   Icon,
@@ -159,6 +159,7 @@ export function RootNavigator({ onReady }: Props) {
   // A language change remounts the navigator to re-read them, and hands it the
   // state it had, so the user stays on the screen they were on.
   const { i18n } = useTranslation();
+  const direction = useDirection();
   const [saved, setSaved] = useState<{
     language: string;
     state: NavigationState | undefined;
@@ -181,6 +182,7 @@ export function RootNavigator({ onReady }: Props) {
       ref={navigationRef}
       {...(saved.state && { initialState: saved.state })}
       theme={navigationTheme}
+      direction={direction}
       linking={linking}
       {...(onReady && { onReady })}
     />
