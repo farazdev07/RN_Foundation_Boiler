@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { Pressable, View } from 'react-native';
+import { I18nManager, Pressable, View } from 'react-native';
 import { useTranslation } from '@shared/lib/i18n';
 import { Icon } from '../Icon';
 import { Text } from '../Text';
@@ -92,6 +92,9 @@ export function Calendar({
     () => weekdayNames(weekStart, locale),
     [weekStart, locale],
   );
+  // "Back" points at the start edge, which is the right in an RTL layout.
+  const backIcon = I18nManager.isRTL ? 'chevron-right' : 'chevron-left';
+  const forwardIcon = I18nManager.isRTL ? 'chevron-left' : 'chevron-right';
   const todayKey = dayKey(new Date());
   const selectedKey = selected ? dayKey(selected) : undefined;
   const weeks = Array.from({ length: 6 }, (_, week) =>
@@ -108,7 +111,7 @@ export function Calendar({
           style={styles.nav}
           hitSlop={8}
         >
-          <Icon name="chevron-left" size={22} />
+          <Icon name={backIcon} size={22} />
         </Pressable>
         <Text variant="subtitle" accessibilityRole="header">
           {monthTitle(month, locale)}
@@ -120,7 +123,7 @@ export function Calendar({
           style={styles.nav}
           hitSlop={8}
         >
-          <Icon name="chevron-right" size={22} />
+          <Icon name={forwardIcon} size={22} />
         </Pressable>
       </View>
       <View style={styles.row} importantForAccessibility="no-hide-descendants">

@@ -1,3 +1,13 @@
 export { useTranslation } from 'react-i18next';
-export { common } from './en';
-export { i18next, initI18n, setLanguage } from './i18n';
+export {
+  LANGUAGE_NAMES,
+  SUPPORTED_LANGUAGES,
+  common,
+  i18next,
+  initI18n,
+  isRtlLanguage,
+  setLanguage,
+  useLanguage,
+  type Language,
+  type LocalizedStrings,
+} from './i18n';

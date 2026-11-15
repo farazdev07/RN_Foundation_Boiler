@@ -36,11 +36,19 @@
   },
   "carousel": {
     "paths": ["src/shared/ui/Carousel"],
-    "touchpoints": ["src/shared/ui/index.ts", "src/shared/lib/i18n/en.ts"]
+    "touchpoints": [
+      "src/shared/ui/index.ts",
+      "src/shared/lib/i18n/en.ts",
+      "src/shared/lib/i18n/ar.ts"
+    ]
   },
   "range-slider": {
     "paths": ["src/shared/ui/RangeSlider"],
-    "touchpoints": ["src/shared/ui/index.ts", "src/shared/lib/i18n/en.ts"]
+    "touchpoints": [
+      "src/shared/ui/index.ts",
+      "src/shared/lib/i18n/en.ts",
+      "src/shared/lib/i18n/ar.ts"
+    ]
   },
   "image-viewer": {
     "paths": ["src/shared/ui/ImageViewer"],
@@ -51,13 +59,18 @@
     "touchpoints": [
       "src/shared/ui/index.ts",
       "jest.setup.ts",
-      "src/shared/lib/i18n/en.ts"
+      "src/shared/lib/i18n/en.ts",
+      "src/shared/lib/i18n/ar.ts"
     ],
     "packages": ["@react-native-community/datetimepicker"]
   },
   "phone-input": {
     "paths": ["src/shared/ui/PhoneInput"],
-    "touchpoints": ["src/shared/ui/index.ts", "src/shared/lib/i18n/en.ts"],
+    "touchpoints": [
+      "src/shared/ui/index.ts",
+      "src/shared/lib/i18n/en.ts",
+      "src/shared/lib/i18n/ar.ts"
+    ],
     "packages": ["libphonenumber-js"]
   },
   "socket": {

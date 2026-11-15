@@ -1,6 +1,6 @@
 import { fireEvent, screen } from '@testing-library/react-native';
 import { renderWithTheme } from '../testing/renderWithTheme';
-import { clamp, snap, toPosition, toValue } from './rangeMath';
+import { clamp, snap, toPosition, toValue, directionSign } from './rangeMath';
 import { RangeSlider, type Range } from './index';
 
 describe('rangeMath', () => {
@@ -18,6 +18,11 @@ describe('rangeMath', () => {
     [13, 10, 20, 4, 14],
   ])('snaps %d in [%d, %d] by %d to %d', (value, min, max, step, expected) => {
     expect(snap(value, min, max, step)).toBe(expected);
+  });
+
+  it('reverses drags and offsets in a right-to-left layout', () => {
+    expect(directionSign(false)).toBe(1);
+    expect(directionSign(true)).toBe(-1);
   });
 
   it('maps values and positions both ways', () => {

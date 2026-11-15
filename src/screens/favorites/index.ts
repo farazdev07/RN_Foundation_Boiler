@@ -1,2 +1,2 @@
-export { favorites as favoritesStrings } from './i18n/en';
+export { favoritesStrings } from './i18n';
 export { FavoritesScreen } from './ui/FavoritesScreen';

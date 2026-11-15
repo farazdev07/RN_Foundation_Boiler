@@ -1,2 +1,2 @@
-export { productList as productListStrings } from './i18n/en';
+export { productListStrings } from './i18n';
 export { ProductListScreen } from './ui/ProductListScreen';

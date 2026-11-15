@@ -33,12 +33,17 @@ function validate(layer, name) {
 const stringsFile = (ns, title) =>
   `export const ${ns} = {\n  title: '${title}',\n};\n`;
 
+// English only to start with. Add `ar: <name>Ar` here once i18n/ar.ts exists.
+const stringsIndex = ns =>
+  `import { ${ns} } from './en';\n\nexport const ${ns}Strings = { en: ${ns} };\n`;
+
 function featureFiles(name) {
   const ns = camel(name);
   const Component = pascal(name);
   return {
     'i18n/en.ts': stringsFile(ns, words(name)),
-    'index.ts': `export { ${ns} as ${ns}Strings } from './i18n/en';
+    'i18n/index.ts': stringsIndex(ns),
+    'index.ts': `export { ${ns}Strings } from './i18n';
 export { ${Component} } from './ui/${Component}';
 `,
     [`ui/${Component}.tsx`]: `import { useTranslation } from '@shared/lib/i18n';
@@ -76,7 +81,7 @@ describe('${Component}', () => {
     );
 
     await fireEvent.press(
-      screen.getByRole('button', { name: ${ns}Strings.title }),
+      screen.getByRole('button', { name: ${ns}Strings.en.title }),
     );
 
     expect(onDone).toHaveBeenCalledTimes(1);
@@ -91,7 +96,8 @@ function screenFiles(name) {
   const Component = `${pascal(name)}Screen`;
   return {
     'i18n/en.ts': stringsFile(ns, words(name)),
-    'index.ts': `export { ${ns} as ${ns}Strings } from './i18n/en';
+    'i18n/index.ts': stringsIndex(ns),
+    'index.ts': `export { ${ns}Strings } from './i18n';
 export { ${Component} } from './ui/${Component}';
 `,
     [`ui/${Component}.tsx`]: `import { useTranslation } from '@shared/lib/i18n';
@@ -157,7 +163,7 @@ function registerStrings(root, layer, name) {
   const ns = camel(name);
   const text = fs.readFileSync(file, 'utf8');
   const importAnchor = "import { common, initI18n } from '@shared/lib/i18n';";
-  const entryAnchor = '\n});';
+  const entryAnchor = '\n};\n\ninitI18n(namespaces);';
   if (!text.includes(importAnchor) || !text.includes(entryAnchor)) {
     throw new Error(
       'src/app/i18n/index.ts has changed shape; register the strings by hand',

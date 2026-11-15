@@ -18,6 +18,13 @@ export const snap = (
   return clamp(Number(stepped.toFixed(10)), min, max);
 };
 
+// Positions run from the start edge. In a right-to-left layout the start is on
+// the right, so a rightward drag or translation is a negative step.
+export const directionSign = (rtl: boolean): 1 | -1 => {
+  'worklet';
+  return rtl ? -1 : 1;
+};
+
 export const toPosition = (
   value: number,
   min: number,

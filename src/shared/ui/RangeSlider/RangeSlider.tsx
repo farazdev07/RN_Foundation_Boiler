@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { View, type LayoutChangeEvent } from 'react-native';
+import { I18nManager, View, type LayoutChangeEvent } from 'react-native';
 import { GestureDetector, usePanGesture } from 'react-native-gesture-handler';
 import Animated, {
   useAnimatedStyle,
@@ -10,7 +10,7 @@ import { scheduleOnRN } from 'react-native-worklets';
 import { useTranslation } from '@shared/lib/i18n';
 import { Text } from '../Text';
 import { makeStyles } from '../theme';
-import { clamp, snap, toPosition, toValue } from './rangeMath';
+import { clamp, directionSign, snap, toPosition, toValue } from './rangeMath';
 
 const THUMB = 28;
 const TRACK_HEIGHT = 6;
@@ -91,6 +91,7 @@ function Thumb({
   testID,
 }: ThumbProps) {
   const start = useSharedValue(0);
+  const sign = directionSign(I18nManager.isRTL);
 
   const pan = usePanGesture({
     enabled: !disabled,
@@ -100,7 +101,7 @@ function Thumb({
     },
     onUpdate: event => {
       'worklet';
-      const next = start.value + event.translationX;
+      const next = start.value + sign * event.translationX;
       position.value =
         which === 'low'
           ? clamp(next, 0, other.value - gapPx)
@@ -113,7 +114,7 @@ function Thumb({
   });
 
   const moved = useAnimatedStyle(() => ({
-    transform: [{ translateX: position.value }],
+    transform: [{ translateX: sign * position.value }],
   }));
 
   return (
@@ -182,7 +183,7 @@ export function RangeSlider({
   };
 
   const fill = useAnimatedStyle(() => ({
-    left: low.value + THUMB / 2,
+    start: low.value + THUMB / 2,
     width: Math.max(high.value - low.value, 0),
   }));
 

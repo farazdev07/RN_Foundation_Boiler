@@ -14,7 +14,7 @@ describe('createSlice', () => {
     fs.mkdirSync(path.join(root, 'src/app/i18n'), { recursive: true });
     fs.writeFileSync(
       path.join(root, I18N),
-      "import { common, initI18n } from '@shared/lib/i18n';\n\ninitI18n({\n  common,\n});\n",
+      "import { common, initI18n } from '@shared/lib/i18n';\n\nconst namespaces = {\n  common,\n};\n\ninitI18n(namespaces);\n",
     );
   });
 
@@ -27,15 +27,16 @@ describe('createSlice', () => {
 
     expect(created.sort()).toEqual([
       'src/features/rate-product/i18n/en.ts',
+      'src/features/rate-product/i18n/index.ts',
       'src/features/rate-product/index.ts',
       'src/features/rate-product/ui/RateProduct.test.tsx',
       'src/features/rate-product/ui/RateProduct.tsx',
     ]);
     expect(read('src/features/rate-product/index.ts')).toContain(
-      "export { rateProduct as rateProductStrings } from './i18n/en';",
+      "export { rateProductStrings } from './i18n';",
     );
     expect(read(I18N)).toBe(
-      "import { rateProductStrings } from '@features/rate-product';\nimport { common, initI18n } from '@shared/lib/i18n';\n\ninitI18n({\n  common,\n  rateProduct: rateProductStrings,\n});\n",
+      "import { rateProductStrings } from '@features/rate-product';\nimport { common, initI18n } from '@shared/lib/i18n';\n\nconst namespaces = {\n  common,\n  rateProduct: rateProductStrings,\n};\n\ninitI18n(namespaces);\n",
     );
   });
 

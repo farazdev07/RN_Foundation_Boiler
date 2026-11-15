@@ -1,9 +1,10 @@
-import { useMemo, type ReactNode } from 'react';
+import { useMemo, useState, type ReactNode } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import {
   createNavigationContainerRef,
   createStaticNavigation,
+  type NavigationState,
   type StaticParamList,
 } from '@react-navigation/native';
 import {
@@ -17,7 +18,7 @@ import { LoginScreen } from '@screens/login';
 import { ProductDetailsScreen } from '@screens/product-details'; // @unit:products
 import { ProductListScreen } from '@screens/product-list'; // @unit:products
 import { SettingsScreen } from '@screens/settings';
-import { i18next } from '@shared/lib/i18n';
+import { i18next, useTranslation } from '@shared/lib/i18n';
 import {
   ErrorBoundary,
   Icon,
@@ -74,8 +75,6 @@ const Tabs = createBottomTabNavigator({
     // @unit-end:products
     Settings: {
       screen: SettingsScreen,
-      // Options are static here, so the string is looked up once. Fine while the
-      // app is English only; a language switcher would move this into the screen.
       options: () => ({
         title: i18next.t('settings:title'),
         tabBarIcon: tabIcon('settings'),
@@ -141,7 +140,8 @@ declare global {
   }
 }
 
-// For navigating from outside a screen, such as a notification handler.
+// For reading or driving navigation from outside a screen: the language
+// switch below uses it, and a notification handler would.
 export const navigationRef = createNavigationContainerRef<RootStackParamList>();
 
 const Navigation = createStaticNavigation(RootStack);
@@ -155,6 +155,20 @@ export function RootNavigator({ onReady }: Props) {
   const theme = useTheme();
   const navigationTheme = useMemo(() => toNavigationTheme(theme), [theme]);
   const status = useSessionStatus();
+  // Titles are read with i18next.t in the static config above, once per mount.
+  // A language change remounts the navigator to re-read them, and hands it the
+  // state it had, so the user stays on the screen they were on.
+  const { i18n } = useTranslation();
+  const [saved, setSaved] = useState<{
+    language: string;
+    state: NavigationState | undefined;
+  }>({ language: i18n.language, state: undefined });
+  if (saved.language !== i18n.language) {
+    setSaved({
+      language: i18n.language,
+      state: navigationRef.isReady() ? navigationRef.getRootState() : undefined,
+    });
+  }
 
   // The splash covers this until the saved session has been checked.
   if (status === 'unknown') {
@@ -163,7 +177,9 @@ export function RootNavigator({ onReady }: Props) {
 
   return (
     <Navigation
+      key={saved.language}
       ref={navigationRef}
+      {...(saved.state && { initialState: saved.state })}
       theme={navigationTheme}
       linking={linking}
       {...(onReady && { onReady })}

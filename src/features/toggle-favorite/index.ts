@@ -1,4 +1,4 @@
-export { favorite as favoriteStrings } from './i18n/en';
+export { favoriteStrings } from './i18n';
 export {
   favoritesPersistence,
   favoritesSlice,

@@ -1,2 +1,2 @@
-export { settings as settingsStrings } from './i18n/en';
+export { settingsStrings } from './i18n';
 export { SettingsScreen } from './ui/SettingsScreen';

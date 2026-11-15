@@ -3,7 +3,7 @@ export {
   useGetProductQuery,
   useGetProductsInfiniteQuery,
 } from './api/productApi';
-export { product as productStrings } from './i18n/en';
+export { productStrings } from './i18n';
 export { formatPrice } from './lib/format';
 export {
   productSchema,

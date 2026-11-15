@@ -10,7 +10,7 @@ import { settingsStrings } from '@screens/settings';
 import { common, initI18n } from '@shared/lib/i18n';
 
 // Add a slice's strings here. Deleting a slice removes its line.
-initI18n({
+const namespaces = {
   common,
   auth: authStrings,
   biometric: biometricStrings, // @unit:biometric-unlock
@@ -23,4 +23,17 @@ initI18n({
   // @unit-end:products
   home: homeStrings,
   settings: settingsStrings,
-});
+};
+
+initI18n(namespaces);
+
+// Types every t() call against the English strings, so a misspelt key or
+// namespace fails typecheck.
+declare module 'i18next' {
+  interface CustomTypeOptions {
+    defaultNS: 'common';
+    resources: {
+      [Name in keyof typeof namespaces]: (typeof namespaces)[Name]['en'];
+    };
+  }
+}

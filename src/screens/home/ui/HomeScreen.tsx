@@ -6,11 +6,12 @@ import { Screen, Text } from '@shared/ui';
 // removed. Replace it with the app's own home.
 export function HomeScreen() {
   const { t } = useTranslation('home');
+  const { t: tCommon } = useTranslation();
   const { data: user } = useGetCurrentUserQuery();
 
   return (
     <Screen belowHeader scrollable>
-      <Text variant="title">{t('common:appName')}</Text>
+      <Text variant="title">{tCommon('appName')}</Text>
       {user ? (
         <Text testID="home-greeting">
           {t('greeting', { name: user.firstName })}

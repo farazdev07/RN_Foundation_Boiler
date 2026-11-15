@@ -2,7 +2,12 @@ import { useState } from 'react';
 import { View } from 'react-native';
 import { useLogout } from '@entities/session';
 import { BiometricToggle } from '@features/biometric-unlock'; // @unit:biometric-unlock
-import { useTranslation } from '@shared/lib/i18n';
+import {
+  LANGUAGE_NAMES,
+  SUPPORTED_LANGUAGES,
+  useLanguage,
+  useTranslation,
+} from '@shared/lib/i18n';
 import {
   Button,
   ConfirmDialog,
@@ -19,10 +24,16 @@ const useStyles = makeStyles(({ spacing }) => ({
   section: { gap: spacing.sm },
 }));
 
+const languages = SUPPORTED_LANGUAGES.map(value => ({
+  value,
+  label: LANGUAGE_NAMES[value],
+}));
+
 export function SettingsScreen() {
   const styles = useStyles();
   const { t } = useTranslation('settings');
   const { preference, setPreference } = useThemePreference();
+  const { language, setLanguage, restartNeeded } = useLanguage();
   const logout = useLogout();
   const [confirming, setConfirming] = useState(false);
 
@@ -41,6 +52,19 @@ export function SettingsScreen() {
           value={preference}
           onChange={setPreference}
         />
+        <View style={styles.section}>
+          <RadioGroup
+            label={t('language')}
+            options={languages}
+            value={language}
+            onChange={setLanguage}
+          />
+          {restartNeeded ? (
+            <Text variant="caption" color="textSecondary">
+              {t('restartForDirection')}
+            </Text>
+          ) : null}
+        </View>
         <View style={styles.section}>
           <Text variant="label">{t('account')}</Text>
           {/* @unit-start:biometric-unlock */}

@@ -15,6 +15,7 @@ import { store } from '@app/store/store';
 import { logout } from '@entities/session';
 import { getCurrentUser } from '@entities/user';
 import { getAccessToken } from '@shared/api';
+import { setLanguage } from '@shared/lib/i18n';
 import { defineKey } from '@shared/storage';
 
 // The whole app runs for real: store, navigation, storage and the Keychain mock.
@@ -154,6 +155,7 @@ describe('App auth', () => {
 
   afterEach(async () => {
     screen.unmount();
+    setLanguage('en');
     await logout(store.dispatch);
     device().clearAll();
     jest.restoreAllMocks();
@@ -280,6 +282,35 @@ describe('App auth', () => {
     await render(<App />);
 
     expect(await screen.findByTestId('settings-logout')).toBeOnTheScreen();
+  });
+
+  it('switches the whole app to Arabic from Settings, tab titles included', async () => {
+    markInstalled();
+    await Keychain.setGenericPassword('auth.refreshToken', 'refresh-emilys-1', {
+      service: 'auth.refreshToken',
+    });
+    jest
+      .mocked(Linking.getInitialURL)
+      .mockResolvedValueOnce('rn-foundation-dev://settings');
+    await render(<App />);
+
+    await fireEvent.press(
+      await screen.findByRole('radio', { name: 'العربية' }),
+    );
+
+    // The screen, a shared component's label and the navigator's tab titles.
+    expect(await screen.findByText('المظهر')).toBeOnTheScreen();
+    expect(screen.getAllByText('الإعدادات').length).toBeGreaterThan(0);
+    expect(screen.getAllByText('الرئيسية').length).toBeGreaterThan(0);
+    // Arabic needs a right-to-left layout, which only a restart applies.
+    expect(
+      screen.getByText('أعد تشغيل التطبيق لإكمال تغيير اتجاه الواجهة.'),
+    ).toBeOnTheScreen();
+
+    await fireEvent.press(screen.getByRole('radio', { name: 'English' }));
+
+    expect(await screen.findByText('Appearance')).toBeOnTheScreen();
+    expect(screen.queryByText('الإعدادات')).toBeNull();
   });
 
   it('wipes account data left by a session that was not remembered', async () => {
