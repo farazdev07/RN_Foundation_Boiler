@@ -2,7 +2,11 @@ module.exports = {
   preset: '@react-native/jest-preset',
   // Loads Reanimated and Worklets' web implementations, which run under Node.
   resolver: 'react-native-reanimated/jest/resolver',
-  setupFiles: ['react-native-gesture-handler/jestSetup'],
+  setupFiles: [
+    'react-native-gesture-handler/jestSetup',
+    // Gives FlashList a measured size, so it renders rows under Jest.
+    '@shopify/flash-list/jestSetup',
+  ],
   setupFilesAfterEnv: ['<rootDir>/jest.setup.ts'],
   moduleNameMapper: {
     '^@app/(.*)$': '<rootDir>/src/app/$1',
@@ -12,7 +16,7 @@ module.exports = {
     '^@shared/(.*)$': '<rootDir>/src/shared/$1',
   },
   transformIgnorePatterns: [
-    'node_modules/(?!((jest-)?react-native[^/]*|@react-native(-community)?|@react-native-vector-icons|@react-navigation|react-redux|immer)/)',
+    'node_modules/(?!((jest-)?react-native[^/]*|@react-native(-community)?|@react-native-vector-icons|@react-navigation|@shopify/flash-list|@lodev09|react-redux|immer)/)',
   ],
   testPathIgnorePatterns: [
     '/node_modules/',

@@ -72,6 +72,23 @@ const banned = {
     group: ['react-hook-form', '@hookform/*'],
     message: 'Use useZodForm and the Form* fields from @shared/lib/form.',
   },
+  flashList: {
+    group: ['@shopify/flash-list'],
+    message: 'Use List from @shared/ui.',
+  },
+  turboImage: {
+    group: ['react-native-turbo-image'],
+    message: 'Use Image from @shared/ui.',
+  },
+  webView: {
+    group: ['react-native-webview'],
+    message:
+      'Use WebView from @shared/ui, which enforces an origin allow-list.',
+  },
+  trueSheet: {
+    group: ['@lodev09/react-native-true-sheet'],
+    message: 'Use BottomSheet from @shared/ui.',
+  },
   navigation: {
     group: ['@react-navigation/*'],
     message:
@@ -88,6 +105,8 @@ const OPTIONAL_UI = [
   'date-time',
   'PhoneInput',
   'OtpInput',
+  'WebView',
+  'BottomSheet',
 ];
 
 const optionalUi = (allowed = []) => ({
@@ -164,6 +183,17 @@ const importRestrictions = [
   // its own block after this one, for example
   //   restrict(['src/shared/ui/PhoneInput/**'], { extra: [optionalUi(['Select'])] })
   restrict(['src/shared/ui/**/*.{ts,tsx}'], { extra: [optionalUi()] }),
+  ...[
+    ['List', 'flashList'],
+    ['Image', 'turboImage'],
+    ['WebView', 'webView'],
+    ['BottomSheet', 'trueSheet'],
+  ].map(([folder, owned]) =>
+    restrict([`src/shared/ui/${folder}/**/*.{ts,tsx}`], {
+      owns: [owned],
+      extra: [optionalUi()],
+    }),
+  ),
   restrict(['src/features/**/*.{ts,tsx}', 'src/entities/**/*.{ts,tsx}'], {
     extra: [navigation],
   }),

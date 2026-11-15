@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { FlatList, RefreshControl, View } from 'react-native';
+import { memo, useCallback, useState } from 'react';
+import { RefreshControl, View } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import {
   ProductCard,
@@ -13,10 +13,13 @@ import { useTranslation } from '@shared/lib/i18n';
 import {
   EmptyState,
   Icon,
+  List,
   ListFooterSpinner,
   Skeleton,
   TextInput,
   makeStyles,
+  useInfiniteQueryList,
+  useResponsiveValue,
   useTheme,
 } from '@shared/ui';
 
@@ -25,9 +28,37 @@ const SEARCH_DELAY_MS = 300;
 const useStyles = makeStyles(({ colors, spacing }) => ({
   screen: { backgroundColor: colors.background, flex: 1 },
   search: { padding: spacing.md, paddingBottom: spacing.sm },
-  list: { flexGrow: 1, gap: spacing.sm, padding: spacing.md, paddingTop: 0 },
+  // Half the gap on every side of a row, and the other half on the list, so
+  // rows and columns end up one full gap apart.
+  list: { paddingBottom: spacing.md, paddingHorizontal: spacing.md / 2 },
+  row: { flex: 1, padding: spacing.sm / 2, paddingHorizontal: spacing.md / 2 },
   skeletons: { gap: spacing.sm, padding: spacing.md, paddingTop: 0 },
 }));
+
+type RowProps = { product: ProductSummary; onOpen: (id: number) => void };
+
+// Memoised, with stable props, so typing in the search field or loading the
+// next page re-renders only the rows whose product changed.
+function ProductRowView({ product, onOpen }: RowProps) {
+  const styles = useStyles();
+
+  return (
+    <View style={styles.row}>
+      <ProductCard
+        product={product}
+        onPress={() => onOpen(product.id)}
+        action={<FavoriteButton product={product} />}
+      />
+    </View>
+  );
+}
+
+const ProductRow = memo(ProductRowView);
+
+type ProductPage = { products: ProductSummary[] };
+
+const selectProducts = (page: ProductPage) => page.products;
+const keyOf = (product: ProductSummary) => String(product.id);
 
 export function ProductListScreen() {
   const styles = useStyles();
@@ -36,23 +67,24 @@ export function ProductListScreen() {
   const navigation = useNavigation();
   const [search, setSearch] = useState('');
   const query = useDebounce(search.trim(), SEARCH_DELAY_MS);
+  // One column on a phone, two once the window is tablet-wide.
+  const columns = useResponsiveValue({ compact: 1, medium: 2 });
 
-  const {
-    data,
-    error,
-    isLoading,
-    isFetching,
-    isFetchingNextPage,
-    hasNextPage,
-    fetchNextPage,
-    refetch,
-  } = useGetProductsInfiniteQuery(query);
+  const products = useGetProductsInfiniteQuery(query);
+  const { error, isLoading, refetch } = products;
+  const list = useInfiniteQueryList(products, selectProducts);
 
-  const products = data?.pages.flatMap(page => page.products) ?? [];
-  const refreshing = isFetching && !isLoading && !isFetchingNextPage;
+  const open = useCallback(
+    (id: number) => navigation.navigate('ProductDetails', { id }),
+    [navigation],
+  );
 
-  const open = (product: ProductSummary) =>
-    navigation.navigate('ProductDetails', { id: product.id });
+  const renderItem = useCallback(
+    ({ item }: { item: ProductSummary }) => (
+      <ProductRow product={item} onOpen={open} />
+    ),
+    [open],
+  );
 
   const renderEmpty = () => {
     if (error) {
@@ -97,36 +129,22 @@ export function ProductListScreen() {
           ))}
         </View>
       ) : (
-        <FlatList
+        <List
           testID="product-list"
-          data={products}
-          keyExtractor={item => String(item.id)}
-          renderItem={({ item }) => (
-            <ProductCard
-              product={item}
-              onPress={() => open(item)}
-              action={<FavoriteButton product={item} />}
-            />
-          )}
+          data={list.items}
+          keyExtractor={keyOf}
+          renderItem={renderItem}
+          numColumns={columns}
           contentContainerStyle={styles.list}
           keyboardDismissMode="on-drag"
-          keyboardShouldPersistTaps="handled"
           ListEmptyComponent={renderEmpty}
-          ListFooterComponent={
-            <ListFooterSpinner loading={isFetchingNextPage} />
-          }
-          onEndReached={() => {
-            if (hasNextPage && !isFetching) {
-              fetchNextPage();
-            }
-          }}
+          ListFooterComponent={<ListFooterSpinner loading={list.loadingMore} />}
+          onEndReached={list.onEndReached}
           onEndReachedThreshold={0.5}
           refreshControl={
             <RefreshControl
-              refreshing={refreshing}
-              onRefresh={() => {
-                refetch();
-              }}
+              refreshing={list.refreshing}
+              onRefresh={list.onRefresh}
               tintColor={colors.primary}
               colors={[colors.primary]}
             />

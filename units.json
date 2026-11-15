@@ -97,5 +97,15 @@
   "otp-input": {
     "paths": ["src/shared/ui/OtpInput"],
     "touchpoints": ["src/shared/ui/index.ts"]
+  },
+  "webview": {
+    "paths": ["src/shared/ui/WebView"],
+    "touchpoints": ["src/shared/ui/index.ts", "jest.setup.ts"],
+    "packages": ["react-native-webview"]
+  },
+  "bottom-sheet": {
+    "paths": ["src/shared/ui/BottomSheet"],
+    "touchpoints": ["src/shared/ui/index.ts", "jest.setup.ts"],
+    "packages": ["@lodev09/react-native-true-sheet"]
   }
 }

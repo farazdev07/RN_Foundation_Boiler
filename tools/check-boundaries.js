@@ -243,6 +243,61 @@ const cases = [
     RESTRICTED,
   ],
 
+  [
+    'FlashList in a screen',
+    'src/screens/alpha/x.ts',
+    '@shopify/flash-list',
+    RESTRICTED,
+  ],
+  [
+    'the image library in an entity',
+    'src/entities/alpha/x.ts',
+    'react-native-turbo-image',
+    RESTRICTED,
+  ],
+  [
+    'WebView in a feature',
+    'src/features/alpha/x.ts',
+    'react-native-webview',
+    RESTRICTED,
+  ],
+  [
+    'the sheet library in a screen',
+    'src/screens/alpha/x.ts',
+    '@lodev09/react-native-true-sheet',
+    RESTRICTED,
+  ],
+  [
+    'the image library in another UI component',
+    'src/shared/ui/List/x.ts',
+    'react-native-turbo-image',
+    RESTRICTED,
+  ],
+  [
+    'FlashList in ui/List',
+    'src/shared/ui/List/x.ts',
+    '@shopify/flash-list',
+    null,
+  ],
+  [
+    'the image library in ui/Image',
+    'src/shared/ui/Image/x.ts',
+    'react-native-turbo-image',
+    null,
+  ],
+  [
+    'WebView in ui/WebView',
+    'src/shared/ui/WebView/x.ts',
+    'react-native-webview',
+    null,
+  ],
+  [
+    'the sheet library in ui/BottomSheet',
+    'src/shared/ui/BottomSheet/x.ts',
+    '@lodev09/react-native-true-sheet',
+    null,
+  ],
+
   // What must stay legal, so a rule that is too broad fails here too.
   ['app -> screen', 'src/app/x.ts', '@screens/alpha', null],
   ['app -> shared', 'src/app/x.ts', '@shared/alpha', null],

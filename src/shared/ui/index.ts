@@ -20,6 +20,7 @@ export { EmptyState } from './EmptyState';
 export { ErrorBoundary } from './ErrorBoundary';
 export { Icon, type IconName } from './Icon';
 export { Image } from './Image';
+export { List, useInfiniteQueryList, type InfiniteQueryState } from './List';
 export { Screen } from './Screen';
 export { Skeleton } from './Skeleton';
 export { ListFooterSpinner, Spinner } from './Spinner';
@@ -43,6 +44,8 @@ export { Carousel } from './Carousel'; // @unit:carousel
 export { RangeSlider, type Range } from './RangeSlider'; // @unit:range-slider
 export { ImageViewer } from './ImageViewer'; // @unit:image-viewer
 export { OtpInput } from './OtpInput'; // @unit:otp-input
+export { WebView } from './WebView'; // @unit:webview
+export { BottomSheet } from './BottomSheet'; // @unit:bottom-sheet
 export { Calendar, DateTimeField, dayKey } from './date-time'; // @unit:date-time
 // @unit-start:phone-input
 export {

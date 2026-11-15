@@ -133,6 +133,20 @@ jest.mock('@react-native-community/datetimepicker', () => {
 });
 // @unit-end:date-time
 
+// @unit-start:webview
+jest.mock('react-native-webview', () => {
+  const { View } =
+    jest.requireActual<typeof import('react-native')>('react-native');
+  return { WebView: View };
+});
+// @unit-end:webview
+
+// @unit-start:bottom-sheet
+jest.mock('@lodev09/react-native-true-sheet', () =>
+  jest.requireActual('@lodev09/react-native-true-sheet/mock'),
+);
+// @unit-end:bottom-sheet
+
 // @unit-start:media
 jest.mock('react-native-image-crop-picker', () => ({
   __esModule: true,
