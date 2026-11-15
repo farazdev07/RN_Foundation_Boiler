@@ -68,24 +68,16 @@ const banned = {
     group: ['@sentry/*'],
     message: 'Report errors through @shared/lib/monitoring.',
   },
+  forms: {
+    group: ['react-hook-form', '@hookform/*'],
+    message: 'Use useZodForm and the Form* fields from @shared/lib/form.',
+  },
   navigation: {
     group: ['@react-navigation/*'],
     message:
       'Features and entities take callbacks; only screens and app navigate.',
   },
 };
-
-const {
-  asyncStorage,
-  mmkv,
-  keychain,
-  netInfo,
-  mediaPicker,
-  blobUtil,
-  socketIo,
-  sentry,
-  navigation,
-} = banned;
 
 // The optional units inside shared/ui (see units.json). `allowed` lists the
 // ones a component may import because docs/migration-map.md records it.
@@ -141,98 +133,57 @@ const hardCodedText = {
 };
 
 // Flat config replaces a rule's options rather than merging them, so every path
-// needs one complete list. Later blocks win; these go from general to specific.
-const restrict = (files, patterns) => ({
+// needs one complete list. Each list is "everything banned, except what this
+// folder owns", so adding a package to `banned` covers every folder at once.
+// Later blocks win; these go from general to specific.
+const { navigation, ...packages } = banned;
+
+const restrict = (files, { owns = [], extra = [] } = {}) => ({
   files,
-  rules: { 'no-restricted-imports': ['error', { patterns }] },
+  rules: {
+    'no-restricted-imports': [
+      'error',
+      {
+        patterns: [
+          ...Object.entries(packages)
+            .filter(([name]) => !owns.includes(name))
+            .map(([, pattern]) => pattern),
+          ...extra,
+        ],
+      },
+    ],
+  },
 });
 
 const importRestrictions = [
-  restrict(
-    ['src/**/*.{ts,tsx}'],
-    [
-      asyncStorage,
-      mmkv,
-      keychain,
-      netInfo,
-      mediaPicker,
-      blobUtil,
-      socketIo,
-      sentry,
-    ],
-  ),
+  restrict(['src/**/*.{ts,tsx}']),
   // Optional UI units stay removable only if nothing else in the kit imports
   // them. A unit's own files import each other with "./", so this one list
-  // covers core components and other units alike.
-  restrict(
-    ['src/shared/ui/**/*.{ts,tsx}'],
-    [
-      asyncStorage,
-      mmkv,
-      keychain,
-      netInfo,
-      mediaPicker,
-      blobUtil,
-      socketIo,
-      sentry,
-      optionalUi(),
-    ],
-  ),
-  // A recorded exception gets its own block, for example
-  //   restrict(['src/shared/ui/PhoneInput/**'], [...general, optionalUi(['Select'])])
-  restrict(
-    ['src/features/**/*.{ts,tsx}', 'src/entities/**/*.{ts,tsx}'],
-    [
-      asyncStorage,
-      mmkv,
-      keychain,
-      netInfo,
-      mediaPicker,
-      blobUtil,
-      socketIo,
-      sentry,
-      navigation,
-    ],
-  ),
-  restrict(
-    ['src/shared/storage/kv/**/*.{ts,tsx}'],
-    [asyncStorage, keychain, netInfo, mediaPicker, blobUtil, socketIo, sentry],
-  ),
-  restrict(
-    ['src/shared/storage/secure/**/*.{ts,tsx}'],
-    [asyncStorage, mmkv, netInfo, mediaPicker, blobUtil, socketIo, sentry],
-  ),
-  // Tests stub these packages, so they have to name them.
-  restrict(['src/**/*.test.{ts,tsx}'], [asyncStorage]),
-  restrict(
-    ['src/shared/lib/network/**/*.{ts,tsx}'],
-    [asyncStorage, mmkv, keychain, mediaPicker, blobUtil, socketIo, sentry],
-  ),
-  restrict(
-    ['src/app/monitoring/**/*.{ts,tsx}'],
-    [asyncStorage, mmkv, keychain, netInfo, mediaPicker, blobUtil, socketIo],
-  ),
-  restrict(
-    ['src/shared/api/socket/**/*.{ts,tsx}'],
-    [asyncStorage, mmkv, keychain, netInfo, mediaPicker, blobUtil, sentry],
-  ),
-  restrict(
-    ['src/shared/lib/media-picker/**/*.{ts,tsx}'],
-    [asyncStorage, mmkv, keychain, netInfo, blobUtil, socketIo, sentry],
-  ),
-  restrict(
-    ['src/features/file-transfer/**/*.{ts,tsx}'],
-    [
-      asyncStorage,
-      mmkv,
-      keychain,
-      netInfo,
-      mediaPicker,
-      socketIo,
-      sentry,
-      navigation,
-    ],
-  ),
+  // covers core components and other units alike. A recorded exception gets
+  // its own block after this one, for example
+  //   restrict(['src/shared/ui/PhoneInput/**'], { extra: [optionalUi(['Select'])] })
+  restrict(['src/shared/ui/**/*.{ts,tsx}'], { extra: [optionalUi()] }),
+  restrict(['src/features/**/*.{ts,tsx}', 'src/entities/**/*.{ts,tsx}'], {
+    extra: [navigation],
+  }),
+  restrict(['src/shared/storage/kv/**/*.{ts,tsx}'], { owns: ['mmkv'] }),
+  restrict(['src/shared/storage/secure/**/*.{ts,tsx}'], { owns: ['keychain'] }),
+  // Tests stub these packages, so they have to name them. As before,
+  // the owner folders below still apply their own list to their tests.
+  restrict(['src/**/*.test.{ts,tsx}'], {
+    owns: Object.keys(packages).filter(name => name !== 'asyncStorage'),
+  }),
+  restrict(['src/shared/lib/network/**/*.{ts,tsx}'], { owns: ['netInfo'] }),
+  restrict(['src/shared/lib/form/**/*.{ts,tsx}'], { owns: ['forms'] }),
+  restrict(['src/app/monitoring/**/*.{ts,tsx}'], { owns: ['sentry'] }),
+  restrict(['src/shared/api/socket/**/*.{ts,tsx}'], { owns: ['socketIo'] }),
+  restrict(['src/shared/lib/media-picker/**/*.{ts,tsx}'], {
+    owns: ['mediaPicker'],
+  }),
+  restrict(['src/features/file-transfer/**/*.{ts,tsx}'], {
+    owns: ['blobUtil'],
+    extra: [navigation],
+  }),
 ];
 
 module.exports = [

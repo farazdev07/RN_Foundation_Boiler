@@ -217,6 +217,32 @@ const cases = [
     RESTRICTED,
   ],
 
+  [
+    'react-hook-form in a feature',
+    'src/features/alpha/x.ts',
+    'react-hook-form',
+    RESTRICTED,
+  ],
+  [
+    'a resolver in shared/ui',
+    'src/shared/ui/x.ts',
+    '@hookform/resolvers/zod',
+    RESTRICTED,
+  ],
+  [
+    'react-hook-form in lib/form',
+    'src/shared/lib/form/x.ts',
+    'react-hook-form',
+    null,
+  ],
+  ['MMKV in a test', 'src/features/alpha/x.test.ts', 'react-native-mmkv', null],
+  [
+    'AsyncStorage in a test',
+    'src/features/alpha/x.test.ts',
+    '@react-native-async-storage/async-storage',
+    RESTRICTED,
+  ],
+
   // What must stay legal, so a rule that is too broad fails here too.
   ['app -> screen', 'src/app/x.ts', '@screens/alpha', null],
   ['app -> shared', 'src/app/x.ts', '@shared/alpha', null],
