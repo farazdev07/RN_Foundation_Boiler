@@ -12,15 +12,23 @@ type Props = PropsWithChildren<{
   // Scrolls focused inputs clear of the keyboard. Implies scrollable.
   keyboardAware?: boolean;
   padded?: boolean;
+  // Content is centred in a readable column on wide windows. Turn this on for
+  // a screen that lays out its own columns, such as a grid.
+  fullWidth?: boolean;
 }>;
 
 const ALL_EDGES: readonly Edge[] = ['top', 'right', 'bottom', 'left'];
 const BELOW_HEADER_EDGES: readonly Edge[] = ['right', 'bottom', 'left'];
 
-const useStyles = makeStyles(({ colors, spacing }) => ({
+const useStyles = makeStyles(({ colors, layout, spacing }) => ({
   screen: { backgroundColor: colors.background, flex: 1 },
   content: { flexGrow: 1 },
   padded: { padding: spacing.md },
+  column: {
+    alignSelf: 'center',
+    maxWidth: layout.maxContentWidth,
+    width: '100%',
+  },
 }));
 
 export function Screen({
@@ -28,10 +36,15 @@ export function Screen({
   scrollable = false,
   keyboardAware = false,
   padded = true,
+  fullWidth = false,
   children,
 }: Props) {
   const styles = useStyles();
-  const content = [styles.content, padded && styles.padded];
+  const content = [
+    styles.content,
+    padded && styles.padded,
+    !fullWidth && styles.column,
+  ];
 
   return (
     <SafeAreaView
@@ -53,9 +66,7 @@ export function Screen({
           {children}
         </ScrollView>
       ) : (
-        <View style={[styles.content, padded && styles.padded]}>
-          {children}
-        </View>
+        <View style={content}>{children}</View>
       )}
     </SafeAreaView>
   );
