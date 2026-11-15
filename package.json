@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "android": "react-native run-android --mode devDebug --appIdSuffix dev",
+    "android": "react-native run-android --mode devDebug --appIdSuffix dev --active-arch-only",
     "ios": "react-native run-ios --scheme RNFoundation-Dev --mode Dev-Debug",
     "lint": "eslint src && node tools/check-boundaries.js",
     "start": "react-native start",
@@ -12,8 +12,8 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "postinstall": "husky && node scripts/init-env.js",
-    "android:staging": "react-native run-android --mode stagingDebug --appIdSuffix staging",
-    "android:prod": "react-native run-android --mode prodDebug",
+    "android:staging": "react-native run-android --mode stagingDebug --appIdSuffix staging --active-arch-only",
+    "android:prod": "react-native run-android --mode prodDebug --active-arch-only",
     "ios:staging": "react-native run-ios --scheme RNFoundation-Staging --mode Staging-Debug",
     "ios:prod": "react-native run-ios --scheme RNFoundation-Prod --mode Prod-Debug",
     "new": "node scripts/new-slice.js"
