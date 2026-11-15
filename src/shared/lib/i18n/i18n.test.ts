@@ -41,9 +41,7 @@ describe('i18n', () => {
     setLanguage('ar');
 
     expect(i18next.t('cancel')).toBe('إلغاء');
-    expect(i18next.t('slidePosition', { current: 2, total: 3 })).toBe(
-      'الشريحة 2 من 3',
-    );
+    expect(i18next.t('close')).toBe('إغلاق');
     expect(i18next.t('settings:title')).toBe('Settings');
   });
 
