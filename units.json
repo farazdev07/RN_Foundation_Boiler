@@ -93,5 +93,9 @@
       "android/app/src/main/AndroidManifest.xml"
     ],
     "packages": ["react-native-image-crop-picker", "react-native-blob-util"]
+  },
+  "otp-input": {
+    "paths": ["src/shared/ui/OtpInput"],
+    "touchpoints": ["src/shared/ui/index.ts"]
   }
 }

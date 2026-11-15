@@ -42,6 +42,7 @@ export {
 export { Carousel } from './Carousel'; // @unit:carousel
 export { RangeSlider, type Range } from './RangeSlider'; // @unit:range-slider
 export { ImageViewer } from './ImageViewer'; // @unit:image-viewer
+export { OtpInput } from './OtpInput'; // @unit:otp-input
 export { Calendar, DateTimeField, dayKey } from './date-time'; // @unit:date-time
 // @unit-start:phone-input
 export {

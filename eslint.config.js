@@ -87,6 +87,7 @@ const OPTIONAL_UI = [
   'ImageViewer',
   'date-time',
   'PhoneInput',
+  'OtpInput',
 ];
 
 const optionalUi = (allowed = []) => ({
