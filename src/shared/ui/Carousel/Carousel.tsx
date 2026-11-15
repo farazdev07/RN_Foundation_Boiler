@@ -98,19 +98,15 @@ export function Carousel<T>({
     if (!running) {
       return;
     }
-    const timer = setInterval(() => {
-      setIndex(current => {
-        const next = (current + 1) % data.length;
-        listRef.current?.scrollToOffset({
-          offset: next * width,
-          animated: true,
-        });
-        onIndexChange?.(next);
-        return next;
-      });
+    // One timer per slide: it restarts whenever the index changes, so a swipe
+    // also gives the next slide its full time.
+    const timer = setTimeout(() => {
+      const next = (index + 1) % data.length;
+      listRef.current?.scrollToOffset({ offset: next * width, animated: true });
+      goTo(next);
     }, intervalMs);
-    return () => clearInterval(timer);
-  }, [running, intervalMs, data.length, width, onIndexChange]);
+    return () => clearTimeout(timer);
+  }, [running, intervalMs, data.length, width, index, goTo]);
 
   const onLayout = (event: LayoutChangeEvent) =>
     setWidth(event.nativeEvent.layout.width);

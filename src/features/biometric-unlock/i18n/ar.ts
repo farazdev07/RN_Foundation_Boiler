@@ -7,4 +7,7 @@ export const biometricAr: typeof biometric = {
   needsRememberMe: 'سجّل الدخول مع تفعيل «تذكرني» لاستخدام هذه الميزة.',
   prompt: 'فتح {{appName}}',
   enableFailed: 'تعذّر تفعيل الفتح بالبصمة.',
+  lockedTitle: '{{appName}} مقفل',
+  unlock: 'فتح القفل',
+  logout: 'تسجيل الخروج',
 };

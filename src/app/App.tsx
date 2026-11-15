@@ -3,6 +3,7 @@ import BootSplash from 'react-native-bootsplash';
 import { RootNavigator } from '@app/navigation/RootNavigator';
 import { AppProviders } from '@app/providers/AppProviders';
 import { AppServices } from '@app/services/AppServices';
+import { BiometricLock } from '@features/biometric-unlock'; // @unit:biometric-unlock
 import { AnimatedSplash } from '@app/splash/AnimatedSplash'; // @unit:splash-animation
 
 export default function App() {
@@ -20,6 +21,9 @@ export default function App() {
     <AppProviders>
       <AppServices />
       <RootNavigator onReady={() => setReady(true)} />
+      {/* @unit-start:biometric-unlock */}
+      <BiometricLock />
+      {/* @unit-end:biometric-unlock */}
       {/* @unit-start:splash-animation */}
       <AnimatedSplash ready={ready} />
       {/* @unit-end:splash-animation */}

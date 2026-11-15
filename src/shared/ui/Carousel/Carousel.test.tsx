@@ -59,8 +59,13 @@ describe('Carousel', () => {
       jest.advanceTimersByTime(1000);
     });
     expect(position()).toBe('Slide 2 of 3');
+    // Each slide starts its own timer once it has rendered.
     await act(async () => {
-      jest.advanceTimersByTime(2000);
+      jest.advanceTimersByTime(1000);
+    });
+    expect(position()).toBe('Slide 3 of 3');
+    await act(async () => {
+      jest.advanceTimersByTime(1000);
     });
 
     expect(position()).toBe('Slide 1 of 3');
@@ -104,6 +109,8 @@ describe('Carousel', () => {
 
     await act(async () => {
       listeners.forEach(listener => listener('background'));
+    });
+    await act(async () => {
       jest.advanceTimersByTime(3000);
     });
 

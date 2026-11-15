@@ -20,6 +20,8 @@ import {
 
 const REQUEST_TIMEOUT_MS = 15_000;
 const MAX_RETRIES = 2;
+// A timeout has already cost the user the full wait, so it is repeated once.
+const MAX_TIMEOUT_RETRIES = 1;
 const RETRY_BASE_DELAY_MS = 300;
 
 // shared cannot import entities, so it announces the event and entities/session
@@ -130,10 +132,16 @@ const authenticatedQuery: BaseQueryFn<
 
 // Only GETs repeat: replaying a write could apply it twice.
 export const baseQuery = retry(authenticatedQuery, {
-  retryCondition: (error, args, { attempt }) =>
-    attempt <= MAX_RETRIES &&
-    methodOf(args as string | FetchArgs) === 'GET' &&
-    isRetryable(error as AppError),
+  retryCondition: (error, args, { attempt }) => {
+    const appError = error as AppError;
+    const limit =
+      appError.kind === 'timeout' ? MAX_TIMEOUT_RETRIES : MAX_RETRIES;
+    return (
+      attempt <= limit &&
+      methodOf(args as string | FetchArgs) === 'GET' &&
+      isRetryable(appError)
+    );
+  },
   backoff: attempt =>
     new Promise(resolve => {
       setTimeout(resolve, RETRY_BASE_DELAY_MS * 2 ** (attempt - 1));

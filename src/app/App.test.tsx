@@ -1,4 +1,4 @@
-import { Linking } from 'react-native';
+import { AppState, Linking, type AppStateStatus } from 'react-native';
 import { createMMKV } from 'react-native-mmkv';
 import BootSplash from 'react-native-bootsplash';
 import * as Keychain from 'react-native-keychain';
@@ -408,6 +408,111 @@ describe('App auth', () => {
       expect(draftNote.get()).toBeUndefined();
       expect(getAccessToken()).toBeNull();
       expect(meAuthHeaders).toEqual([]);
+    });
+
+    describe('after time in the background', () => {
+      const appState = () => {
+        const listeners: ((state: AppStateStatus) => void)[] = [];
+        jest
+          .spyOn(AppState, 'addEventListener')
+          .mockImplementation((_type, listener) => {
+            listeners.push(listener);
+            return { remove: () => undefined };
+          });
+        return (state: AppStateStatus) =>
+          act(async () => listeners.forEach(listener => listener(state)));
+      };
+      const promptCount = () =>
+        jest
+          .mocked(Keychain.getGenericPassword)
+          .mock.calls.filter(
+            ([options]) => options?.service === 'biometric.gate',
+          ).length;
+      const away = (ms: number) => {
+        const now = Date.now();
+        jest.spyOn(Date, 'now').mockReturnValue(now + ms);
+      };
+
+      afterEach(() => {
+        jest.restoreAllMocks();
+      });
+
+      it('covers the app in the background and lifts the cover after a short absence', async () => {
+        await rememberedWithBiometrics();
+        const emit = appState();
+        await render(<App />);
+        await screen.findByText('Hi, Emily');
+        const prompts = promptCount();
+
+        await emit('background');
+        expect(screen.getByTestId('biometric-lock')).toBeOnTheScreen();
+
+        away(5_000);
+        await emit('active');
+
+        expect(screen.queryByTestId('biometric-lock')).toBeNull();
+        expect(promptCount()).toBe(prompts);
+      });
+
+      it('asks for biometrics again after a long absence', async () => {
+        await rememberedWithBiometrics();
+        const emit = appState();
+        await render(<App />);
+        await screen.findByText('Hi, Emily');
+        const prompts = promptCount();
+
+        await emit('background');
+        away(61_000);
+        await emit('active');
+
+        await waitFor(() =>
+          expect(screen.queryByTestId('biometric-lock')).toBeNull(),
+        );
+        expect(promptCount()).toBe(prompts + 1);
+      });
+
+      it('stays locked when the check fails, then unlocks on retry or logs out', async () => {
+        await rememberedWithBiometrics();
+        const emit = appState();
+        await render(<App />);
+        await screen.findByText('Hi, Emily');
+
+        await emit('background');
+        away(61_000);
+        jest.mocked(Keychain.getGenericPassword).mockResolvedValueOnce(false);
+        await emit('active');
+
+        expect(screen.getByTestId('biometric-lock')).toBeOnTheScreen();
+        expect(store.getState().session.status).toBe('signedIn');
+
+        await fireEvent.press(screen.getByTestId('biometric-lock-unlock'));
+        await waitFor(() =>
+          expect(screen.queryByTestId('biometric-lock')).toBeNull(),
+        );
+
+        await emit('background');
+        away(200_000);
+        jest.mocked(Keychain.getGenericPassword).mockResolvedValueOnce(false);
+        await emit('active');
+        await fireEvent.press(screen.getByTestId('biometric-lock-logout'));
+
+        expect(await screen.findByTestId('login-submit')).toBeOnTheScreen();
+        expect(screen.queryByTestId('biometric-lock')).toBeNull();
+      });
+
+      it('does nothing when biometric unlock is off', async () => {
+        const emit = appState();
+        await render(<App />);
+        await screen.findByTestId('login-submit');
+        await signIn('emilys');
+        await screen.findByText('Hi, Emily');
+
+        await emit('background');
+        away(61_000);
+        await emit('active');
+
+        expect(screen.queryByTestId('biometric-lock')).toBeNull();
+      });
     });
 
     it('is turned on from Settings and removed again on logout', async () => {

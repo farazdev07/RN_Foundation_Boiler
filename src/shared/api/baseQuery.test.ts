@@ -266,6 +266,20 @@ describe('baseQuery', () => {
       expect(fetchMock).toHaveBeenCalledTimes(3);
     });
 
+    it('repeats a timed-out GET only once, so the user is not left waiting', async () => {
+      fetchMock.mockImplementation(async () => {
+        throw Object.assign(new Error('timed out'), { name: 'TimeoutError' });
+      });
+      const { store } = makeStore();
+
+      const result = await store.dispatch(
+        api.endpoints.item.initiate('1', { subscribe: false }),
+      );
+
+      expect(result.error).toEqual({ kind: 'timeout' });
+      expect(fetchMock).toHaveBeenCalledTimes(2);
+    });
+
     it('never repeats a write', async () => {
       fetchMock.mockResolvedValueOnce(json(503));
       const { store } = makeStore();

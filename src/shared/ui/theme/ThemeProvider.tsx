@@ -23,7 +23,7 @@ export type ThemePreference = z.infer<typeof preferenceSchema>;
 
 // A device setting, so it survives logout. Read synchronously so the first frame
 // is already in the right theme.
-const preferenceKey = defineKey({
+export const preferenceKey = defineKey({
   name: 'theme.preference',
   schema: preferenceSchema,
   version: 1,

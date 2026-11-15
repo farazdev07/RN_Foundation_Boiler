@@ -27,6 +27,7 @@
   "biometric-unlock": {
     "paths": ["src/features/biometric-unlock"],
     "touchpoints": [
+      "src/app/App.tsx",
       "src/app/services/AppServices.tsx",
       "src/app/i18n/index.ts",
       "src/screens/settings/ui/SettingsScreen.tsx",

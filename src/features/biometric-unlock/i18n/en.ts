@@ -4,4 +4,7 @@ export const biometric = {
   needsRememberMe: 'Sign in with Remember me to use this.',
   prompt: 'Unlock {{appName}}',
   enableFailed: 'Biometric unlock could not be turned on.',
+  lockedTitle: '{{appName}} is locked',
+  unlock: 'Unlock',
+  logout: 'Log out',
 };
