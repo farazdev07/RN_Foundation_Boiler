@@ -142,5 +142,18 @@
       ".env.production.example"
     ],
     "packages": ["jail-monkey"]
+  },
+  "screen-protection": {
+    "paths": ["src/shared/lib/screen-protection"],
+    "touchpoints": [
+      "src/screens/login/ui/LoginScreen.tsx",
+      "src/shared/config/env.ts",
+      "jest.setup.ts",
+      "android/app/build.gradle",
+      ".env.development.example",
+      ".env.staging.example",
+      ".env.production.example"
+    ],
+    "packages": ["react-native-capture-protection"]
   }
 }

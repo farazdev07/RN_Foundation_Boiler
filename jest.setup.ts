@@ -143,6 +143,14 @@ jest.mock('jail-monkey', () => ({
 }));
 // @unit-end:device-integrity
 
+// @unit-start:screen-protection
+jest.mock('react-native-capture-protection', () =>
+  jest.requireActual(
+    'react-native-capture-protection/jest/capture-protection-mock',
+  ),
+);
+// @unit-end:screen-protection
+
 // @unit-start:webview
 jest.mock('react-native-webview', () => {
   const { View } =

@@ -89,6 +89,10 @@ const banned = {
     group: ['@lodev09/react-native-true-sheet'],
     message: 'Use BottomSheet from @shared/ui.',
   },
+  captureProtection: {
+    group: ['react-native-capture-protection'],
+    message: 'Use useScreenProtection from @shared/lib/screen-protection.',
+  },
   jailMonkey: {
     group: ['jail-monkey'],
     message: 'Device checks live in features/device-integrity.',
@@ -210,6 +214,9 @@ const importRestrictions = [
   }),
   restrict(['src/shared/lib/network/**/*.{ts,tsx}'], { owns: ['netInfo'] }),
   restrict(['src/shared/lib/form/**/*.{ts,tsx}'], { owns: ['forms'] }),
+  restrict(['src/shared/lib/screen-protection/**/*.{ts,tsx}'], {
+    owns: ['captureProtection'],
+  }),
   restrict(['src/app/monitoring/**/*.{ts,tsx}'], { owns: ['sentry'] }),
   restrict(['src/shared/api/socket/**/*.{ts,tsx}'], { owns: ['socketIo'] }),
   restrict(['src/shared/lib/media-picker/**/*.{ts,tsx}'], {

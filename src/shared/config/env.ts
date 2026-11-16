@@ -12,6 +12,10 @@ const envSchema = z.object({
   // What to do on a rooted or jailbroken device. Missing means "off".
   DEVICE_INTEGRITY: z.enum(['off', 'warn', 'block']).optional(),
   // @unit-end:device-integrity
+  // @unit-start:screen-protection
+  // "on" lets protected screens block screenshots and recording.
+  SCREEN_PROTECTION: z.enum(['on', 'off']).optional(),
+  // @unit-end:screen-protection
   // @unit-start:version-gate
   // A JSON document with the minimum version and maintenance flag. Empty or
   // missing turns the version gate off.

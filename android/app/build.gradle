@@ -95,6 +95,10 @@ android {
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
         versionName "1.0.0"
+        // @unit-start:screen-protection
+        // "base" blocks capture without asking for a media permission.
+        missingDimensionStrategy "react-native-capture-protection", "base"
+        // @unit-end:screen-protection
         // react-native-config looks up BuildConfig by package, and the flavour
         // suffixes make the application ID differ from the namespace.
         resValue "string", "build_config_package", "com.faraz.foundation"

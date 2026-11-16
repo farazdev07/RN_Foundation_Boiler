@@ -1,6 +1,7 @@
 import { View } from 'react-native';
 import { LoginForm } from '@features/auth-by-credentials';
 import { useTranslation } from '@shared/lib/i18n';
+import { useScreenProtection } from '@shared/lib/screen-protection'; // @unit:screen-protection
 import { Screen, Text, makeStyles } from '@shared/ui';
 
 const useStyles = makeStyles(({ spacing }) => ({
@@ -12,6 +13,9 @@ const useStyles = makeStyles(({ spacing }) => ({
 export function LoginScreen() {
   const styles = useStyles();
   const { t } = useTranslation('auth');
+  // The password is on this screen. Protect any other sensitive screen the
+  // same way.
+  useScreenProtection(); // @unit:screen-protection
 
   return (
     <Screen keyboardAware>
