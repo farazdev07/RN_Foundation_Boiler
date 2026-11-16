@@ -18,6 +18,30 @@ PODS:
   - hermes-engine (260318099.0.5):
     - hermes-engine/Pre-built (= 260318099.0.5)
   - hermes-engine/Pre-built (260318099.0.5)
+  - jail-monkey (3.0.0):
+    - hermes-engine
+    - RCTRequired
+    - RCTTypeSafety
+    - React-bridging
+    - React-Codegen
+    - React-Core
+    - React-Core-prebuilt
+    - React-cxxstableapi
+    - React-debug
+    - React-Fabric
+    - React-featureflags
+    - React-graphics
+    - React-ImageManager
+    - React-jsi
+    - React-NativeModulesApple
+    - React-RCTFabric
+    - React-renderercss
+    - React-rendererdebug
+    - React-utils
+    - ReactCodegen
+    - ReactCommon/turbomodule/core
+    - ReactNativeDependencies
+    - Yoga
   - MMKVCore (2.4.0)
   - NitroMmkv (4.3.2):
     - hermes-engine
@@ -109,6 +133,7 @@ PODS:
     - React-cxxstableapi
   - React-callinvoker/callinvokerUmbrella (0.88.1):
     - React-cxxstableapi
+  - React-Codegen (0.1.0)
   - React-Core (0.88.1):
     - React-Core-prebuilt
     - React-Core/Default (= 0.88.1)
@@ -1427,6 +1452,29 @@ PODS:
     - ReactCommon/turbomodule/core
     - ReactNativeDependencies
     - Yoga
+  - react-native-capture-protection (2.4.3):
+    - hermes-engine
+    - RCTRequired
+    - RCTTypeSafety
+    - React-bridging
+    - React-Core
+    - React-Core-prebuilt
+    - React-cxxstableapi
+    - React-debug
+    - React-Fabric
+    - React-featureflags
+    - React-graphics
+    - React-ImageManager
+    - React-jsi
+    - React-NativeModulesApple
+    - React-RCTFabric
+    - React-renderercss
+    - React-rendererdebug
+    - React-utils
+    - ReactCodegen
+    - ReactCommon/turbomodule/core
+    - ReactNativeDependencies
+    - Yoga
   - react-native-config (1.7.2):
     - react-native-config/App (= 1.7.2)
   - react-native-config/App (1.7.2):
@@ -1593,6 +1641,31 @@ PODS:
     - ReactCodegen
     - ReactCommon/turbomodule/core
     - ReactNativeDependencies
+    - Yoga
+  - react-native-ssl-public-key-pinning (1.2.6):
+    - hermes-engine
+    - RCTRequired
+    - RCTTypeSafety
+    - React-bridging
+    - React-Core
+    - React-Core-prebuilt
+    - React-cxxstableapi
+    - React-debug
+    - React-Fabric
+    - React-featureflags
+    - React-graphics
+    - React-ImageManager
+    - React-jsi
+    - React-NativeModulesApple
+    - React-RCTFabric
+    - React-RCTNetwork
+    - React-renderercss
+    - React-rendererdebug
+    - React-utils
+    - ReactCodegen
+    - ReactCommon/turbomodule/core
+    - ReactNativeDependencies
+    - TrustKit
     - Yoga
   - react-native-turbo-image (1.24.3):
     - APNGKit
@@ -2478,6 +2551,7 @@ PODS:
   - SocketRocket (0.7.1):
     - ReactNativeDependencies
   - TOCropViewController (2.8.0)
+  - TrustKit (3.0.8)
   - Yoga (0.0.0):
     - React-Core-prebuilt
 
@@ -2489,6 +2563,7 @@ DEPENDENCIES:
   - fmt (from `build/rndeps-facades/fmt`)
   - glog (from `build/rndeps-facades/glog`)
   - hermes-engine (from `../node_modules/react-native/sdks/hermes-engine/hermes-engine.podspec`)
+  - jail-monkey (from `../node_modules/jail-monkey`)
   - NitroMmkv (from `../node_modules/react-native-mmkv`)
   - NitroModules (from `../node_modules/react-native-nitro-modules`)
   - RCT-Folly (from `build/rndeps-facades/RCT-Folly`)
@@ -2533,10 +2608,12 @@ DEPENDENCIES:
   - React-microtasksnativemodule (from `../node_modules/react-native/ReactCommon/react/nativemodule/microtasks`)
   - React-mutationobservernativemodule (from `../node_modules/react-native/ReactCommon/react/nativemodule/mutationobserver`)
   - react-native-blob-util (from `../node_modules/react-native-blob-util`)
+  - react-native-capture-protection (from `../node_modules/react-native-capture-protection`)
   - react-native-config (from `../node_modules/react-native-config`)
   - react-native-keyboard-controller (from `../node_modules/react-native-keyboard-controller`)
   - "react-native-netinfo (from `../node_modules/@react-native-community/netinfo`)"
   - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
+  - react-native-ssl-public-key-pinning (from `../node_modules/react-native-ssl-public-key-pinning`)
   - react-native-turbo-image (from `../node_modules/react-native-turbo-image`)
   - "react-native-vector-icons-lucide (from `../node_modules/@react-native-vector-icons/lucide`)"
   - react-native-webview (from `../node_modules/react-native-webview`)
@@ -2597,7 +2674,9 @@ SPEC REPOS:
     - Delegate
     - Gifu
     - MMKVCore
+    - React-Codegen
     - TOCropViewController
+    - TrustKit
 
 EXTERNAL SOURCES:
   boost:
@@ -2615,6 +2694,8 @@ EXTERNAL SOURCES:
   hermes-engine:
     :podspec: "../node_modules/react-native/sdks/hermes-engine/hermes-engine.podspec"
     :tag: hermes-v260318099.0.5
+  jail-monkey:
+    :path: "../node_modules/jail-monkey"
   NitroMmkv:
     :path: "../node_modules/react-native-mmkv"
   NitroModules:
@@ -2701,6 +2782,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/react/nativemodule/mutationobserver"
   react-native-blob-util:
     :path: "../node_modules/react-native-blob-util"
+  react-native-capture-protection:
+    :path: "../node_modules/react-native-capture-protection"
   react-native-config:
     :path: "../node_modules/react-native-config"
   react-native-keyboard-controller:
@@ -2709,6 +2792,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/@react-native-community/netinfo"
   react-native-safe-area-context:
     :path: "../node_modules/react-native-safe-area-context"
+  react-native-ssl-public-key-pinning:
+    :path: "../node_modules/react-native-ssl-public-key-pinning"
   react-native-turbo-image:
     :path: "../node_modules/react-native-turbo-image"
   react-native-vector-icons-lucide:
@@ -2827,6 +2912,7 @@ SPEC CHECKSUMS:
   Gifu: 9f7e52357d41c0739709019eb80a71ad9aab1b6d
   glog: 3cf7cb46f743c4bc758ae3e6d9c15bd1b4cfd6d4
   hermes-engine: 79484fc4e58f328d01b9339ef899ca633d3702ee
+  jail-monkey: 9106e32bd5bfc9586e076f7803b5a9026ab2efa4
   MMKVCore: 3d16ce9f7d411e135020915fde98a056859a1efa
   NitroMmkv: 1cbda910413acda474751ac9b2522a6d466f74ad
   NitroModules: c32f969b7c536e0b6b401a9dfdb35bb4eba071ef
@@ -2839,6 +2925,7 @@ SPEC CHECKSUMS:
   React: 137135ec8ba49581ff298b915372f8d37cc9ad73
   React-bridging: 48b96b1b423710103381dd90478513fff84456c4
   React-callinvoker: 8eb02682e7fc3ddc0e25a8d96eb5733c367436e8
+  React-Codegen: 4b8b4817cea7a54b83851d4c1f91f79aa73de30a
   React-Core: 4cce9d3d50bd1544f33379cde3ae22175f6a1bcb
   React-Core-prebuilt: dbd0bf94bbe1a1714bd4e27bc4f1bf33c02bb7b3
   React-CoreModules: c96f14c068269b233fcabc8add64963132a371a2
@@ -2871,10 +2958,12 @@ SPEC CHECKSUMS:
   React-microtasksnativemodule: 0207d6133274a7cbfc3d0dae326e3055c8cfcf9e
   React-mutationobservernativemodule: b97a67c29f724d18a92379e7390f24350acb433a
   react-native-blob-util: f9329ec3794d0fae8d4a2cbfc24346d85585d571
+  react-native-capture-protection: 79cc9b8696b390491f39f556d97f4e76d04e2443
   react-native-config: 9ed4219cdbe9f3fe862bb9d11cbf75422c0c545d
   react-native-keyboard-controller: f146a3a36a2bdce995989b771885f1b9a61b8e77
   react-native-netinfo: 687391ecedb199c6d67fbc46c87cbae3277de967
   react-native-safe-area-context: b1c9f15a36e597e9cef4c5526e209ef2645bc2e0
+  react-native-ssl-public-key-pinning: 644df0a51c3c66151c63c53908ad241b3c9c8d27
   react-native-turbo-image: 7b5b269e32c211a05e3c07d55695295ae294354c
   react-native-vector-icons-lucide: abb59fda28a8c63f675b700763710816e79c77da
   react-native-webview: 3a3d1fd130d39e4dcabeebe89e6b245478ee177e
@@ -2928,6 +3017,7 @@ SPEC CHECKSUMS:
   RNWorklets: 488806637a21eb17812a48dadca7cb8c698c8cfd
   SocketRocket: 37aec555668fb852ec12e3c0de59a86ca58f0871
   TOCropViewController: 797deaf39c90e6e9ddd848d88817f6b9a8a09888
+  TrustKit: d0f83be9217dea8d40c59150928080e0ff822438
   Yoga: d1c536142c5ff8ec8cd856ab2a7c227a1d875c8e
 
 PODFILE CHECKSUM: e1a495362b09adffd224774dc376dd9f4b9c73a2
