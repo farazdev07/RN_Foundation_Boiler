@@ -12,11 +12,6 @@ const envSchema = z.object({
   // What to do on a rooted or jailbroken device. Missing means "off".
   DEVICE_INTEGRITY: z.enum(['off', 'warn', 'block']).optional(),
   // @unit-end:device-integrity
-  // @unit-start:cert-pinning
-  // Comma-separated base64 SHA-256 public key hashes for the API host: the
-  // current key and at least one backup. Empty or missing turns pinning off.
-  API_PIN_HASHES: z.string().optional(),
-  // @unit-end:cert-pinning
   // @unit-start:screen-protection
   // "on" lets protected screens block screenshots and recording.
   SCREEN_PROTECTION: z.enum(['on', 'off']).optional(),

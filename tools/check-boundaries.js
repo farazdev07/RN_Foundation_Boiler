@@ -310,18 +310,6 @@ const cases = [
     null,
   ],
   [
-    'the pinning library in a feature',
-    'src/features/alpha/x.ts',
-    'react-native-ssl-public-key-pinning',
-    RESTRICTED,
-  ],
-  [
-    'the pinning library in api/pinning',
-    'src/shared/api/pinning/x.ts',
-    'react-native-ssl-public-key-pinning',
-    null,
-  ],
-  [
     'WebView in ui/WebView',
     'src/shared/ui/WebView/x.ts',
     'react-native-webview',

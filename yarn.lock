@@ -10601,16 +10601,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-native-ssl-public-key-pinning@npm:1.2.6":
-  version: 1.2.6
-  resolution: "react-native-ssl-public-key-pinning@npm:1.2.6"
-  peerDependencies:
-    react: "*"
-    react-native: "*"
-  checksum: 10c0/48677262fe2f2cea6c071e348d05fdceb8ef21c26ab395efa5b4e267d55b2ec9145c1c581fbfc6739d877d7c2808e1284cb91cfb2a7b3c7375253d1a8f0e80fe
-  languageName: node
-  linkType: hard
-
 "react-native-turbo-image@npm:1.24.3":
   version: 1.24.3
   resolution: "react-native-turbo-image@npm:1.24.3"
@@ -11080,7 +11070,6 @@ __metadata:
     react-native-reanimated: "npm:4.7.1"
     react-native-safe-area-context: "npm:5.10.1"
     react-native-screens: "npm:4.30.0"
-    react-native-ssl-public-key-pinning: "npm:1.2.6"
     react-native-turbo-image: "npm:1.24.3"
     react-native-webview: "npm:14.0.1"
     react-native-worklets: "npm:0.13.0"

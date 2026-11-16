@@ -93,10 +93,6 @@ const banned = {
     group: ['react-native-capture-protection'],
     message: 'Use useScreenProtection from @shared/lib/screen-protection.',
   },
-  sslPinning: {
-    group: ['react-native-ssl-public-key-pinning'],
-    message: 'Pinning is set up once, in shared/api/pinning.',
-  },
   jailMonkey: {
     group: ['jail-monkey'],
     message: 'Device checks live in features/device-integrity.',
@@ -223,7 +219,6 @@ const importRestrictions = [
   }),
   restrict(['src/app/monitoring/**/*.{ts,tsx}'], { owns: ['sentry'] }),
   restrict(['src/shared/api/socket/**/*.{ts,tsx}'], { owns: ['socketIo'] }),
-  restrict(['src/shared/api/pinning/**/*.{ts,tsx}'], { owns: ['sslPinning'] }),
   restrict(['src/shared/lib/media-picker/**/*.{ts,tsx}'], {
     owns: ['mediaPicker'],
   }),

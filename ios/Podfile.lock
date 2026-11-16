@@ -1642,31 +1642,6 @@ PODS:
     - ReactCommon/turbomodule/core
     - ReactNativeDependencies
     - Yoga
-  - react-native-ssl-public-key-pinning (1.2.6):
-    - hermes-engine
-    - RCTRequired
-    - RCTTypeSafety
-    - React-bridging
-    - React-Core
-    - React-Core-prebuilt
-    - React-cxxstableapi
-    - React-debug
-    - React-Fabric
-    - React-featureflags
-    - React-graphics
-    - React-ImageManager
-    - React-jsi
-    - React-NativeModulesApple
-    - React-RCTFabric
-    - React-RCTNetwork
-    - React-renderercss
-    - React-rendererdebug
-    - React-utils
-    - ReactCodegen
-    - ReactCommon/turbomodule/core
-    - ReactNativeDependencies
-    - TrustKit
-    - Yoga
   - react-native-turbo-image (1.24.3):
     - APNGKit
     - Gifu
@@ -2551,7 +2526,6 @@ PODS:
   - SocketRocket (0.7.1):
     - ReactNativeDependencies
   - TOCropViewController (2.8.0)
-  - TrustKit (3.0.8)
   - Yoga (0.0.0):
     - React-Core-prebuilt
 
@@ -2613,7 +2587,6 @@ DEPENDENCIES:
   - react-native-keyboard-controller (from `../node_modules/react-native-keyboard-controller`)
   - "react-native-netinfo (from `../node_modules/@react-native-community/netinfo`)"
   - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
-  - react-native-ssl-public-key-pinning (from `../node_modules/react-native-ssl-public-key-pinning`)
   - react-native-turbo-image (from `../node_modules/react-native-turbo-image`)
   - "react-native-vector-icons-lucide (from `../node_modules/@react-native-vector-icons/lucide`)"
   - react-native-webview (from `../node_modules/react-native-webview`)
@@ -2676,7 +2649,6 @@ SPEC REPOS:
     - MMKVCore
     - React-Codegen
     - TOCropViewController
-    - TrustKit
 
 EXTERNAL SOURCES:
   boost:
@@ -2792,8 +2764,6 @@ EXTERNAL SOURCES:
     :path: "../node_modules/@react-native-community/netinfo"
   react-native-safe-area-context:
     :path: "../node_modules/react-native-safe-area-context"
-  react-native-ssl-public-key-pinning:
-    :path: "../node_modules/react-native-ssl-public-key-pinning"
   react-native-turbo-image:
     :path: "../node_modules/react-native-turbo-image"
   react-native-vector-icons-lucide:
@@ -2963,7 +2933,6 @@ SPEC CHECKSUMS:
   react-native-keyboard-controller: f146a3a36a2bdce995989b771885f1b9a61b8e77
   react-native-netinfo: 687391ecedb199c6d67fbc46c87cbae3277de967
   react-native-safe-area-context: b1c9f15a36e597e9cef4c5526e209ef2645bc2e0
-  react-native-ssl-public-key-pinning: 644df0a51c3c66151c63c53908ad241b3c9c8d27
   react-native-turbo-image: 7b5b269e32c211a05e3c07d55695295ae294354c
   react-native-vector-icons-lucide: abb59fda28a8c63f675b700763710816e79c77da
   react-native-webview: 3a3d1fd130d39e4dcabeebe89e6b245478ee177e
@@ -3017,7 +2986,6 @@ SPEC CHECKSUMS:
   RNWorklets: 488806637a21eb17812a48dadca7cb8c698c8cfd
   SocketRocket: 37aec555668fb852ec12e3c0de59a86ca58f0871
   TOCropViewController: 797deaf39c90e6e9ddd848d88817f6b9a8a09888
-  TrustKit: d0f83be9217dea8d40c59150928080e0ff822438
   Yoga: d1c536142c5ff8ec8cd856ab2a7c227a1d875c8e
 
 PODFILE CHECKSUM: e1a495362b09adffd224774dc376dd9f4b9c73a2

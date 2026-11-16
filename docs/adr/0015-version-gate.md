@@ -45,7 +45,7 @@ that after launch does not reach the versions already installed.
 
 ## Alternatives
 
-- **An API endpoint behind the app's own client.** It would share the API's outages and, with pinning on, its
-  certificate problems, which is exactly when a maintenance message is needed.
+- **An API endpoint behind the app's own client.** It would share the API's outages, which is
+  exactly when a maintenance message is needed.
 - **Reading the native version with `react-native-device-info`.** One more native dependency for one string.
 - **The stores' in-app update APIs.** Android only for a forced flow, and no maintenance state.

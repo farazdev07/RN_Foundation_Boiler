@@ -10,7 +10,6 @@ import { env } from '@shared/config';
 import { devLog } from '@shared/lib/logger';
 import { err, type Result } from '@shared/lib/result';
 import { isRetryable, toAppError, type AppError } from './errors';
-import { pinningReady } from './pinning'; // @unit:cert-pinning
 import {
   clearTokens,
   getAccessToken,
@@ -101,7 +100,6 @@ const authenticatedQuery: BaseQueryFn<
   AppError,
   ExtraOptions
 > = async (args, api, extraOptions) => {
-  await pinningReady; // @unit:cert-pinning
   // A request starting mid-refresh would only 401 with the old token.
   await refreshInFlight;
 
