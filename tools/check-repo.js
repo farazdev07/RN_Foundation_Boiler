@@ -30,6 +30,26 @@ const checks = [
         .split('\n')
         .some(file => SIGNING_MATERIAL.test(file)),
   },
+  {
+    // The version gate compares package.json's version with the store's, so
+    // the native projects must carry the same one.
+    name: 'package.json, Android and iOS have the same app version',
+    passes: () => {
+      const { version } = JSON.parse(read('package.json'));
+      const android = /versionName "([^"]+)"/.exec(
+        read('android/app/build.gradle'),
+      )?.[1];
+      const project = fs
+        .readdirSync(path.join(root, 'ios'))
+        .find(entry => entry.endsWith('.xcodeproj'));
+      const ios = [
+        ...read(`ios/${project}/project.pbxproj`).matchAll(
+          /MARKETING_VERSION = ([^;]+);/g,
+        ),
+      ].map(match => match[1]);
+      return android === version && ios.every(value => value === version);
+    },
+  },
 ];
 
 const failed = checks.filter(({ passes }) => !passes());

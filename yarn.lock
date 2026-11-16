@@ -8287,6 +8287,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"jail-monkey@npm:3.0.0":
+  version: 3.0.0
+  resolution: "jail-monkey@npm:3.0.0"
+  checksum: 10c0/53a9999914d147ef2532cf5154e481bb0614d5f50d8ba522aebefa0904ff41a9062ae10a8b84101a24eae909d259ec3d6eb5ec53418426a62bd5ee6716a30019
+  languageName: node
+  linkType: hard
+
 "jest-changed-files@npm:30.5.1":
   version: 30.5.1
   resolution: "jest-changed-files@npm:30.5.1"
@@ -10441,6 +10448,20 @@ __metadata:
   languageName: node
   linkType: hard
 
+"react-native-capture-protection@npm:2.4.3":
+  version: 2.4.3
+  resolution: "react-native-capture-protection@npm:2.4.3"
+  peerDependencies:
+    expo: ">=47.0.0"
+    react: "*"
+    react-native: "*"
+  peerDependenciesMeta:
+    expo:
+      optional: true
+  checksum: 10c0/b15fd2820470df1b52a18630369ee04ee559974c02ab06dffa0cd13faa26b406d9cbce10ef81ae7507a932b8262901d3d308c0df65fc56a52a1db61f3adeb5d5
+  languageName: node
+  linkType: hard
+
 "react-native-config@npm:1.7.2":
   version: 1.7.2
   resolution: "react-native-config@npm:1.7.2"
@@ -10577,6 +10598,16 @@ __metadata:
     react: "*"
     react-native: "*"
   checksum: 10c0/9f5d4f0710a67362d4c3df8b998e8cf22d8d8eaa1a1a0185b5a34588b0aa922d346baf22a9e89c43a46f2d0b04c64e9f9e658411114a9e97fd228e29553f6cb8
+  languageName: node
+  linkType: hard
+
+"react-native-ssl-public-key-pinning@npm:1.2.6":
+  version: 1.2.6
+  resolution: "react-native-ssl-public-key-pinning@npm:1.2.6"
+  peerDependencies:
+    react: "*"
+    react-native: "*"
+  checksum: 10c0/48677262fe2f2cea6c071e348d05fdceb8ef21c26ab395efa5b4e267d55b2ec9145c1c581fbfc6739d877d7c2808e1284cb91cfb2a7b3c7375253d1a8f0e80fe
   languageName: node
   linkType: hard
 
@@ -11026,6 +11057,7 @@ __metadata:
     eslint-plugin-boundaries: "npm:7.2.1"
     husky: "npm:9.1.7"
     i18next: "npm:26.5.4"
+    jail-monkey: "npm:3.0.0"
     jest: "npm:30.5.2"
     libphonenumber-js: "npm:1.13.15"
     lint-staged: "npm:17.6.0"
@@ -11036,6 +11068,7 @@ __metadata:
     react-native: "npm:0.88.1"
     react-native-blob-util: "npm:1.0.0"
     react-native-bootsplash: "npm:7.3.4"
+    react-native-capture-protection: "npm:2.4.3"
     react-native-config: "npm:1.7.2"
     react-native-gesture-handler: "npm:3.4.0"
     react-native-image-crop-picker: "npm:0.52.0"
@@ -11047,6 +11080,7 @@ __metadata:
     react-native-reanimated: "npm:4.7.1"
     react-native-safe-area-context: "npm:5.10.1"
     react-native-screens: "npm:4.30.0"
+    react-native-ssl-public-key-pinning: "npm:1.2.6"
     react-native-turbo-image: "npm:1.24.3"
     react-native-webview: "npm:14.0.1"
     react-native-worklets: "npm:0.13.0"

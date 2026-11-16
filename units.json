@@ -118,5 +118,16 @@
       "src/app/products.test.tsx",
       ".maestro/smoke.yaml"
     ]
+  },
+  "version-gate": {
+    "paths": ["src/features/version-gate"],
+    "touchpoints": [
+      "src/app/App.tsx",
+      "src/app/i18n/index.ts",
+      "src/shared/config/env.ts",
+      ".env.development.example",
+      ".env.staging.example",
+      ".env.production.example"
+    ]
   }
 }

@@ -2,6 +2,7 @@ import { productStrings } from '@entities/product'; // @unit:products
 import { authStrings } from '@features/auth-by-credentials';
 import { biometricStrings } from '@features/biometric-unlock'; // @unit:biometric-unlock
 import { favoriteStrings } from '@features/toggle-favorite'; // @unit:products
+import { versionGateStrings } from '@features/version-gate'; // @unit:version-gate
 import { favoritesStrings } from '@screens/favorites'; // @unit:products
 import { homeStrings } from '@screens/home';
 import { onboardingStrings } from '@screens/onboarding'; // @unit:onboarding
@@ -25,6 +26,7 @@ const namespaces = {
   home: homeStrings,
   onboarding: onboardingStrings, // @unit:onboarding
   settings: settingsStrings,
+  versionGate: versionGateStrings, // @unit:version-gate
 };
 
 initI18n(namespaces);

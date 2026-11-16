@@ -8,6 +8,11 @@ const envSchema = z.object({
   SENTRY_DSN: z.string().optional(),
   // Empty or missing turns the realtime connection off.
   SOCKET_URL: z.union([z.url(), z.literal('')]).optional(),
+  // @unit-start:version-gate
+  // A JSON document with the minimum version and maintenance flag. Empty or
+  // missing turns the version gate off.
+  APP_CONFIG_URL: z.union([z.url(), z.literal('')]).optional(),
+  // @unit-end:version-gate
 });
 
 export type Env = z.infer<typeof envSchema>;
