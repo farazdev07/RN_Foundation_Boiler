@@ -133,6 +133,16 @@ jest.mock('@react-native-community/datetimepicker', () => {
 });
 // @unit-end:date-time
 
+// @unit-start:device-integrity
+jest.mock('jail-monkey', () => ({
+  __esModule: true,
+  default: {
+    isJailBroken: jest.fn(() => false),
+    hookDetected: jest.fn(() => false),
+  },
+}));
+// @unit-end:device-integrity
+
 // @unit-start:webview
 jest.mock('react-native-webview', () => {
   const { View } =

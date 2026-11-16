@@ -129,5 +129,18 @@
       ".env.staging.example",
       ".env.production.example"
     ]
+  },
+  "device-integrity": {
+    "paths": ["src/features/device-integrity"],
+    "touchpoints": [
+      "src/app/App.tsx",
+      "src/app/i18n/index.ts",
+      "src/shared/config/env.ts",
+      "jest.setup.ts",
+      ".env.development.example",
+      ".env.staging.example",
+      ".env.production.example"
+    ],
+    "packages": ["jail-monkey"]
   }
 }

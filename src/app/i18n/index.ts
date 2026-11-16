@@ -1,6 +1,7 @@
 import { productStrings } from '@entities/product'; // @unit:products
 import { authStrings } from '@features/auth-by-credentials';
 import { biometricStrings } from '@features/biometric-unlock'; // @unit:biometric-unlock
+import { deviceIntegrityStrings } from '@features/device-integrity'; // @unit:device-integrity
 import { favoriteStrings } from '@features/toggle-favorite'; // @unit:products
 import { versionGateStrings } from '@features/version-gate'; // @unit:version-gate
 import { favoritesStrings } from '@screens/favorites'; // @unit:products
@@ -16,6 +17,7 @@ const namespaces = {
   common,
   auth: authStrings,
   biometric: biometricStrings, // @unit:biometric-unlock
+  deviceIntegrity: deviceIntegrityStrings, // @unit:device-integrity
   // @unit-start:products
   product: productStrings,
   favorite: favoriteStrings,

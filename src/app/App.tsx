@@ -4,6 +4,7 @@ import { RootNavigator } from '@app/navigation/RootNavigator';
 import { AppProviders } from '@app/providers/AppProviders';
 import { AppServices } from '@app/services/AppServices';
 import { BiometricLock } from '@features/biometric-unlock'; // @unit:biometric-unlock
+import { DeviceIntegrityGate } from '@features/device-integrity'; // @unit:device-integrity
 import { VersionGate } from '@features/version-gate'; // @unit:version-gate
 import { AnimatedSplash } from '@app/splash/AnimatedSplash'; // @unit:splash-animation
 
@@ -28,6 +29,9 @@ export default function App() {
       {/* @unit-start:version-gate */}
       <VersionGate />
       {/* @unit-end:version-gate */}
+      {/* @unit-start:device-integrity */}
+      <DeviceIntegrityGate />
+      {/* @unit-end:device-integrity */}
       {/* @unit-start:splash-animation */}
       <AnimatedSplash ready={ready} />
       {/* @unit-end:splash-animation */}

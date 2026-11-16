@@ -8,6 +8,10 @@ const envSchema = z.object({
   SENTRY_DSN: z.string().optional(),
   // Empty or missing turns the realtime connection off.
   SOCKET_URL: z.union([z.url(), z.literal('')]).optional(),
+  // @unit-start:device-integrity
+  // What to do on a rooted or jailbroken device. Missing means "off".
+  DEVICE_INTEGRITY: z.enum(['off', 'warn', 'block']).optional(),
+  // @unit-end:device-integrity
   // @unit-start:version-gate
   // A JSON document with the minimum version and maintenance flag. Empty or
   // missing turns the version gate off.

@@ -89,6 +89,10 @@ const banned = {
     group: ['@lodev09/react-native-true-sheet'],
     message: 'Use BottomSheet from @shared/ui.',
   },
+  jailMonkey: {
+    group: ['jail-monkey'],
+    message: 'Device checks live in features/device-integrity.',
+  },
   navigation: {
     group: ['@react-navigation/*'],
     message:
@@ -210,6 +214,15 @@ const importRestrictions = [
   restrict(['src/shared/api/socket/**/*.{ts,tsx}'], { owns: ['socketIo'] }),
   restrict(['src/shared/lib/media-picker/**/*.{ts,tsx}'], {
     owns: ['mediaPicker'],
+  }),
+  restrict(['src/features/device-integrity/**/*.{ts,tsx}'], {
+    owns: ['jailMonkey'],
+    extra: [navigation],
+  }),
+  // Its tests also reset device storage between cases.
+  restrict(['src/features/device-integrity/**/*.test.{ts,tsx}'], {
+    owns: ['jailMonkey', 'mmkv'],
+    extra: [navigation],
   }),
   restrict(['src/features/file-transfer/**/*.{ts,tsx}'], {
     owns: ['blobUtil'],
