@@ -25,11 +25,11 @@ export function FormDateTimeField<T extends FieldValues, Output = T>({
   ...rest
 }: Props<T, Output>) {
   const { field, fieldState } = useController({ control, name });
-  const value: unknown = field.value;
+  const current: unknown = field.value;
 
   return (
     <DateTimeField
-      value={value instanceof Date ? value : null}
+      value={current instanceof Date ? current : null}
       onChange={value => {
         field.onChange(value);
         // A picker has no blur, so choosing counts as leaving the field.

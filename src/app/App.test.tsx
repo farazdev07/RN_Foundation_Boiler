@@ -152,6 +152,7 @@ describe('App auth', () => {
     expiredAccessTokens.clear();
     meAuthHeaders.length = 0;
     jest.spyOn(console, 'log').mockImplementation(() => undefined);
+    device().set('onboarding.done', '{"v":1,"d":true}'); // @unit:onboarding
   });
 
   afterEach(async () => {
@@ -161,6 +162,26 @@ describe('App auth', () => {
     device().clearAll();
     jest.restoreAllMocks();
   });
+
+  // @unit-start:onboarding
+  it('shows onboarding once on a new install, then the login screen', async () => {
+    device().clearAll();
+    await render(<App />);
+
+    expect(
+      await screen.findByText('Welcome to RN Foundation'),
+    ).toBeOnTheScreen();
+    expect(screen.queryByTestId('login-submit')).toBeNull();
+
+    await fireEvent.press(screen.getByTestId('onboarding-start'));
+
+    expect(await screen.findByTestId('login-submit')).toBeOnTheScreen();
+    expect(screen.queryByTestId('onboarding-start')).toBeNull();
+    // Remembered on the device, so the next launch goes straight to login,
+    // which is how every other test here starts.
+    expect(device().getString('onboarding.done')).toBe('{"v":1,"d":true}');
+  });
+  // @unit-end:onboarding
 
   it('starts on the login screen when there is no saved session', async () => {
     await render(<App />);

@@ -4,6 +4,7 @@ import { biometricStrings } from '@features/biometric-unlock'; // @unit:biometri
 import { favoriteStrings } from '@features/toggle-favorite'; // @unit:products
 import { favoritesStrings } from '@screens/favorites'; // @unit:products
 import { homeStrings } from '@screens/home';
+import { onboardingStrings } from '@screens/onboarding'; // @unit:onboarding
 import { productDetailsStrings } from '@screens/product-details'; // @unit:products
 import { productListStrings } from '@screens/product-list'; // @unit:products
 import { settingsStrings } from '@screens/settings';
@@ -22,6 +23,7 @@ const namespaces = {
   productList: productListStrings,
   // @unit-end:products
   home: homeStrings,
+  onboarding: onboardingStrings, // @unit:onboarding
   settings: settingsStrings,
 };
 

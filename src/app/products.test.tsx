@@ -138,6 +138,7 @@ describe('products', () => {
   beforeEach(() => {
     detailsOffline = false;
     globalThis.fetch = jest.fn(fakeServer) as typeof fetch;
+    createMMKV({ id: 'device' }).set('onboarding.done', '{"v":1,"d":true}'); // @unit:onboarding
     // The dev request log.
     jest.spyOn(console, 'log').mockImplementation(() => undefined);
   });

@@ -9,6 +9,15 @@ appId: com.faraz.foundation.dev
 # the login screen also proves the reinstall wipe.
 - launchApp:
     clearState: true
+# @unit-start:onboarding
+# A debug build's first run waits for Metro to bundle from a cold cache.
+- extendedWaitUntil:
+    visible:
+      id: 'onboarding-start'
+    timeout: 180000
+- tapOn:
+    id: 'onboarding-start'
+# @unit-end:onboarding
 # A debug build's first run waits for Metro to bundle from a cold cache.
 - extendedWaitUntil:
     visible:

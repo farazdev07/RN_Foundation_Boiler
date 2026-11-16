@@ -15,6 +15,7 @@ import { useSessionStatus } from '@entities/session';
 import { FavoritesScreen } from '@screens/favorites'; // @unit:products
 import { HomeScreen } from '@screens/home';
 import { LoginScreen } from '@screens/login';
+import { OnboardingScreen, useOnboardingDone } from '@screens/onboarding'; // @unit:onboarding
 import { ProductDetailsScreen } from '@screens/product-details'; // @unit:products
 import { ProductListScreen } from '@screens/product-list'; // @unit:products
 import { SettingsScreen } from '@screens/settings';
@@ -97,6 +98,7 @@ export const stackScreenOptions = (
 
 const useIsSignedIn = () => useSessionStatus() === 'signedIn';
 const useIsSignedOut = () => useSessionStatus() === 'signedOut';
+const useNeedsOnboarding = () => !useOnboardingDone(); // @unit:onboarding
 
 // Groups swap the whole screen set on sign-in and sign-out, so signing out
 // leaves no signed-in screen in the history to go back to.
@@ -126,6 +128,15 @@ const RootStack = createNativeStackNavigator({
     SignedOut: {
       if: useIsSignedOut,
       screens: {
+        // @unit-start:onboarding
+        // First in the group, so it is where a new install starts. Completing
+        // it removes the screen, which leaves Login.
+        Onboarding: {
+          if: useNeedsOnboarding,
+          screen: OnboardingScreen,
+          layout: routeLayout,
+        },
+        // @unit-end:onboarding
         Login: { screen: LoginScreen, layout: routeLayout },
       },
     },

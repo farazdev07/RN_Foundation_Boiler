@@ -190,6 +190,10 @@ function removeUnit(root, name, unit) {
   // A touchpoint with no marker means the manifest and the code have drifted.
   for (const touchpoint of unit.touchpoints ?? []) {
     const file = path.join(root, touchpoint);
+    // Another unit removed in the same run may own this file.
+    if (!fs.existsSync(file)) {
+      continue;
+    }
     const result = stripUnitMarkers(fs.readFileSync(file, 'utf8'), name);
     if (!result.found) {
       throw new Error(`Unit "${name}": no marker found in ${touchpoint}`);

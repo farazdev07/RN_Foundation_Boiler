@@ -108,5 +108,15 @@
     "paths": ["src/shared/ui/BottomSheet"],
     "touchpoints": ["src/shared/ui/index.ts", "jest.setup.ts"],
     "packages": ["@lodev09/react-native-true-sheet"]
+  },
+  "onboarding": {
+    "paths": ["src/screens/onboarding"],
+    "touchpoints": [
+      "src/app/navigation/RootNavigator.tsx",
+      "src/app/i18n/index.ts",
+      "src/app/App.test.tsx",
+      "src/app/products.test.tsx",
+      ".maestro/smoke.yaml"
+    ]
   }
 }
