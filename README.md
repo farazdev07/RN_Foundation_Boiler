@@ -27,7 +27,8 @@ that shows the pattern for new features.
 
 Optional units, each removable with one command: `products`, `biometric-unlock`, `splash-animation`, `media`
 (picker, upload, download), `sentry`, `socket`, `date-time`, `phone-input`, `carousel`, `range-slider`,
-`image-viewer`, `otp-input`, `webview`, `bottom-sheet`.
+`image-viewer`, `otp-input`, `webview`, `bottom-sheet`, `onboarding`, `version-gate`, `device-integrity`,
+`screen-protection`, `cert-pinning`.
 
 ## Prerequisites
 
@@ -159,6 +160,29 @@ with no restart: every root view takes its `direction` style from `useDirection(
 `SUPPORTED_LANGUAGES`, `LANGUAGE_NAMES` and, if needed, `RTL_LANGUAGES` in `src/shared/lib/i18n/i18n.ts`, add
 `i18n/<language>.ts` to the slices, and add it to `CFBundleLocalizations` in `Info.plist`. A slice without a
 translation falls back to English.
+
+## Security and release units
+
+All optional, and all off until an env value turns them on. The `.env.*.example` files list the values.
+
+| Unit                | Env value           | What it does                                                               |
+| ------------------- | ------------------- | -------------------------------------------------------------------------- |
+| `onboarding`        | none                | A first-launch screen before login, shown once per install                 |
+| `version-gate`      | `APP_CONFIG_URL`    | Forced update, optional update and maintenance screen from a JSON document |
+| `device-integrity`  | `DEVICE_INTEGRITY`  | `off`, `warn` or `block` on a rooted or jailbroken device                  |
+| `screen-protection` | `SCREEN_PROTECTION` | `useScreenProtection()` blocks screenshots and recording; used on Login    |
+| `cert-pinning`      | `API_PIN_HASHES`    | Pins the API host to the listed public key hashes; needs at least two      |
+
+The app version lives in `package.json`. Change it there, in `android/app/build.gradle` (`versionName`) and in
+Xcode (`MARKETING_VERSION`); `node tools/check-repo.js` fails if they differ. To get a pin:
+
+```sh
+echo | openssl s_client -servername api.example.com -connect api.example.com:443 2>/dev/null \
+  | openssl x509 -pubkey -noout | openssl pkey -pubin -outform DER \
+  | openssl dgst -sha256 -binary | openssl enc -base64
+```
+
+Read [ADR 0014](docs/adr/0014-app-security-units.md) before turning pinning on: a wrong pin locks users out.
 
 ## Removing the reference feature
 

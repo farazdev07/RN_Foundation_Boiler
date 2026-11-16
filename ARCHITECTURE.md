@@ -229,7 +229,8 @@ sequenceDiagram
 
 Several parts of the foundation are optional: `products`, `biometric-unlock`, `splash-animation`, `media`,
 `sentry`, `socket`, `date-time`, `phone-input`, `carousel`, `range-slider`, `image-viewer`, `otp-input`,
-`webview` and `bottom-sheet`.
+`webview`, `bottom-sheet`, `onboarding`, `version-gate`, `device-integrity`, `screen-protection` and
+`cert-pinning`.
 [`units.json`](units.json) declares each unit's folders, packages and **touchpoints** (files outside its folders
 that mention it), plus the units it `uses`. In touchpoints, the lines belonging to a unit are tagged:
 
