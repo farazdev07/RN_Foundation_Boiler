@@ -15,8 +15,10 @@ type Common<T extends string> = {
   options: readonly SelectOption<T>[];
   placeholder?: string;
   searchable?: boolean;
-  error?: string;
+  // Forms usually compute this, so undefined is accepted as "no error".
+  error?: string | undefined;
   disabled?: boolean;
+  testID?: string;
 };
 
 type Props<T extends string> = Common<T> &
@@ -57,6 +59,7 @@ export function Select<T extends string>(props: Props<T>) {
     searchable = false,
     error,
     disabled = false,
+    testID,
   } = props;
   const styles = useStyles();
   const { t } = useTranslation();
@@ -108,6 +111,8 @@ export function Select<T extends string>(props: Props<T>) {
         accessibilityRole="button"
         accessibilityLabel={label}
         accessibilityValue={{ text: summary }}
+        {...(error && { accessibilityHint: error })}
+        testID={testID}
         disabled={disabled}
         onPress={() => setOpen(true)}
         style={[
@@ -156,6 +161,7 @@ export function Select<T extends string>(props: Props<T>) {
                   selected: isSelected,
                 }}
                 onPress={() => choose(item.value)}
+                {...(testID && { testID: `${testID}-${item.value}` })}
                 style={styles.option}
               >
                 <Text>{item.label}</Text>

@@ -8,6 +8,7 @@ type Props = {
   checked: boolean;
   onChange: (checked: boolean) => void;
   disabled?: boolean;
+  testID?: string;
 };
 
 const useStyles = makeStyles(({ colors, radii, spacing }) => ({
@@ -35,12 +36,14 @@ export function Checkbox({
   checked,
   onChange,
   disabled = false,
+  testID,
 }: Props) {
   const styles = useStyles();
 
   return (
     <Pressable
       accessibilityRole="checkbox"
+      testID={testID}
       accessibilityLabel={label}
       accessibilityState={{ checked, disabled }}
       disabled={disabled}

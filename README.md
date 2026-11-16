@@ -138,7 +138,7 @@ const { control, submitWith } = useZodForm(schema, { defaultValues });
 
 - The zod schema validates and gives the submit handler its type. Build it with translated messages.
 - `useZodForm` comes from `@shared/lib/form`, the only folder that may import react-hook-form.
-- `FormTextInput` and `FormCheckbox` come from `@shared/ui`. Bind any other input the same way, with
+- `FormTextInput`, `FormCheckbox`, `FormSelect` and `FormRadioGroup` come from `@shared/ui`. Bind any other input the same way, with
   `useController` from `@shared/lib/form`.
 - Errors appear after the first submit, then update as the user types.
 

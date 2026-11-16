@@ -85,6 +85,9 @@ export function TextInput({
         <RNTextInput
           ref={ref}
           accessibilityLabel={label}
+          // Read with the field, so a screen reader user on the input hears
+          // what is wrong without hunting for the text below it.
+          {...(error && { accessibilityHint: error })}
           editable={!disabled}
           multiline={multiline}
           placeholderTextColor={colors.textSecondary}

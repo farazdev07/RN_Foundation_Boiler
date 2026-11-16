@@ -51,7 +51,11 @@ export function Modal({
       visible={visible}
       onRequestClose={onRequestClose}
     >
-      <GestureHandlerRootView style={[StyleSheet.absoluteFill, { direction }]}>
+      <GestureHandlerRootView
+        // Keeps VoiceOver inside the dialog.
+        accessibilityViewIsModal
+        style={[StyleSheet.absoluteFill, { direction }]}
+      >
         {/* The backdrop is a sibling of the card, not its parent. An accessible
             parent would merge the card into one "Close" element on iOS, hiding
             the dialog's own buttons from VoiceOver and UI tests. */}

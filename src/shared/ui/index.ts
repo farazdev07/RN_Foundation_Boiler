@@ -33,7 +33,12 @@ export { NetworkBanner } from './NetworkBanner';
 export { RadioGroup } from './RadioGroup';
 export { Select, type SelectOption } from './Select';
 export { TextInput, type TextInputProps } from './TextInput';
-export { FormCheckbox, FormTextInput } from './form';
+export {
+  FormCheckbox,
+  FormRadioGroup,
+  FormSelect,
+  FormTextInput,
+} from './form';
 export {
   hideToast,
   showToast,

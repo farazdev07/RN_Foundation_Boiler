@@ -10,6 +10,7 @@ type Props = {
   icon?: IconName;
   actionLabel?: string;
   onAction?: () => void;
+  testID?: string;
 };
 
 const useStyles = makeStyles(({ spacing }) => ({
@@ -28,11 +29,12 @@ export function EmptyState({
   icon,
   actionLabel,
   onAction,
+  testID,
 }: Props) {
   const styles = useStyles();
 
   return (
-    <View style={styles.container}>
+    <View style={styles.container} testID={testID}>
       {icon ? <Icon name={icon} size={40} color="textSecondary" /> : null}
       <Text variant="subtitle" align="center">
         {title}
@@ -43,7 +45,12 @@ export function EmptyState({
         </Text>
       ) : null}
       {actionLabel && onAction ? (
-        <Button title={actionLabel} variant="ghost" onPress={onAction} />
+        <Button
+          title={actionLabel}
+          variant="ghost"
+          onPress={onAction}
+          {...(testID && { testID: `${testID}-action` })}
+        />
       ) : null}
     </View>
   );

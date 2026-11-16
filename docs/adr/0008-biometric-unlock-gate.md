@@ -20,6 +20,10 @@ entry asks for authentication. The user would be prompted at unpredictable momen
 - The on/off setting is account scope, and the gate is removed through `onSessionEnd`. So logout always turns
   biometric unlock off, and it never restores a session after an explicit logout.
 - It can be turned on only for a remembered session.
+- **Re-lock (added 2026-11-16).** While the feature is on, `BiometricLock` covers the app as it goes to the
+  background, so the app switcher shows the cover. On return, an absence shorter than `RELOCK_AFTER_MS` (60 s)
+  lifts the cover; a longer one asks for biometrics. A failed or cancelled check keeps the app covered with
+  "Unlock" and "Log out"; it does not end the session, because a mis-read finger is not a reason to wipe data.
 
 ## Consequences
 
@@ -30,6 +34,8 @@ entry asks for authentication. The user would be prompted at unpredictable momen
   phone and opens the app. It does not stop an attacker who can read the app's Keychain entries on a compromised
   device, because the token itself is not biometric-bound. For apps that need that, bind the token itself and
   accept the extra prompts.
+- The cover is a view above the navigator. It does not cover an open RN `Modal`, which is its own native window.
+  Whether iOS takes its app-switcher snapshot before or after the cover renders has not been checked.
 - **Not verified on a device:** the logic is covered by Jest tests. The iOS simulator did not show the prompt,
   even after un-enrolment, so enforcement has not been seen on real hardware.
 

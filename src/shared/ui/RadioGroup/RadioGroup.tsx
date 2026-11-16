@@ -9,6 +9,9 @@ type Props<T extends string> = {
   options: readonly Option<T>[];
   value: T | null;
   onChange: (value: T) => void;
+  error?: string | undefined;
+  // Prefix for each option's testID. Set it when a screen has two groups.
+  testID?: string;
 };
 
 const useStyles = makeStyles(({ colors, spacing }) => ({
@@ -43,6 +46,8 @@ export function RadioGroup<T extends string>({
   options,
   value,
   onChange,
+  error,
+  testID = 'radio',
 }: Props<T>) {
   const styles = useStyles();
 
@@ -60,7 +65,7 @@ export function RadioGroup<T extends string>({
             key={option.value}
             accessibilityRole="radio"
             accessibilityLabel={option.label}
-            testID={`radio-${option.value}`}
+            testID={`${testID}-${option.value}`}
             accessibilityState={{ selected, checked: selected }}
             onPress={() => onChange(option.value)}
             style={styles.row}
@@ -72,6 +77,11 @@ export function RadioGroup<T extends string>({
           </Pressable>
         );
       })}
+      {error ? (
+        <Text variant="caption" color="error" accessibilityLiveRegion="polite">
+          {error}
+        </Text>
+      ) : null}
     </View>
   );
 }

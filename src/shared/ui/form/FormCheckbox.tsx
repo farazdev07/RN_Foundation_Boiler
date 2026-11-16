@@ -12,6 +12,7 @@ type Props<T extends FieldValues, Output> = {
   name: FieldPath<T>;
   label: string;
   disabled?: boolean;
+  testID?: string;
 };
 
 export function FormCheckbox<T extends FieldValues, Output = T>({
@@ -19,6 +20,7 @@ export function FormCheckbox<T extends FieldValues, Output = T>({
   name,
   label,
   disabled = false,
+  testID,
 }: Props<T, Output>) {
   const { field } = useController({ control, name });
 
@@ -28,6 +30,7 @@ export function FormCheckbox<T extends FieldValues, Output = T>({
       checked={field.value === true}
       onChange={field.onChange}
       disabled={disabled}
+      {...(testID && { testID })}
     />
   );
 }

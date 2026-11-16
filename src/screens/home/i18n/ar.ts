@@ -4,4 +4,5 @@ import type { home } from './en';
 export const homeAr: typeof home = {
   title: 'الرئيسية',
   greeting: 'مرحبًا، {{name}}',
+  errorTitle: 'تعذّر تحميل ملفك الشخصي',
 };
