@@ -1,4 +1,5 @@
-import { AppState, Linking, type AppStateStatus } from 'react-native';
+import { Linking } from 'react-native';
+import { AppState, type AppStateStatus } from 'react-native'; // @unit:biometric-unlock
 import { createMMKV } from 'react-native-mmkv';
 import BootSplash from 'react-native-bootsplash';
 import * as Keychain from 'react-native-keychain';

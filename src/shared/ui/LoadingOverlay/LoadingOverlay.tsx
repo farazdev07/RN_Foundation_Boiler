@@ -1,5 +1,5 @@
 import { Modal as RNModal, View } from 'react-native';
-import { useTranslation } from '@shared/lib/i18n';
+import { useDirection, useTranslation } from '@shared/lib/i18n';
 import { Spinner } from '../Spinner';
 import { Text } from '../Text';
 import { makeStyles } from '../theme';
@@ -21,6 +21,8 @@ const useStyles = makeStyles(({ colors, spacing }) => ({
 export function LoadingOverlay({ visible, message }: Props) {
   const styles = useStyles();
   const { t } = useTranslation();
+  // A Modal is its own native root, so the direction is set again here.
+  const direction = useDirection();
 
   return (
     <RNModal
@@ -30,7 +32,7 @@ export function LoadingOverlay({ visible, message }: Props) {
       onRequestClose={() => undefined}
     >
       <View
-        style={styles.backdrop}
+        style={[styles.backdrop, { direction }]}
         accessibilityRole="progressbar"
         accessibilityLabel={message ?? t('loading')}
       >
