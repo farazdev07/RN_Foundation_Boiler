@@ -286,6 +286,42 @@ const cases = [
     null,
   ],
   [
+    'the root check library in a screen',
+    'src/screens/alpha/x.ts',
+    'jail-monkey',
+    RESTRICTED,
+  ],
+  [
+    'the root check library in features/device-integrity',
+    'src/features/device-integrity/x.ts',
+    'jail-monkey',
+    null,
+  ],
+  [
+    'the capture protection library in a screen',
+    'src/screens/alpha/x.ts',
+    'react-native-capture-protection',
+    RESTRICTED,
+  ],
+  [
+    'the capture protection library in lib/screen-protection',
+    'src/shared/lib/screen-protection/x.ts',
+    'react-native-capture-protection',
+    null,
+  ],
+  [
+    'the pinning library in a feature',
+    'src/features/alpha/x.ts',
+    'react-native-ssl-public-key-pinning',
+    RESTRICTED,
+  ],
+  [
+    'the pinning library in api/pinning',
+    'src/shared/api/pinning/x.ts',
+    'react-native-ssl-public-key-pinning',
+    null,
+  ],
+  [
     'WebView in ui/WebView',
     'src/shared/ui/WebView/x.ts',
     'react-native-webview',

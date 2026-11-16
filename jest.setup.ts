@@ -133,6 +133,13 @@ jest.mock('@react-native-community/datetimepicker', () => {
 });
 // @unit-end:date-time
 
+// @unit-start:cert-pinning
+jest.mock('react-native-ssl-public-key-pinning', () => ({
+  initializeSslPinning: jest.fn(() => Promise.resolve()),
+  addSslPinningErrorListener: jest.fn(() => ({ remove: jest.fn() })),
+}));
+// @unit-end:cert-pinning
+
 // @unit-start:device-integrity
 jest.mock('jail-monkey', () => ({
   __esModule: true,

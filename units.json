@@ -155,5 +155,17 @@
       ".env.production.example"
     ],
     "packages": ["react-native-capture-protection"]
+  },
+  "cert-pinning": {
+    "paths": ["src/shared/api/pinning"],
+    "touchpoints": [
+      "src/shared/api/baseQuery.ts",
+      "src/shared/config/env.ts",
+      "jest.setup.ts",
+      ".env.development.example",
+      ".env.staging.example",
+      ".env.production.example"
+    ],
+    "packages": ["react-native-ssl-public-key-pinning"]
   }
 }
